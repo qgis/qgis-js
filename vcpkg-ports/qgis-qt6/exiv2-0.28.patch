@@ -1,0 +1,40 @@
+diff --git a/src/core/raster/qgsexiftools.cpp b/src/core/raster/qgsexiftools.cpp
+index 7fa2709845..97cfc5dc5a 100644
+--- a/src/core/raster/qgsexiftools.cpp
++++ b/src/core/raster/qgsexiftools.cpp
+@@ -66,7 +66,7 @@ QVariant decodeXmpData( const QString &key, Exiv2::XmpData::const_iterator &it )
+       case Exiv2::signedLong:
+       case Exiv2::unsignedLongLong:
+       case Exiv2::signedLongLong:
+-        val = QVariant::fromValue( it->toLong() );
++        val = QVariant::fromValue( it->toInt64() );
+         break;
+ 
+       case Exiv2::tiffDouble:
+@@ -80,7 +80,7 @@ QVariant decodeXmpData( const QString &key, Exiv2::XmpData::const_iterator &it )
+       case Exiv2::signedByte:
+       case Exiv2::tiffIfd:
+       case Exiv2::tiffIfd8:
+-        val = QVariant::fromValue( static_cast< int >( it->toLong() ) );
++        val = QVariant::fromValue( static_cast< int >( it->toInt64() ) );
+         break;
+ 
+       case Exiv2::date:
+@@ -182,7 +182,7 @@ QVariant decodeExifData( const QString &key, Exiv2::ExifData::const_iterator &it
+       case Exiv2::signedLong:
+       case Exiv2::unsignedLongLong:
+       case Exiv2::signedLongLong:
+-        val = QVariant::fromValue( it->toLong() );
++        val = QVariant::fromValue( it->toInt64() );
+         break;
+ 
+       case Exiv2::tiffDouble:
+@@ -196,7 +196,7 @@ QVariant decodeExifData( const QString &key, Exiv2::ExifData::const_iterator &it
+       case Exiv2::signedByte:
+       case Exiv2::tiffIfd:
+       case Exiv2::tiffIfd8:
+-        val = QVariant::fromValue( static_cast< int >( it->toLong() ) );
++        val = QVariant::fromValue( static_cast< int >( it->toInt64() ) );
+         break;
+ 
+       case Exiv2::date:

@@ -1,0 +1,13 @@
+diff --git a/src/core/providers/arcgis/qgsarcgisrestquery.cpp b/src/core/providers/arcgis/qgsarcgisrestquery.cpp
+index 7728793490..251d70f9dd 100644
+--- a/src/core/providers/arcgis/qgsarcgisrestquery.cpp
++++ b/src/core/providers/arcgis/qgsarcgisrestquery.cpp
+@@ -28,6 +28,8 @@
+ #include <QImageReader>
+ #include <QRegularExpression>
+ #include <QJsonParseError>
++#include <QCryptographicHash>
++#include <QFile>
+ 
+ QVariantMap QgsArcGisRestQueryUtils::getServiceInfo( const QString &baseurl, const QString &authcfg, QString &errorTitle, QString &errorText, const QgsHttpHeaders &requestHeaders )
+ {

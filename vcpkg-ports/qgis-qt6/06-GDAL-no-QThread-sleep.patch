@@ -1,0 +1,22 @@
+diff --git a/src/core/providers/gdal/qgsgdalprovider.cpp b/src/core/providers/gdal/qgsgdalprovider.cpp
+index 133593f79c..55818b86e6 100644
+--- a/src/core/providers/gdal/qgsgdalprovider.cpp
++++ b/src/core/providers/gdal/qgsgdalprovider.cpp
+@@ -3892,7 +3892,7 @@ bool QgsGdalProvider::remove()
+   while ( *mpRefCounter != 1 )
+   {
+     QgsDebugMsgLevel( QStringLiteral( "Waiting for ref counter for %1 to drop to 1" ).arg( dataSourceUri() ), 2 );
+-    QThread::msleep( 100 );
++    //QThread::msleep( 100 );
+   }
+ 
+   if ( mGdalDataset )
+@@ -4080,7 +4080,7 @@ bool QgsGdalProvider::setEditable( bool enabled )
+   while ( *mpRefCounter != 1 )
+   {
+     QgsDebugMsgLevel( QStringLiteral( "Waiting for ref counter for %1 to drop to 1" ).arg( dataSourceUri() ), 2 );
+-    QThread::msleep( 100 );
++    //QThread::msleep( 100 );
+   }
+ 
+   closeDataset();

@@ -1,0 +1,37 @@
+diff --git a/src/core/CMakeLists.txt b/src/core/CMakeLists.txt
+index 02dce34c30..e6eece9174 100644
+--- a/src/core/CMakeLists.txt
++++ b/src/core/CMakeLists.txt
+@@ -340,7 +340,7 @@ set(QGIS_CORE_SRCS
+   sensor/qgssensormanager.cpp
+   sensor/qgssensorregistry.cpp
+   sensor/qgsabstractsensor.cpp
+-  sensor/qgsiodevicesensor.cpp
++  #sensor/qgsiodevicesensor.cpp
+ 
+   fromencodedcomponenthelper.cpp
+   qgis.cpp
+diff --git a/src/core/sensor/qgssensorregistry.cpp b/src/core/sensor/qgssensorregistry.cpp
+index b9196be833..8551418a8a 100644
+--- a/src/core/sensor/qgssensorregistry.cpp
++++ b/src/core/sensor/qgssensorregistry.cpp
+@@ -17,7 +17,7 @@
+ #include "qgsconfig.h"
+ 
+ #include "qgssensorregistry.h"
+-#include "qgsiodevicesensor.h"
++//#include "qgsiodevicesensor.h"
+ #include "qgsproject.h"
+ #include "qgssensormanager.h"
+ 
+@@ -36,8 +36,10 @@ bool QgsSensorRegistry::populate()
+   if ( !mMetadata.isEmpty() )
+     return false;
+ 
++#if 0
+   addSensorType( new QgsSensorMetadata( QLatin1String( "tcp_socket" ), QObject::tr( "TCP socket sensor" ), QgsTcpSocketSensor::create ) );
+   addSensorType( new QgsSensorMetadata( QLatin1String( "udp_socket" ), QObject::tr( "UDP socket sensor" ), QgsUdpSocketSensor::create ) );
++#endif
+ #if defined( HAVE_QTSERIALPORT )
+   addSensorType( new QgsSensorMetadata( QLatin1String( "serial_port" ), QObject::tr( "Serial port sensor" ), QgsSerialPortSensor::create ) );
+ #endif

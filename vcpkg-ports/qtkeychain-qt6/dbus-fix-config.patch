@@ -1,0 +1,12 @@
+diff --git a/QtKeychainConfig.cmake.in b/QtKeychainConfig.cmake.in
+--- QtKeychainConfig.cmake.in
++++ QtKeychainConfig.cmake.in
+@@ -14,7 +14,7 @@
+ 
+ find_dependency(Qt@QTKEYCHAIN_VERSION_INFIX@Core)
+ 
+-if(UNIX AND NOT APPLE AND NOT ANDROID)
++if(UNIX AND NOT APPLE AND NOT ANDROID AND NOT EMSCRIPTEN)
+     find_dependency(Qt@QTKEYCHAIN_VERSION_INFIX@DBus)
+ endif()
+ 

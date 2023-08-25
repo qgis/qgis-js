@@ -1,0 +1,34 @@
+{
+    "name": "test-vcpkg",
+    "version": "1.0",
+    "dependencies": [
+        {
+            "name": "sqlite3",
+            "default-features": false,
+            "features": [ "rtree", "json1", "fts3" ]
+        },
+        "qt6",
+        {
+            "name": "proj",
+            "default-features": false,
+            "features": ["tiff"]
+        },
+        "geos",
+        {
+            "name": "gdal",
+            "default-features": false,
+            "features": ["geos","sqlite3"]
+        },
+        "expat",
+        "libspatialindex",
+        {
+            "name": "libzip",
+            "default-features": false
+        },
+        "protobuf",
+        "exiv2",
+        "qtkeychain-qt6",
+        "qca-qt6",
+        "qgis-qt6"
+    ]
+}

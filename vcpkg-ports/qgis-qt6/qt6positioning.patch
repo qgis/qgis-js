@@ -1,0 +1,12 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+--- CMakeLists.txt
++++ CMakeLists.txt
+@@ -468,7 +468,7 @@
+       set (HAVE_QTSERIALPORT TRUE)
+   endif()
+ 
+-  find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test Sql Positioning REQUIRED)
++  find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test Sql REQUIRED)
+   if (BUILD_WITH_QT6)
+     find_package(${QT_VERSION_BASE} COMPONENTS Core5Compat REQUIRED)
+   endif()

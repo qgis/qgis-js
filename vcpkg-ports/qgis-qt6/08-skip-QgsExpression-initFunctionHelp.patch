@@ -1,0 +1,93 @@
+diff --git a/src/core/CMakeLists.txt b/src/core/CMakeLists.txt
+index 02dce34c30..da37472f57 100644
+--- a/src/core/CMakeLists.txt
++++ b/src/core/CMakeLists.txt
+@@ -927,7 +927,7 @@ set(QGIS_CORE_SRCS
+   vectortile/qgsvtpkvectortiledataprovider.cpp
+   vectortile/qgsxyzvectortiledataprovider.cpp
+ 
+-  ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
++  # ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
+ 
+   qgsuserprofile.cpp
+   qgsuserprofilemanager.cpp
+@@ -947,18 +947,18 @@ else ()
+   include_directories(${Poly2Tri_INCLUDE_DIR})
+ endif ()
+ 
+-file(GLOB JSON_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/function_help/json/*")
+-if(CMAKE_VERSION VERSION_LESS "3.18" AND NOT USING_NINJA)
+-  string(REPLACE "$" "$$" JSON_HELP_FILES "${JSON_HELP_FILES}")
+-endif()
+-string(REPLACE "\(" "\\(" JSON_HELP_FILES "${JSON_HELP_FILES}")
+-string(REPLACE "\)" "\\)" JSON_HELP_FILES "${JSON_HELP_FILES}")
+-add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
+-  COMMAND ${Python_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/process_function_template.py ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp
+-  COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
+-  DEPENDS ${JSON_HELP_FILES}
+-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+-)
++# file(GLOB JSON_HELP_FILES "${CMAKE_SOURCE_DIR}/resources/function_help/json/*")
++# if(CMAKE_VERSION VERSION_LESS "3.18" AND NOT USING_NINJA)
++#   string(REPLACE "$" "$$" JSON_HELP_FILES "${JSON_HELP_FILES}")
++# endif()
++# string(REPLACE "\(" "\\(" JSON_HELP_FILES "${JSON_HELP_FILES}")
++# string(REPLACE "\)" "\\)" JSON_HELP_FILES "${JSON_HELP_FILES}")
++# add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
++#   COMMAND ${Python_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/process_function_template.py ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp
++#   COMMAND ${CMAKE_COMMAND} -DSRC=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp.temp -DDST=${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp -P ${CMAKE_SOURCE_DIR}/cmake/CopyIfChanged.cmake
++#   DEPENDS ${JSON_HELP_FILES}
++#   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
++# )
+ 
+ if(ENABLE_MODELTEST)
+   set(MODELTEST_SRCS
+@@ -2006,19 +2006,19 @@ if (HAVE_OPENCL)
+     )
+ endif()
+ 
+-if(MSVC)
+-  set_source_files_properties(
+-      ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
+-      ${CMAKE_CURRENT_BINARY_DIR}/qgis_core_autogen/mocs_compilation.cpp
+-      proj/qgscoordinatereferencesystem.cpp
+-      PROPERTIES COMPILE_FLAGS "/bigobj"
+-  )
+-else()
+-  if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND (CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo))
+-    set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES COMPILE_FLAGS "-O1")
+-    set_source_files_properties(proj/qgscoordinatereferencesystem.cpp PROPERTIES COMPILE_FLAGS "-mllvm -inline-threshold=128")
+-  endif()
+-endif()
++# if(MSVC)
++#   set_source_files_properties(
++#       ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
++#       ${CMAKE_CURRENT_BINARY_DIR}/qgis_core_autogen/mocs_compilation.cpp
++#       proj/qgscoordinatereferencesystem.cpp
++#       PROPERTIES COMPILE_FLAGS "/bigobj"
++#   )
++# else()
++#   if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND (CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo))
++#     set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES COMPILE_FLAGS "-O1")
++#     set_source_files_properties(proj/qgscoordinatereferencesystem.cpp PROPERTIES COMPILE_FLAGS "-mllvm -inline-threshold=128")
++#   endif()
++# endif()
+ 
+ # Generate cpp+header file from .proto file using "protoc" tool (to support MVT encoding of vector tiles)
+ protobuf_generate_cpp(VECTOR_TILE_PROTO_SRCS VECTOR_TILE_PROTO_HDRS vectortile/vector_tile.proto)
+diff --git a/src/core/expression/qgsexpression.cpp b/src/core/expression/qgsexpression.cpp
+index bdcb37cff7..401cc9010b 100644
+--- a/src/core/expression/qgsexpression.cpp
++++ b/src/core/expression/qgsexpression.cpp
+@@ -29,6 +29,11 @@
+ 
+ #include <QRegularExpression>
+ 
++void QgsExpression::initFunctionHelp()
++{
++  // dummy function to prevent initialization of function help (too large cpp file)
++}
++
+ // from parser
+ extern QgsExpressionNode *parseExpression( const QString &str, QString &parserErrorMsg, QList<QgsExpression::ParserError> &parserErrors );
+ 

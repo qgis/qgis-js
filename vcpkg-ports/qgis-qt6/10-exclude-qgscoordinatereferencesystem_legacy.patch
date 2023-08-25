@@ -1,0 +1,28 @@
+diff --git a/src/core/CMakeLists.txt b/src/core/CMakeLists.txt
+index f061ace19c..84746cbd3f 100644
+--- a/src/core/CMakeLists.txt
++++ b/src/core/CMakeLists.txt
+@@ -1942,7 +1942,7 @@ set(QGIS_CORE_PRIVATE_HDRS
+   proj/qgscoordinatereferencesystem_p.h
+   proj/qgscoordinatetransformcontext_p.h
+   proj/qgscoordinatetransform_p.h
+-  proj/qgscoordinatereferencesystem_legacy_p.h
++  # proj/qgscoordinatereferencesystem_legacy_p.h
+ 
+   providers/ogr/qgscplerrorhandler_p.h
+ 
+diff --git a/src/core/proj/qgscoordinatereferencesystem.cpp b/src/core/proj/qgscoordinatereferencesystem.cpp
+index 80e92071ce..f54cc20a6d 100644
+--- a/src/core/proj/qgscoordinatereferencesystem.cpp
++++ b/src/core/proj/qgscoordinatereferencesystem.cpp
+@@ -18,7 +18,9 @@
+ #include "qgscoordinatereferencesystem.h"
+ #include "qgscoordinatereferencesystem_p.h"
+ 
+-#include "qgscoordinatereferencesystem_legacy_p.h"
++// #include "qgscoordinatereferencesystem_legacy_p.h"
++const QMap< QString, QString > sAuthIdToQgisSrsIdMap;
++
+ #include "qgscoordinatereferencesystemregistry.h"
+ #include "qgsreadwritelocker.h"
+ 

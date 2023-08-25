@@ -1,0 +1,13 @@
+diff --git a/src/core/qgsfileutils.cpp b/src/core/qgsfileutils.cpp
+index e1da9c823c..59fcddbdad 100644
+--- a/src/core/qgsfileutils.cpp
++++ b/src/core/qgsfileutils.cpp
+@@ -471,7 +471,7 @@ bool QgsFileUtils::renameDataset( const QString &oldPath, const QString &newPath
+ 
+ int QgsFileUtils::openedFileLimit()
+ {
+-#ifdef Q_OS_UNIX
++#if defined(Q_OS_UNIX) && !defined(EMSCRIPTEN)
+   struct rlimit rescLimit;
+   if ( getrlimit( RLIMIT_NOFILE, &rescLimit ) == 0 )
+   {

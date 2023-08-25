@@ -1,0 +1,78 @@
+diff --git a/src/core/gps/qgsgpslogger.cpp b/src/core/gps/qgsgpslogger.cpp
+index b4dd8ad7e3..3eecc19dd1 100644
+--- a/src/core/gps/qgsgpslogger.cpp
++++ b/src/core/gps/qgsgpslogger.cpp
+@@ -479,11 +479,13 @@ QDateTime QgsGpsLogger::lastTimestamp() const
+   if ( mTimeStampSpec == Qt::TimeSpec::TimeZone )
+   {
+     // Get timezone from the combo
++#if 0
+     const QTimeZone destTz( mTimeZone.toUtf8() );
+     if ( destTz.isValid() )
+     {
+       time = time.toTimeZone( destTz );
+     }
++#endif
+   }
+   else if ( mTimeStampSpec == Qt::TimeSpec::LocalTime )
+   {
+diff --git a/src/core/layout/qgslayoutexporter.cpp b/src/core/layout/qgslayoutexporter.cpp
+index b758190970..d3c48339e7 100644
+--- a/src/core/layout/qgslayoutexporter.cpp
++++ b/src/core/layout/qgslayoutexporter.cpp
+@@ -1653,6 +1653,7 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
+       if ( creationDateTime.isValid() )
+       {
+         creationDateString = QStringLiteral( "D:%1" ).arg( mLayout->project()->metadata().creationDateTime().toString( QStringLiteral( "yyyyMMddHHmmss" ) ) );
++#if 0
+         if ( creationDateTime.timeZone().isValid() )
+         {
+           int offsetFromUtc = creationDateTime.timeZone().offsetFromUtc( creationDateTime );
+@@ -1662,6 +1663,7 @@ bool QgsLayoutExporter::georeferenceOutputPrivate( const QString &file, QgsLayou
+           int offsetMins = ( offsetFromUtc % 3600 ) / 60;
+           creationDateString += QStringLiteral( "%1'%2'" ).arg( offsetHours ).arg( offsetMins );
+         }
++#endif
+       }
+       GDALSetMetadataItem( outputDS.get(), "CREATION_DATE", creationDateString.toUtf8().constData(), nullptr );
+ 
+diff --git a/src/core/maprenderer/qgsmaprenderertask.cpp b/src/core/maprenderer/qgsmaprenderertask.cpp
+index eb5d87641d..33e759f3ff 100644
+--- a/src/core/maprenderer/qgsmaprenderertask.cpp
++++ b/src/core/maprenderer/qgsmaprenderertask.cpp
+@@ -329,6 +329,7 @@ bool QgsMapRendererTask::run()
+             if ( creationDateTime.isValid() )
+             {
+               creationDateString = QStringLiteral( "D:%1" ).arg( mGeoPdfExportDetails.creationDateTime.toString( QStringLiteral( "yyyyMMddHHmmss" ) ) );
++#if 0
+               if ( creationDateTime.timeZone().isValid() )
+               {
+                 int offsetFromUtc = creationDateTime.timeZone().offsetFromUtc( creationDateTime );
+@@ -338,6 +339,7 @@ bool QgsMapRendererTask::run()
+                 const int offsetMins = ( offsetFromUtc % 3600 ) / 60;
+                 creationDateString += QStringLiteral( "%1'%2'" ).arg( offsetHours ).arg( offsetMins );
+               }
++#endif
+             }
+             GDALSetMetadataItem( outputDS.get(), "CREATION_DATE", creationDateString.toUtf8().constData(), nullptr );
+ 
+diff --git a/src/core/qgsabstractgeopdfexporter.cpp b/src/core/qgsabstractgeopdfexporter.cpp
+index 6700bd157c..fa9936b19d 100644
+--- a/src/core/qgsabstractgeopdfexporter.cpp
++++ b/src/core/qgsabstractgeopdfexporter.cpp
+@@ -231,6 +231,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
+   {
+     QDomElement creationDate = doc.createElement( QStringLiteral( "CreationDate" ) );
+     QString creationDateString = QStringLiteral( "D:%1" ).arg( details.creationDateTime.toString( QStringLiteral( "yyyyMMddHHmmss" ) ) );
++#if 0
+     if ( details.creationDateTime.timeZone().isValid() )
+     {
+       int offsetFromUtc = details.creationDateTime.timeZone().offsetFromUtc( details.creationDateTime );
+@@ -240,6 +241,7 @@ QString QgsAbstractGeoPdfExporter::createCompositionXml( const QList<ComponentLa
+       int offsetMins = ( offsetFromUtc % 3600 ) / 60;
+       creationDateString += QStringLiteral( "%1'%2'" ).arg( offsetHours ).arg( offsetMins );
+     }
++#endif
+     creationDate.appendChild( doc.createTextNode( creationDateString ) );
+     metadata.appendChild( creationDate );
+   }

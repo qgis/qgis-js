@@ -1,0 +1,15 @@
+diff --git a/src/core/CMakeLists.txt b/src/core/CMakeLists.txt
+index 972bcaca07..e55919cecf 100644
+--- a/src/core/CMakeLists.txt
++++ b/src/core/CMakeLists.txt
+@@ -62,8 +62,8 @@ set(QGIS_CORE_SRCS
+   geocoding/qgsgeocoder.cpp
+   geocoding/qgsgeocodercontext.cpp
+   geocoding/qgsgeocoderresult.cpp
+-  geocoding/qgsnominatimgeocoder.cpp
+-  geocoding/qgsgooglemapsgeocoder.cpp
++  # geocoding/qgsnominatimgeocoder.cpp
++  # geocoding/qgsgooglemapsgeocoder.cpp
+ 
+   gps/qgsbabelformat.cpp
+   gps/qgsbabelformatregistry.cpp
