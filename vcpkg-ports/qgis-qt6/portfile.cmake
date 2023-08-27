@@ -9,18 +9,22 @@ vcpkg_from_github(
     PATCHES
         gdal.patch
         keychain.patch
-        exiv2.patch
+        #exiv2.patch
         crssync.patch
         bigobj.patch
         # wasm-specific
         qt6positioning.patch
         no-tcp-udp-sensors.patch
         exiv2-0.28.patch
+        no-exiv.patch
+        fix-settings-tree.patch
+        fix-ssl-network-access-manager.patch
+        disable-auth-manager.patch
         #01-fix-qgswkbptr_h.patch
         02-exclude-wfs-provider.patch
         03-fix-missing-QTimeZone.patch
         04-fix-missing-QCryptographicHash.patch
-        05-fix-QT_NO_SSL.patch
+        #05-fix-QT_NO_SSL.patch
         06-GDAL-no-QThread-sleep.patch
         07-fix-QgsArcGisRestQueryUtils-includes.patch
         08-skip-QgsExpression-initFunctionHelp.patch

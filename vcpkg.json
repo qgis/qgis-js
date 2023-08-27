@@ -26,7 +26,6 @@
             "default-features": false
         },
         "protobuf",
-        "exiv2",
         "qtkeychain-qt6",
         "qca-qt6",
         "qgis-qt6"

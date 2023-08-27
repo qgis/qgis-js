@@ -1,0 +1,95 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index eefb398762..d73533eb8d 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -371,7 +371,7 @@ if(WITH_CORE)
+   find_package(ZLIB REQUIRED)       # for decompression of vector tiles in MBTiles file
+   message(STATUS "Found zlib: ${ZLIB_LIBRARIES}")
+ 
+-  find_package(EXIV2 REQUIRED)
++  #find_package(EXIV2 REQUIRED)
+ 
+   # optional
+   if (WITH_POSTGRESQL)
+diff --git a/src/core/CMakeLists.txt b/src/core/CMakeLists.txt
+index 02dce34c30..4c61296690 100644
+--- a/src/core/CMakeLists.txt
++++ b/src/core/CMakeLists.txt
+@@ -700,7 +700,7 @@ set(QGIS_CORE_SRCS
+   raster/qgscolorrampshader.cpp
+   raster/qgscontrastenhancement.cpp
+   raster/qgscontrastenhancementfunction.cpp
+-  raster/qgsexiftools.cpp
++  #raster/qgsexiftools.cpp
+   raster/qgslinearminmaxenhancement.cpp
+   raster/qgslinearminmaxenhancementwithclip.cpp
+   raster/qgsraster.cpp
+@@ -1771,7 +1771,7 @@ set(QGIS_CORE_HDRS
+   raster/qgscontrastenhancement.h
+   raster/qgscontrastenhancementfunction.h
+   raster/qgscubicrasterresampler.h
+-  raster/qgsexiftools.h
++  #raster/qgsexiftools.h
+   raster/qgshillshaderenderer.h
+   raster/qgshuesaturationfilter.h
+   raster/qgslinearminmaxenhancement.h
+@@ -2206,7 +2206,7 @@ target_include_directories(qgis_core SYSTEM PUBLIC
+   ${${QT_VERSION_BASE}SerialPort_INCLUDE_DIRS}
+   ${Protobuf_INCLUDE_DIRS}
+   ${ZLIB_INCLUDE_DIRS}
+-  ${EXIV2_INCLUDE_DIR}
++  #${EXIV2_INCLUDE_DIR}
+ )
+ 
+ if (WITH_SPATIALITE)
+@@ -2377,7 +2377,7 @@ target_link_libraries(qgis_core
+   ${LIBZIP_LIBRARY}
+   ${Protobuf_LITE_LIBRARY}
+   ${ZLIB_LIBRARIES}
+-  ${EXIV2_LIBRARY}
++  #${EXIV2_LIBRARY}
+ )
+ if (NOT IOS)
+   target_link_libraries(qgis_core ${QT_VERSION_BASE}::PrintSupport)
+diff --git a/src/core/expression/qgsexpressionfunction.cpp b/src/core/expression/qgsexpressionfunction.cpp
+index 57a3aa8753..b0ac23730d 100644
+--- a/src/core/expression/qgsexpressionfunction.cpp
++++ b/src/core/expression/qgsexpressionfunction.cpp
+@@ -21,7 +21,7 @@
+ #include "qgsexpressionfunction.h"
+ #include "qgsexpressionutils.h"
+ #include "qgsexpressionnodeimpl.h"
+-#include "qgsexiftools.h"
++//#include "qgsexiftools.h"
+ #include "qgsfeaturerequest.h"
+ #include "qgsgeos.h"
+ #include "qgsstringutils.h"
+@@ -2883,6 +2883,7 @@ static QVariant fcnDateTimeFromEpoch( const QVariantList &values, const QgsExpre
+   return QVariant( QDateTime::fromMSecsSinceEpoch( millisecs_since_epoch ) );
+ }
+ 
++#if 0
+ static QVariant fcnExif( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
+ {
+   const QString filepath = QgsExpressionUtils::getFilePathValue( values.at( 0 ), context, parent );
+@@ -2906,6 +2907,7 @@ static QVariant fcnExifGeoTag( const QVariantList &values, const QgsExpressionCo
+   bool ok;
+   return QVariant::fromValue( QgsGeometry( new QgsPoint( QgsExifTools::getGeoTag( filepath, ok ) ) ) );
+ }
++#endif
+ 
+ #define ENSURE_GEOM_TYPE(f, g, geomtype) \
+   if ( !(f).hasGeometry() ) \
+@@ -8333,10 +8335,12 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
+         << new QgsStaticExpressionFunction( QStringLiteral( "file_size" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "path" ) ),
+                                             fcnFileSize, QStringLiteral( "Files and Paths" ) )
+ 
++#if 0
+         << new QgsStaticExpressionFunction( QStringLiteral( "exif" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "path" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "tag" ), true ),
+                                             fcnExif, QStringLiteral( "Files and Paths" ) )
+         << new QgsStaticExpressionFunction( QStringLiteral( "exif_geotag" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "path" ) ),
+                                             fcnExifGeoTag, QStringLiteral( "GeometryGroup" ) )
++#endif
+ 
+         // hash
+         << new QgsStaticExpressionFunction( QStringLiteral( "hash" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "string" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "method" ) ),

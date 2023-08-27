@@ -1,0 +1,20 @@
+diff --git a/src/core/network/qgsnetworkaccessmanager.cpp b/src/core/network/qgsnetworkaccessmanager.cpp
+index bec4ff2300..7f1fdc423a 100644
+--- a/src/core/network/qgsnetworkaccessmanager.cpp
++++ b/src/core/network/qgsnetworkaccessmanager.cpp
+@@ -455,6 +455,7 @@ void QgsNetworkAccessManager::afterSslErrorHandled( QNetworkReply *reply )
+     emit sslErrorsHandled( reply );
+   }
+ }
++#endif
+ 
+ void QgsNetworkAccessManager::afterAuthRequestHandled( QNetworkReply *reply )
+ {
+@@ -495,6 +496,7 @@ int QgsNetworkAccessManager::getRequestId( QNetworkReply *reply )
+   return reply->property( "requestId" ).toInt();
+ }
+ 
++#ifndef QT_NO_SSL
+ void QgsNetworkAccessManager::handleSslErrors( QNetworkReply *reply, const QList<QSslError> &errors )
+ {
+   mSslErrorHandler->handleSslErrors( reply, errors );

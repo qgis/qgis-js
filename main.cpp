@@ -8,10 +8,18 @@
 #include <expat.h>
 #include <spatialindex/capi/sidx_api.h>
 #include <zip.h>
-#include <exiv2/exiv2.hpp>
+//#include <exiv2/exiv2.hpp>
 #include <qt6keychain/keychain.h>
 
+#include <qgis.h>
+#include <qgsapplication.h>
+
 #include <QtGlobal>
+#include <QCoreApplication>
+#include <QTemporaryDir>
+
+static const QTemporaryDir temp;
+static QCoreApplication* app;
 
 
 int test_sqlite3()
@@ -52,7 +60,7 @@ int test_qt()
 }
 
 
-int main()
+int main(int argc, char* argv[])
 {
     int res = 0;
 
@@ -65,10 +73,15 @@ int main()
     printf("Expat: %s\n", XML_ExpatVersion());
     printf("libspatialindex: %s\n", SIDX_Version());
     printf("libzip: %s\n", zip_libzip_version());
-    printf("exiv2: %s\n", Exiv2::version());
+    //printf("exiv2: %s\n", Exiv2::version());
     printf("qt6keychain: %d\n", QTKEYCHAIN_VERSION);
 
-    // TODO: QGIS
+    printf("QGIS: %d\n", Qgis::versionInt());
+
+    app = new QCoreApplication( argc, argv );
+    qDebug() << "QgsApplication::init";
+    QgsApplication::init( temp.path() );
+    qDebug() << "done init";
 
     return res;
 }
