@@ -30,7 +30,7 @@ message(STATUS "MY TRIPLET!")
 set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "/home/martin/qgis/wasm/test_vcpkg/vcpkg-triplets/my_toolchain.cmake")
 
 # to avoid building both debug and release of all libs
-set(VCPKG_BUILD_TYPE "release")
+#set(VCPKG_BUILD_TYPE "release")
 
 # --------------
 

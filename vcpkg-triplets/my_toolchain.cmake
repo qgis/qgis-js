@@ -12,3 +12,7 @@ include("/home/martin/Qt/6.5.2/wasm_multithread/lib/cmake/Qt6/qt.toolchain.cmake
 
 set(CMAKE_C_FLAGS_INIT   "${CMAKE_C_FLAGS_INIT}   -pthread")
 set(CMAKE_CXX_FLAGS_INIT "${CMAKE_CXX_FLAGS_INIT} -pthread")
+
+# to figure out exceptions thrown
+set(CMAKE_C_FLAGS_INIT   "${CMAKE_C_FLAGS_INIT}   -fwasm-exceptions")
+set(CMAKE_CXX_FLAGS_INIT "${CMAKE_CXX_FLAGS_INIT} -fwasm-exceptions")

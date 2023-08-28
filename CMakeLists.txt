@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.15)
 
 project(test_vcpkg CXX)
 
-
 set(CMAKE_CXX_STANDARD 17)
 
 message(STATUS "COMPILER!!! ${CMAKE_CXX_COMPILER}")
@@ -20,11 +19,8 @@ find_package(Qt6 REQUIRED COMPONENTS Core Gui Xml Network Concurrent Core5Compat
 
 find_library(SPATIALINDEX_LIBRARY spatialindex PATHS ${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib NO_DEFAULT_PATH REQUIRED)
 
+find_package(Qca CONFIG REQUIRED)
 find_package(Qt6Keychain CONFIG REQUIRED)
-
-#if (EMSCRIPTEN)
-#  set(CMAKE_EXECUTABLE_SUFFIX ".html")
-#endif ()
 
 find_path(QGIS_INCLUDE_DIR
     NAMES qgis.h
@@ -46,10 +42,20 @@ find_library(
 )
 
 
+#set(CMAKE_EXECUTABLE_SUFFIX ".html")
 #add_executable(test_vcpkg main.cpp)
+
+# this creates also .html + qtloader.js + adds various flags to the build
 qt_add_executable(test_vcpkg MANUAL_FINALIZATION main.cpp)
 
-#set_target_properties(test_vcpkg PROPERTIES LINK_FLAGS "-sSAFE_HEAP=1 -sASSERTIONS=1")
+
+target_compile_options(test_vcpkg PRIVATE "-fwasm-exceptions")
+set_target_properties(test_vcpkg PROPERTIES LINK_FLAGS "-fwasm-exceptions")
+
+set_target_properties(test_vcpkg PROPERTIES LINK_FLAGS "--bind")
+set_target_properties(test_vcpkg PROPERTIES LINK_FLAGS "--preload-file ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/share/proj@/proj --preload-file ${CMAKE_SOURCE_DIR}/resources/srs.db@/qgis/resources/srs.db")
+target_link_options(test_vcpkg PRIVATE "SHELL:-s EXPORTED_RUNTIME_METHODS=['FS'] -s EXTRA_EXPORTED_RUNTIME_METHODS=['FS'] -s FORCE_FILESYSTEM=1")
+
 
 target_include_directories(test_vcpkg PRIVATE ${QGIS_INCLUDE_DIR})
 target_link_libraries(test_vcpkg PRIVATE ${QGIS_LIBRARY})
@@ -85,7 +91,6 @@ foreach (provider ${QGIS_PROVIDERS_LIST})
   )
 endforeach ()
 
-
 target_link_libraries(test_vcpkg PRIVATE PROJ::proj)
 target_link_libraries(test_vcpkg PRIVATE unofficial::sqlite3::sqlite3)
 target_link_libraries(test_vcpkg PRIVATE GEOS::geos_c)
@@ -95,7 +100,6 @@ target_link_libraries(test_vcpkg PRIVATE protobuf::libprotobuf-lite)
 target_link_libraries(test_vcpkg PRIVATE ${SPATIALINDEX_LIBRARY})
 target_link_libraries(test_vcpkg PRIVATE libzip::zip)
 target_link_libraries(test_vcpkg PRIVATE Qt6Keychain::Qt6Keychain)
-target_link_libraries(test_vcpkg PRIVATE /home/martin/qgis/wasm/test_vcpkg/build-wasm/vcpkg_installed/wasm32-emscripten-qt-threads/lib/libqca.a)
-
+target_link_libraries(test_vcpkg PRIVATE qca)
 
 qt_finalize_executable(test_vcpkg)
