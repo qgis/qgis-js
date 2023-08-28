@@ -26,7 +26,6 @@ Install Qt6:
 - Install at least the following 6.5.2 packages:
   - WebAssembly (multi-threaded)
   - Qt 5 Compatibility Module
-  - Additional Libraries > Qt Positioning
 - Patch Qt installation
   - go to `qt-patches` directory in this repo and run `bash qt-patch.sh` (fix QT_DIR if you're not using `~/Qt` for Qt6 install)
 
