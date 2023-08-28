@@ -131,11 +131,11 @@ bool mr_load_project(std::string filename)
 }
 
 
-void mr_render_map(const QgsRectangle &extent, emscripten::val callback)
+void mr_render_map(const QgsRectangle &extent, int width, int height, emscripten::val callback)
 {
   QgsMapSettings mapSettings;
   //mapSettings.setBackgroundColor(Qt::green);
-  mapSettings.setOutputSize(QSize(512,512));
+  mapSettings.setOutputSize(QSize(width, height));
   mapSettings.setDestinationCrs(QgsProject::instance()->crs());
   mapSettings.setLayers(QgsProject::instance()->layerTreeRoot()->layerOrderRespectingGroupLayers());
   mapSettings.setExtent(extent);

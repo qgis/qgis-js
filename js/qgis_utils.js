@@ -12,6 +12,8 @@ window.setTimeout(waitForWasmModuleStart, 100);
 
 var Q;
 var last_extent;
+var img_width = 512;
+var img_height = 512;
 
     function on_qgis_module_started() {
         console.log("QGIS loaded!");
@@ -31,7 +33,7 @@ var last_extent;
 
     function render_map() {
         console.log("starting rendering.");
-        Q.renderMap(last_extent, function() {
+        Q.renderMap(last_extent, img_width, img_height, function() {
             console.log("finished rendering.");
             show_last_image();
         });
@@ -73,14 +75,12 @@ var last_extent;
     }
 
     function show_last_image() {
-        let imgW = 512;
-        let imgH = 512;
-        let bufferSize = imgW*imgH*4;
+        let bufferSize = img_width * img_height*4;
         // TODO: what is more efficient?
         let my_uint8_buffer = new Uint8ClampedArray(qtLoader.module().mapData());
         //let ptr = qtLoader.module().mapPtr();
         //let my_uint8_buffer = new Uint8ClampedArray(Q.HEAPU8.buffer, ptr, bufferSize);
-        last_image_data = new ImageData(my_uint8_buffer, imgW, imgH);
+        last_image_data = new ImageData(my_uint8_buffer, img_width, img_height);
 
         let c = document.getElementById("qqq");
         let ctx = c.getContext("2d");
