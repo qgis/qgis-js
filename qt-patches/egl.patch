@@ -1,0 +1,11 @@
+--- wasm_multithread/lib/cmake/Qt6/3rdparty/extra-cmake-modules/find-modules/FindEGL.cmake
++++ wasm_multithread/lib/cmake/Qt6/3rdparty/extra-cmake-modules/find-modules/FindEGL.cmake
+@@ -124,6 +124,8 @@
+     list(APPEND CMAKE_REQUIRED_LIBRARIES "${_qt_igy_gui_libs}")
+ endif()
+ 
++set(CMAKE_REQUIRED_LINK_OPTIONS "-sEXPORTED_FUNCTIONS=['_malloc']")
++
+ check_cxx_source_compiles("
+ #include <EGL/egl.h>
+ 
