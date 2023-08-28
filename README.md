@@ -5,6 +5,12 @@ Work in progress!
 
 ## Install dependencies
 
+Install the following packages (on Ubuntu 22.04):
+
+```
+sudo apt-get install pkg-config ninja-build flex bison
+```
+
 Install vcpkg:
 ```
 git clone https://github.com/microsoft/vcpkg
