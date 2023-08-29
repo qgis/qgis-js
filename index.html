@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>qgis-js</title>
+  <meta charset="UTF-8" />
+  <link rel="icon" href="data:,">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+</head>
+
+<body>
+  <div id="app"></div>
+
+  <figure style="overflow:visible;" id="qtspinner">
+    <center style="margin-top:1.5em; line-height:150%">
+      <img src="qtlogo.svg" width="320" height="200" style="display:block"></img>
+      <strong>Qt for WebAssembly: test_vcpkg</strong>
+      <div id="qtstatus"></div>
+      <noscript>JavaScript is disabled. Please enable JavaScript to use this application.</noscript>
+    </center>
+  </figure>
+  <div id="screen"></div>
+  <div style="background-color: pink; padding: 1px;">
+  <canvas id="qqq" width=512 height=512></canvas>
+  </div>
+
+  <div align="center" style="padding-top: 10px;">
+    <button id=zoomin>zoom in</button> <button id=zoomout>zoom out</button>
+    <button id=panleft>left</button> <button id=panright>right</button>
+    <button id=panup>up</button> <button id=pandown>down</button>
+  </div>
+
+  <script type="module" src="/lib/demo"></script>
+</body>
+
+</html>

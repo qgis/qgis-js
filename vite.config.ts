@@ -2,9 +2,11 @@ import { resolve } from "path";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 
+import packageJson from './package.json';
+
 export default defineConfig({
   define: {
-    __QGIS_JS_VERSION: JSON.stringify(process.env.npm_package_version),
+    __QGIS_JS_VERSION: JSON.stringify(packageJson.version),
   },
   plugins: [
     dts({
@@ -19,14 +21,15 @@ export default defineConfig({
       fileName: "qgis",
     },
     rollupOptions: {
-      external: ["vue"],
+      external: ["vue", new RegExp('/lib/demo/.*')],
       output: {
-        // Provide global variables to use in the UMD build
-        // for externalized deps
         globals: {
           vue: "Vue",
         },
       },
     },
+  },
+  server: {
+    open: '/',
   },
 });
