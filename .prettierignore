@@ -1,0 +1,8 @@
+js
+dist
+node_modules
+build-wasm
+qt-patches
+resources
+vcpkg-ports
+vcpkg-triplets

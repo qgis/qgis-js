@@ -11,10 +11,11 @@
     "dev": "vite dev"
   },
   "devDependencies": {
+    "@types/node": "^16.7.13",
+    "prettier": "3.0.3",
     "typescript": "5.0.4",
     "vite": "^4.4.9",
-    "vite-plugin-dts": "^3.5.2",
-    "@types/node": "^16.7.13"
+    "vite-plugin-dts": "^3.5.2"
   },
   "keywords": [
     "qgis",

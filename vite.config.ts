@@ -2,7 +2,7 @@ import { resolve } from "path";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 
-import packageJson from './package.json';
+import packageJson from "./package.json";
 
 export default defineConfig({
   define: {
@@ -21,7 +21,7 @@ export default defineConfig({
       fileName: "qgis",
     },
     rollupOptions: {
-      external: ["vue", new RegExp('/lib/demo/.*')],
+      external: ["vue", new RegExp("/lib/demo/.*")],
       output: {
         globals: {
           vue: "Vue",
@@ -30,6 +30,6 @@ export default defineConfig({
     },
   },
   server: {
-    open: '/',
+    open: "/",
   },
 });
