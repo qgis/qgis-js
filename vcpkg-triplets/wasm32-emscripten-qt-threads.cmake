@@ -27,7 +27,7 @@ message(STATUS "MY TRIPLET!")
 
 # this needs to be present for vcpkg installs, but also the same VCPKG_CHAINLOAD_TOOLCHAIN_FILE
 # needs to be present when running CMake so that the project gets it
-set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "/home/martin/qgis/wasm/test_vcpkg/vcpkg-triplets/my_toolchain.cmake")
+set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "/home/boardend/dev/qgis-js/qgis-js/vcpkg-triplets/my_toolchain.cmake")
 
 # to avoid building both debug and release of all libs
 #set(VCPKG_BUILD_TYPE "release")

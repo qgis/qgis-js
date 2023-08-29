@@ -75,6 +75,6 @@ cmake --build build-wasm
 
 Finally run the code:
 ```
-cp js/* build-wasm/
-cd build-wasm && ~/inst/emsdk/upstream/emscripten/emrun qgis.html
+cp -r js/* build-wasm/
+(cd build-wasm && emrun qgis.html)
 ```
