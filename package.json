@@ -1,0 +1,29 @@
+{
+  "name": "qgis-js",
+  "version": "0.0.1",
+  "description": "QGIS ported to WebAssembly to run it on the web platform",
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "main": "dist/qgis.js",
+  "types": "dist/qgis.d.ts",
+  "scripts": {
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "typescript": "5.0.4",
+    "vite": "^4.4.9",
+    "vite-plugin-dts": "^3.5.2",
+    "@types/node": "^16.7.13"
+  },
+  "keywords": [
+    "qgis",
+    "qgisjs",
+    "qgis-js",
+    "qgiswasm",
+    "qgis-wasm",
+    "webassembly",
+    "wasm",
+    "geo",
+    "geospatial"
+  ]
+}
