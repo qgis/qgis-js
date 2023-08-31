@@ -1,6 +1,9 @@
 import { resolve } from "path";
 import { defineConfig } from "vite";
+
 import dts from "vite-plugin-dts";
+
+import CrossOriginIsolationPlugin from "./lib/vite/CrossOriginIsolationPlugin";
 
 import packageJson from "./package.json";
 
@@ -12,6 +15,7 @@ export default defineConfig({
     dts({
       rollupTypes: true,
     }),
+    CrossOriginIsolationPlugin(),
   ],
   build: {
     lib: {
@@ -21,7 +25,7 @@ export default defineConfig({
       fileName: "qgis",
     },
     rollupOptions: {
-      external: ["vue", new RegExp("/lib/demo/.*")],
+      external: ["vue", new RegExp("/lib/demo/.*"), new RegExp("/lib/vite/.*")],
       output: {
         globals: {
           vue: "Vue",
