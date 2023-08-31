@@ -1,4 +1,4 @@
-import { QGIS_JS_VERSION, bootQt } from "..";
+import { QGIS_JS_VERSION, boot } from "..";
 
 const printVersion = false;
 
@@ -7,7 +7,7 @@ function initDemo() {
     console.log(`qgis-js (${QGIS_JS_VERSION})`);
   }
 
-  bootQt();
+  boot();
 }
 
 initDemo();

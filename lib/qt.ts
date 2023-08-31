@@ -146,9 +146,30 @@ interface QtLoaderApi {
   module: any; //TODO use emscripten type
 }
 
+/*
+ * This function is used to load the QtLoader and export its "QtLoader" function
+ */
+export async function loadQt() {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const qtloaderSource = await (await fetch("/qtloader.js")).text();
+      const qtloaderModule = qtloaderSource + "\n\n" + `export { QtLoader };`;
+      const encodedJs = encodeURIComponent(qtloaderModule);
+      const dataUri = "data:text/javascript;charset=utf-8," + encodedJs;
+      import(/* @vite-ignore */ dataUri).then((module) => {
+        resolve({
+          QtLoader: module.QtLoader,
+        });
+      });
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
 export function bootQt() {
-  //@ts-ignore
-  import("../build-wasm/qtloader.js").then(
+  loadQt().then(
+    //@ts-ignore
     ({ QtLoader }: { QtLoader: QtLoaderApi }) => {
       const spinner = document.querySelector(
         "#qtspinner",
@@ -173,7 +194,6 @@ export function bootQt() {
           if (status) status.innerHTML = loaderStatus + "...";
         },
         showError: function (errorText: string) {
-          //FIXME unclear
           if (status) status.innerHTML = errorText;
           if (spinner) spinner.style.display = "block";
           if (canvas) canvas.style.display = "none";
