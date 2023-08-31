@@ -7,7 +7,9 @@ async function initDemo() {
     console.log(`qgis-js (${QGIS_JS_VERSION})`);
   }
 
-  await boot();
+  const { api } = await boot();
+
+  console.log(api.loadProject("test"));
 }
 
 initDemo();

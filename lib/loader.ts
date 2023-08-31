@@ -1,15 +1,53 @@
-export async function loadModule() {
+/// <reference types="emscripten" />
+
+import { QgisApi, QgisApiAdapter, QgisInternalApi } from "./api";
+
+/**
+ * Extension of a EmscriptenModule that adds additional properties
+ */
+export interface EmscriptenRuntimeModule extends EmscriptenModule {
+  [x: string]: any;
+}
+
+export type EmscriptenFS = typeof FS;
+
+/**
+ * Qt emscripten runtime module that implements the QgisInternalApi
+ */
+export interface QgisRuntimeModule
+  extends EmscriptenRuntimeModule,
+    QgisInternalApi {}
+
+export interface QtRuntimeFactory {
+  mainScriptSource: string;
+  // TODO add a proper type for the config
+  createQtAppInstance(config: any): Promise<QgisRuntimeModule>;
+}
+
+export interface QgisRuntime {
+  api: QgisApi;
+  module: QgisRuntimeModule;
+  fs: EmscriptenFS;
+}
+
+export function loadModule(): Promise<QtRuntimeFactory> {
   return new Promise(async (resolve, reject) => {
     try {
-      const qtloaderSource = await (await fetch("/test_vcpkg.js")).text();
-      const qtloaderModule =
-        qtloaderSource + "\n\n" + `export { createQtAppInstance };`;
-      const encodedJs = encodeURIComponent(qtloaderModule);
+      const mainScriptSource = await (await fetch("/test_vcpkg.js")).text();
+      if(!mainScriptSource || mainScriptSource.length === 0) {
+        throw new Error("Failed to load main script");
+      }
+
+      // Qt will not pass -s EXPORT_ES6 (https://emsettings.surma.technology/#EXPORT_ES6),
+      // this is a hack to make it work anyway by adding the export of the createQtAppInstance function
+      const mainScriptModule =
+        mainScriptSource + "\n\n" + `export { createQtAppInstance };`;
+      const encodedJs = encodeURIComponent(mainScriptModule);
       const dataUri = "data:text/javascript;charset=utf-8," + encodedJs;
+
       import(/* @vite-ignore */ dataUri).then((module) => {
         resolve({
-          qtloaderSource,
-          module,
+          mainScriptSource,
           createQtAppInstance: module.createQtAppInstance,
         });
       });
@@ -19,36 +57,37 @@ export async function loadModule() {
   });
 }
 
-export async function boot() {
+export async function boot(): Promise<QgisRuntime> {
   return new Promise(async (resolve, reject) => {
-    const module: any = await loadModule();
+    const { createQtAppInstance, mainScriptSource } = await loadModule();
 
     const canvas = document.querySelector("#screen") as HTMLDivElement | null;
 
-    console.dir(
-      module.createQtAppInstance({
-        preRun: [
-          function (module: any) {
-            module.qtContainerElements = [canvas];
-            module.qtFontDpi = 96;
-          },
-        ],
-        postRun: [
-          function () {
-            resolve({
-              foo: "bar",
-            });
-          },
-        ],
-        mainScriptUrlOrBlob: new Blob([module.qtloaderSource], {
-          type: "text/javascript",
-        }),
-        /*
+    const runtimePromise = createQtAppInstance({
+      preRun: [
+        function (module: any) {
+          module.qtContainerElements = [canvas];
+          module.qtFontDpi = 96;
+        },
+      ],
+      postRun: [
+        async function () {
+          const runtime = await runtimePromise;
+          resolve({
+            api: new QgisApiAdapter(runtime),
+            module: runtime,
+            fs: runtime.fs,
+          });
+        },
+      ],
+      mainScriptUrlOrBlob: new Blob([mainScriptSource], {
+        type: "text/javascript",
+      }),
+      /*
         setStatus: function (statusText: string) {
           console.log(statusText);
         },
         */
-      }),
-    );
+    });
   });
 }
