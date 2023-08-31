@@ -7,7 +7,9 @@ async function initDemo() {
     console.log(`qgis-js (${QGIS_JS_VERSION})`);
   }
 
-  const { api } = await boot();
+  const { api } = await boot({
+    prefix: "/assets/wasm",
+  });
 
   console.log(api.loadProject("test"));
 }

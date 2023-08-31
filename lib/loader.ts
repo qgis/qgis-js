@@ -30,11 +30,13 @@ export interface QgisRuntime {
   fs: EmscriptenFS;
 }
 
-export function loadModule(): Promise<QtRuntimeFactory> {
+export function loadModule(prefix: string = "/"): Promise<QtRuntimeFactory> {
   return new Promise(async (resolve, reject) => {
     try {
-      const mainScriptSource = await (await fetch("/test_vcpkg.js")).text();
-      if(!mainScriptSource || mainScriptSource.length === 0) {
+      const mainScriptSource = await (
+        await fetch(prefix + "/" + "test_vcpkg.js")
+      ).text();
+      if (!mainScriptSource || mainScriptSource.length === 0) {
         throw new Error("Failed to load main script");
       }
 
@@ -57,13 +59,20 @@ export function loadModule(): Promise<QtRuntimeFactory> {
   });
 }
 
-export async function boot(): Promise<QgisRuntime> {
+export interface QgisRuntimeConfig {
+  prefix?: string;
+}
+
+export async function boot(config: QgisRuntimeConfig): Promise<QgisRuntime> {
   return new Promise(async (resolve, reject) => {
-    const { createQtAppInstance, mainScriptSource } = await loadModule();
+    const { createQtAppInstance, mainScriptSource } = await loadModule(
+      config.prefix,
+    );
 
     const canvas = document.querySelector("#screen") as HTMLDivElement | null;
 
     const runtimePromise = createQtAppInstance({
+      locateFile: (path: string) => `${config.prefix}/` + path,
       preRun: [
         function (module: any) {
           module.qtContainerElements = [canvas];

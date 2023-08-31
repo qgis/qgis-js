@@ -22,7 +22,7 @@ export interface QgisInternalApi {
     height: number,
     callback: () => void,
   ): void;
-  mapData(): ArrayBufferView;
+  mapData(): ArrayBufferLike;
 }
 
 export interface QgisApi {

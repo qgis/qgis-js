@@ -1,9 +1,10 @@
 import { resolve } from "path";
 import { defineConfig } from "vite";
 
-import dts from "vite-plugin-dts";
-
+import QgisRuntimePlugin from "./lib/vite/QgisRuntimePlugin";
 import CrossOriginIsolationPlugin from "./lib/vite/CrossOriginIsolationPlugin";
+
+import dts from "vite-plugin-dts";
 
 import packageJson from "./package.json";
 
@@ -12,10 +13,14 @@ export default defineConfig({
     __QGIS_JS_VERSION: JSON.stringify(packageJson.version),
   },
   plugins: [
+    QgisRuntimePlugin({
+      name: "test_vcpkg",
+      outputDir: "build-wasm",
+    }),
+    CrossOriginIsolationPlugin(),
     dts({
       rollupTypes: true,
     }),
-    CrossOriginIsolationPlugin(),
   ],
   build: {
     lib: {
