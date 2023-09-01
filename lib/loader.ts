@@ -42,6 +42,7 @@ export function loadModule(prefix: string = "/"): Promise<QtRuntimeFactory> {
 
       // Qt will not pass -s EXPORT_ES6 (https://emsettings.surma.technology/#EXPORT_ES6),
       // this is a hack to make it work anyway by adding the export of the createQtAppInstance function
+      // TODO is there a way to add the original main script as sourcemap for a better debugging experience?
       const mainScriptModule =
         mainScriptSource + "\n\n" + `export { createQtAppInstance };`;
       const encodedJs = encodeURIComponent(mainScriptModule);
@@ -63,7 +64,7 @@ export interface QgisRuntimeConfig {
   prefix?: string;
 }
 
-export async function boot(config: QgisRuntimeConfig): Promise<QgisRuntime> {
+export async function qgis(config: QgisRuntimeConfig): Promise<QgisRuntime> {
   return new Promise(async (resolve, reject) => {
     const { createQtAppInstance, mainScriptSource } = await loadModule(
       config.prefix,
@@ -85,7 +86,7 @@ export async function boot(config: QgisRuntimeConfig): Promise<QgisRuntime> {
           resolve({
             api: new QgisApiAdapter(runtime),
             module: runtime,
-            fs: runtime.fs,
+            fs: runtime.FS,
           });
         },
       ],

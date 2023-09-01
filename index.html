@@ -4,37 +4,90 @@
     <title>qgis-js</title>
     <meta charset="UTF-8" />
     <link rel="icon" href="data:," />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"
-    />
   </head>
 
   <body>
+    <h1>qgis-js</h1>
+    <h3>QGIS ported to WebAssembly to run it on the web platform</h3>
+    <br />
+    <div class="tabset">
+      <input
+        type="radio"
+        name="tabset"
+        id="tab1"
+        aria-controls="javascript"
+        checked
+      />
+      <label for="tab1">JavaScript</label>
+      <input type="radio" name="tabset" id="tab2" aria-controls="openlayers" />
+      <label for="tab2">OpenLayers </label>
+
+      <div class="tab-panels">
+        <section id="javascript" class="tab-panel">
+          <h2>JavaScript</h2>
+          <p>
+            <strong>Lorem ipsum dolor sit amet:</strong> Consetetur sadipscing
+            elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore
+            magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
+            justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
+            takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor
+            sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
+            invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+            At vero eos et accusam et justo duo dolores et ea rebum. Stet clita
+            kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
+            amet.
+          </p>
+          <div id="js-demo" class="demo">
+            <canvas id="js-demo-canvas"></canvas>
+
+            <div id="js-demo-controls">
+              <button id="zoomin">zoom in</button>
+              <button id="zoomout">zoom out</button>
+              <button id="panleft">left</button>
+              <button id="panright">right</button>
+              <button id="panup">up</button>
+              <button id="pandown">down</button>
+            </div>
+          </div>
+          <p>
+            At vero eos et accusam et justo duo dolores et ea rebum. Stet clita
+            kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
+            amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
+            diam nonumy eirmod tempor invidunt ut labore et dolore magna
+            aliquyam erat, sed diam voluptua. At vero eos et accusam et justo
+            duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
+            sanctus est Lorem ipsum dolor sit amet.
+          </p>
+        </section>
+        <section id="openlayers" class="tab-panel">
+          <h2>OpenLayers</h2>
+          <p>
+            <strong>Lorem ipsum dolor sit amet:</strong> Consetetur sadipscing
+            elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore
+            magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
+            justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
+            takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor
+            sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
+            invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+            At vero eos et accusam et justo duo dolores et ea rebum. Stet clita
+            kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
+            amet.
+          </p>
+          <div id="ol-demo" class="demo"></div>
+          <p>
+            At vero eos et accusam et justo duo dolores et ea rebum. Stet clita
+            kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
+            amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
+            diam nonumy eirmod tempor invidunt ut labore et dolore magna
+            aliquyam erat, sed diam voluptua. At vero eos et accusam et justo
+            duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
+            sanctus est Lorem ipsum dolor sit amet.
+          </p>
+        </section>
+      </div>
+    </div>
+
     <div id="app"></div>
-
-    <figure style="overflow: visible" id="qtspinner">
-      <center style="margin-top: 1.5em; line-height: 150%">
-        <img src="qtlogo.svg" width="320" height="200" style="display: block" />
-        <strong>Qt for WebAssembly: test_vcpkg</strong>
-        <div id="qtstatus"></div>
-        <noscript
-          >JavaScript is disabled. Please enable JavaScript to use this
-          application.</noscript
-        >
-      </center>
-    </figure>
-    <div id="screen"></div>
-    <div style="background-color: pink; padding: 1px">
-      <canvas id="qqq" width="512" height="512"></canvas>
-    </div>
-
-    <div align="center" style="padding-top: 10px">
-      <button id="zoomin">zoom in</button>
-      <button id="zoomout">zoom out</button> <button id="panleft">left</button>
-      <button id="panright">right</button> <button id="panup">up</button>
-      <button id="pandown">down</button>
-    </div>
 
     <script type="module" src="/lib/demo"></script>
   </body>

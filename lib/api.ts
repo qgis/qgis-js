@@ -4,10 +4,10 @@ export interface PointXY {
 }
 
 export interface Rectangle {
-  mXmin: number;
-  mYmin: number;
-  mXmax: number;
-  mYmax: number;
+  xMaximum: number;
+  xMinimum: number;
+  yMaximum: number;
+  yMinimum: number;
 
   scale(factor: number): void;
   move(dx: number, dy: number): void;

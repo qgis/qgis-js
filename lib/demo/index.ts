@@ -1,17 +1,26 @@
-import { QGIS_JS_VERSION, boot } from "..";
+import { QGIS_JS_VERSION, qgis } from "..";
 
-const printVersion = false;
+import { jsDemo } from "./js";
+
+//@ts-ignore
+import("./demo.css"); // TODO include this in the .html head to prevnet a flash of unstyled content?
+
+const printVersion = true;
 
 async function initDemo() {
   if (printVersion) {
     console.log(`qgis-js (${QGIS_JS_VERSION})`);
   }
 
-  const { api } = await boot({
+  const { api, fs } = await qgis({
     prefix: "/assets/wasm",
   });
 
-  console.log(api.loadProject("test"));
+  const demoCanvas = document.getElementById(
+    "js-demo-canvas",
+  ) as HTMLCanvasElement;
+
+  jsDemo(demoCanvas, api, fs);
 }
 
 initDemo();
