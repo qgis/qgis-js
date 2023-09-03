@@ -2,9 +2,6 @@ import { QGIS_JS_VERSION, qgis } from "..";
 
 import { jsDemo } from "./js";
 
-//@ts-ignore
-import("./demo.css"); // TODO include this in the .html head to prevnet a flash of unstyled content?
-
 const printVersion = true;
 
 async function initDemo() {
@@ -24,3 +21,23 @@ async function initDemo() {
 }
 
 initDemo();
+
+/*
+
+// Example on how to load testdata of the qgis repo from github
+
+const owner = "qgis";
+const repo = "qgis";
+const path = "tests/testdata";
+
+fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`)
+  .then((response) => response.json())
+  .then((data) => {
+    // Handle the response data here
+    console.log(data);
+  })
+  .catch((error) => {
+    // Handle any errors here
+    console.error(error);
+  });
+*/

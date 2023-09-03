@@ -1,6 +1,4 @@
 CMakeLists.txt.user
 build-wasm
-.vscode
-
 node_modules
 dist

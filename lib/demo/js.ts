@@ -1,7 +1,12 @@
-import { QgisApi, Rectangle } from "../api";
-import { EmscriptenFS } from "../loader";
+import { QgisApi } from "../api/public";
+
+import { Rectangle } from "../api/model";
+
+import { EmscriptenFS } from "../emscripten";
 
 const debugOutput = false;
+
+const testApi = true;
 
 export function jsDemo(
   canvas: HTMLCanvasElement,
@@ -10,8 +15,18 @@ export function jsDemo(
 ) {
   let last_extent: Rectangle | null = null;
 
-  let img_width = canvas.width;
-  let img_height = canvas.height;
+  if (testApi) {
+    const p1 = api.PointXY();
+    console.dir(p1);
+
+    const r1 = api.Rectangle();
+    console.log(r1);
+
+    const r2 = api.Rectangle(1, 2, 3, 4);
+    console.log(r2.xMinimum, r2.yMinimum, r2.xMaximum, r2.yMaximum);
+    r2.scale(5);
+    console.log(r2.xMinimum, r2.yMinimum, r2.xMaximum, r2.yMaximum);
+  }
 
   function on_qgis_module_started() {
     if (debugOutput) console.log("QGIS loaded!");
@@ -31,9 +46,21 @@ export function jsDemo(
   async function render_map() {
     if (debugOutput) console.log("starting rendering.");
 
-    const image = await api.render(last_extent!, img_width, img_height);
+    var devicePixelRatio = window.devicePixelRatio || 1;
+
+    var cssRect = canvas.getBoundingClientRect();
+
+    const imageWidth = cssRect.width * devicePixelRatio;
+    const imageHeight = cssRect.height * devicePixelRatio;
+
+    const image = await api.render(last_extent!, imageWidth, imageHeight);
 
     let ctx = canvas.getContext("2d");
+
+    canvas.width = imageWidth;
+    canvas.height = imageHeight;
+
+    ctx!.scale(devicePixelRatio, devicePixelRatio);
     ctx!.putImageData(image, 0, 0);
   }
 

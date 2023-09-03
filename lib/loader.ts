@@ -1,50 +1,26 @@
-/// <reference types="emscripten" />
+import { QgisApiAdapter } from "./api/public";
 
-import { QgisApi, QgisApiAdapter, QgisInternalApi } from "./api";
+import { QgisRuntime, QgisRuntimeConfig, QtRuntimeFactory } from "./runtime";
+import { EmscriptenRuntimeModule } from "./emscripten";
 
-/**
- * Extension of a EmscriptenModule that adds additional properties
- */
-export interface EmscriptenRuntimeModule extends EmscriptenModule {
-  [x: string]: any;
-}
-
-export type EmscriptenFS = typeof FS;
-
-/**
- * Qt emscripten runtime module that implements the QgisInternalApi
- */
-export interface QgisRuntimeModule
-  extends EmscriptenRuntimeModule,
-    QgisInternalApi {}
-
-export interface QtRuntimeFactory {
-  mainScriptSource: string;
-  // TODO add a proper type for the config
-  createQtAppInstance(config: any): Promise<QgisRuntimeModule>;
-}
-
-export interface QgisRuntime {
-  api: QgisApi;
-  module: QgisRuntimeModule;
-  fs: EmscriptenFS;
-}
+import { resolveOpenLayers } from "./ol/QgisOl";
 
 export function loadModule(prefix: string = "/"): Promise<QtRuntimeFactory> {
   return new Promise(async (resolve, reject) => {
     try {
-      const mainScriptSource = await (
-        await fetch(prefix + "/" + "test_vcpkg.js")
-      ).text();
+      const mainScriptPath = prefix + "/" + "qgis-js" + ".js";
+      const mainScriptSource = await (await fetch(mainScriptPath)).text();
       if (!mainScriptSource || mainScriptSource.length === 0) {
         throw new Error("Failed to load main script");
       }
 
       // Qt will not pass -s EXPORT_ES6 (https://emsettings.surma.technology/#EXPORT_ES6),
       // this is a hack to make it work anyway by adding the export of the createQtAppInstance function
-      // TODO is there a way to add the original main script as sourcemap for a better debugging experience?
       const mainScriptModule =
-        mainScriptSource + "\n\n" + `export { createQtAppInstance };`;
+        `//# sourceURL=${mainScriptPath}` +
+        mainScriptSource +
+        "\n\n" +
+        `export { createQtAppInstance };`;
       const encodedJs = encodeURIComponent(mainScriptModule);
       const dataUri = "data:text/javascript;charset=utf-8," + encodedJs;
 
@@ -60,12 +36,8 @@ export function loadModule(prefix: string = "/"): Promise<QtRuntimeFactory> {
   });
 }
 
-export interface QgisRuntimeConfig {
-  prefix?: string;
-}
-
 export async function qgis(config: QgisRuntimeConfig): Promise<QgisRuntime> {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve) => {
     const { createQtAppInstance, mainScriptSource } = await loadModule(
       config.prefix,
     );
@@ -85,8 +57,9 @@ export async function qgis(config: QgisRuntimeConfig): Promise<QgisRuntime> {
           const runtime = await runtimePromise;
           resolve({
             api: new QgisApiAdapter(runtime),
-            module: runtime,
+            module: runtime as EmscriptenRuntimeModule,
             fs: runtime.FS,
+            ol: await resolveOpenLayers(),
           });
         },
       ],

@@ -1,10 +1,8 @@
 cmake_minimum_required(VERSION 3.15)
 
-project(test_vcpkg CXX)
+project(qgis-js CXX)
 
 set(CMAKE_CXX_STANDARD 17)
-
-message(STATUS "COMPILER!!! ${CMAKE_CXX_COMPILER}")
 
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
 find_package(PROJ CONFIG REQUIRED)
@@ -42,25 +40,28 @@ find_library(
 )
 
 
-#set(CMAKE_EXECUTABLE_SUFFIX ".html")
-#add_executable(test_vcpkg main.cpp)
+set(QGISJS_SOURCES
+  src/qgis-js.cpp
+  src/api/QgisApi.cpp
+  src/api/QgisModel.cpp
+)
 
 # this creates also .html + qtloader.js + adds various flags to the build
-qt_add_executable(test_vcpkg MANUAL_FINALIZATION main.cpp)
+qt_add_executable(qgis-js MANUAL_FINALIZATION ${QGISJS_SOURCES})
 
 
-target_compile_options(test_vcpkg PRIVATE "-fwasm-exceptions")
-set_target_properties(test_vcpkg PROPERTIES LINK_FLAGS "-fwasm-exceptions")
+target_compile_options(qgis-js PRIVATE "-fwasm-exceptions")
+set_target_properties(qgis-js PROPERTIES LINK_FLAGS "-fwasm-exceptions")
 
-set_target_properties(test_vcpkg PROPERTIES LINK_FLAGS "--bind")
-set_target_properties(test_vcpkg PROPERTIES LINK_FLAGS "--preload-file ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/share/proj@/proj --preload-file ${CMAKE_SOURCE_DIR}/resources/srs.db@/qgis/resources/srs.db")
-target_link_options(test_vcpkg PRIVATE "SHELL:-s EXPORTED_RUNTIME_METHODS=['FS'] -s EXTRA_EXPORTED_RUNTIME_METHODS=['FS'] -s FORCE_FILESYSTEM=1")
+set_target_properties(qgis-js PROPERTIES LINK_FLAGS "--bind")
+set_target_properties(qgis-js PROPERTIES LINK_FLAGS "--preload-file ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/share/proj@/proj --preload-file ${CMAKE_SOURCE_DIR}/resources/srs.db@/qgis/resources/srs.db")
+target_link_options(qgis-js PRIVATE "SHELL:-s EXPORTED_RUNTIME_METHODS=['FS'] -s EXTRA_EXPORTED_RUNTIME_METHODS=['FS'] -s FORCE_FILESYSTEM=1")
 
 
-target_include_directories(test_vcpkg PRIVATE ${QGIS_INCLUDE_DIR})
-target_link_libraries(test_vcpkg PRIVATE ${QGIS_LIBRARY})
+target_include_directories(qgis-js PRIVATE ${QGIS_INCLUDE_DIR})
+target_link_libraries(qgis-js PRIVATE ${QGIS_LIBRARY})
 
-target_link_libraries(test_vcpkg PRIVATE
+target_link_libraries(qgis-js PRIVATE
     Qt6::Xml
     Qt6::Concurrent
     Qt6::Network
@@ -87,19 +88,19 @@ foreach (provider ${QGIS_PROVIDERS_LIST})
     PATH_SUFFIXES qgis
     NO_DEFAULT_PATH
   )
-  target_link_libraries(test_vcpkg PRIVATE ${QGIS_${provider}_LIBRARY}
+  target_link_libraries(qgis-js PRIVATE ${QGIS_${provider}_LIBRARY}
   )
 endforeach ()
 
-target_link_libraries(test_vcpkg PRIVATE PROJ::proj)
-target_link_libraries(test_vcpkg PRIVATE unofficial::sqlite3::sqlite3)
-target_link_libraries(test_vcpkg PRIVATE GEOS::geos_c)
-target_link_libraries(test_vcpkg PRIVATE GDAL::GDAL)
-target_link_libraries(test_vcpkg PRIVATE expat::expat)
-target_link_libraries(test_vcpkg PRIVATE protobuf::libprotobuf-lite)
-target_link_libraries(test_vcpkg PRIVATE ${SPATIALINDEX_LIBRARY})
-target_link_libraries(test_vcpkg PRIVATE libzip::zip)
-target_link_libraries(test_vcpkg PRIVATE Qt6Keychain::Qt6Keychain)
-target_link_libraries(test_vcpkg PRIVATE qca)
+target_link_libraries(qgis-js PRIVATE PROJ::proj)
+target_link_libraries(qgis-js PRIVATE unofficial::sqlite3::sqlite3)
+target_link_libraries(qgis-js PRIVATE GEOS::geos_c)
+target_link_libraries(qgis-js PRIVATE GDAL::GDAL)
+target_link_libraries(qgis-js PRIVATE expat::expat)
+target_link_libraries(qgis-js PRIVATE protobuf::libprotobuf-lite)
+target_link_libraries(qgis-js PRIVATE ${SPATIALINDEX_LIBRARY})
+target_link_libraries(qgis-js PRIVATE libzip::zip)
+target_link_libraries(qgis-js PRIVATE Qt6Keychain::Qt6Keychain)
+target_link_libraries(qgis-js PRIVATE qca)
 
-qt_finalize_executable(test_vcpkg)
+qt_finalize_executable(qgis-js)

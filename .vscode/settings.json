@@ -1,0 +1,29 @@
+{
+  "workbench.editor.enablePreview": false,
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "prettier.configPath": ".prettierrc.json",
+  "prettier.documentSelectors": [
+    "**/*.{js,cjs,json,ts,vue,html,css,svg,yaml,md,webmanifest,clang-format,npmrc}"
+  ],
+  "C_Cpp.autoAddFileAssociations": false,
+  "C_Cpp.clang_format_path": "${workspaceRoot}/node_modules/clang-format/bin/check-clang-format.js",
+  //FIXME extension asks for clang-format git settings
+  //"clang-format.executable": "${workspaceRoot}/node_modules/clang-format/bin/check-clang-format.js",
+  "files.associations": {
+    "**/package.json": "json",
+    "**/*.json": "jsonc",
+    "**/*.svg": "xml",
+    "**/*.cpp": "cpp",
+    "**/*.hpp": "cpp",
+    "functional": "cpp"
+  },
+  "files.insertFinalNewline": true,
+  "search.exclude": {
+    "*/*/node_modules": true,
+    "*/*/dist": true,
+    "*/*/temp": true,
+    "*/*/.vitepress/dist": true
+  },
+  "typescript.tsdk": "node_modules/typescript/lib"
+}

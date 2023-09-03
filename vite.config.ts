@@ -14,23 +14,30 @@ export default defineConfig({
   },
   plugins: [
     QgisRuntimePlugin({
-      name: "test_vcpkg",
+      name: "qgis-js",
       outputDir: "build-wasm",
     }),
     CrossOriginIsolationPlugin(),
     dts({
       rollupTypes: true,
+      entryRoot: "lib",
     }),
   ],
   build: {
     lib: {
-      entry: resolve(__dirname, "lib/index.ts"),
+      entry: [resolve(__dirname, "lib/index.ts")],
       name: "qgis-js",
       formats: ["es"],
       fileName: "qgis",
     },
     rollupOptions: {
-      external: ["vue", new RegExp("/lib/demo/.*"), new RegExp("/lib/vite/.*")],
+      external: [
+        "vue",
+        "ol",
+        new RegExp("^ol/*"),
+        new RegExp("/lib/demo/.*"),
+        new RegExp("/lib/vite/.*"),
+      ],
       output: {
         globals: {
           vue: "Vue",

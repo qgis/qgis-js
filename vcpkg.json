@@ -1,5 +1,5 @@
 {
-  "name": "test-vcpkg",
+  "name": "qgis-js",
   "version": "1.0",
   "dependencies": [
     {

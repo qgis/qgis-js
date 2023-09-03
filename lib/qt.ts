@@ -212,7 +212,7 @@ export function bootQt() {
           if (canvas) canvas.style.display = "block";
         },
       });
-      qtLoader.loadEmscriptenModule("test_vcpkg");
+      qtLoader.loadEmscriptenModule("qgisjs");
     },
   );
 }
