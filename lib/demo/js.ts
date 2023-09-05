@@ -6,7 +6,7 @@ import { EmscriptenFS } from "../emscripten";
 
 const debugOutput = false;
 
-const testApi = true;
+const testApi = false;
 
 export function jsDemo(
   canvas: HTMLCanvasElement,

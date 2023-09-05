@@ -17,7 +17,7 @@ h1 {
   width: 100%;
   height: 30em;
   margin: 2em 0;
-  background-color: #f0e64a;
+  border: 1px solid #ccc;
   resize: both;
 }
 

@@ -59,7 +59,7 @@ export async function qgis(config: QgisRuntimeConfig): Promise<QgisRuntime> {
             api: new QgisApiAdapter(runtime),
             module: runtime as EmscriptenRuntimeModule,
             fs: runtime.FS,
-            ol: await resolveOpenLayers(),
+            ol: async () => await resolveOpenLayers(),
           });
         },
       ],

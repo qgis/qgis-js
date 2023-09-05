@@ -1,10 +1,6 @@
-// @ts-ignore -- optional dependency
 import ImageSource, { Options } from "ol/source/Image";
-// @ts-ignore -- optional dependency
 import { getWidth, getHeight } from "ol/extent";
 
-// FIXME: switch to async implementation
-// export type QgisCanvasRenderFunction = () => Promise<ImageData>;
 /**
  * @internal
  */
@@ -16,15 +12,12 @@ export type QgisCanvasRenderFunction = (
   yMax: number,
   width: number,
   height: number,
-) => ImageData;
+) => Promise<ImageData>;
 
 /**
  * @public
  */
-export interface QgisCanvasDataSourceOptions extends Options {
-  renderFunction: QgisCanvasRenderFunction;
-  debug?: boolean;
-}
+export interface QgisCanvasDataSourceOptions extends Options {}
 
 /**
  * @public
@@ -32,17 +25,20 @@ export interface QgisCanvasDataSourceOptions extends Options {
 export class QgisCanvasDataSource extends ImageSource {
   protected renderFunction: QgisCanvasRenderFunction;
 
-  constructor(options: QgisCanvasDataSourceOptions) {
+  constructor(
+    renderFunction: QgisCanvasRenderFunction,
+    options: QgisCanvasDataSourceOptions = {},
+  ) {
     super({
       loader: (extent, resolution, requestPixelRatio) => {
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
           const pixelRatio = requestPixelRatio || window?.devicePixelRatio || 1;
           const imageResolution = resolution / pixelRatio;
           const width = Math.round(getWidth(extent) / imageResolution);
           const height = Math.round(getHeight(extent) / imageResolution);
 
-          const imageData = this.renderFunction(
-            this.getProjection()!.getCode().replace("EPSG:", ""),
+          const imageData = await this.renderFunction(
+            this.getProjection()?.getCode() || "EPSG:3857",
             extent[0],
             extent[1],
             extent[2],
@@ -57,6 +53,6 @@ export class QgisCanvasDataSource extends ImageSource {
       ...options,
     });
 
-    this.renderFunction = options.renderFunction;
+    this.renderFunction = renderFunction;
   }
 }

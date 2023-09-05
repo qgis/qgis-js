@@ -1,6 +1,7 @@
 import { QGIS_JS_VERSION, qgis } from "..";
 
 import { jsDemo } from "./js";
+import { olDemoXYZ, olDemoCanvas } from "./ol";
 
 const printVersion = true;
 
@@ -9,15 +10,31 @@ async function initDemo() {
     console.log(`qgis-js (${QGIS_JS_VERSION})`);
   }
 
-  const { api, fs } = await qgis({
+  const { api, fs, ol } = await qgis({
     prefix: "/assets/wasm",
   });
 
-  const demoCanvas = document.getElementById(
+  const jsDemoCanvas = document.getElementById(
     "js-demo-canvas",
   ) as HTMLCanvasElement;
+  jsDemo(jsDemoCanvas, api, fs);
 
-  jsDemo(demoCanvas, api, fs);
+  const qgisOl = await ol();
+  if (qgisOl) {
+    const olDemoXYZDiv = document.getElementById(
+      "ol-demo-xyz",
+    ) as HTMLDivElement | null;
+    if (olDemoXYZDiv) {
+      olDemoXYZ(olDemoXYZDiv, api, qgisOl);
+    }
+
+    const olDemoCanvasDiv = document.getElementById(
+      "ol-demo-canvas",
+    ) as HTMLDivElement | null;
+    if (olDemoCanvasDiv) {
+      olDemoCanvas(olDemoCanvasDiv, api, qgisOl);
+    }
+  }
 }
 
 initDemo();

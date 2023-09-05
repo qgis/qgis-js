@@ -5,4 +5,5 @@ import { QgisModelConstructors, Rectangle } from "./model";
  */
 export interface CommonQgisApi extends QgisModelConstructors {
   fullExtent(): Rectangle;
+  srid(): string;
 }

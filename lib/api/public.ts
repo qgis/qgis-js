@@ -10,6 +10,12 @@ export interface QgisApi extends CommonQgisApi {
   loadProject(filename: string): boolean;
   fullExtent(): Rectangle;
   render(extent: Rectangle, width: number, height: number): Promise<ImageData>;
+  renderImage(
+    srdi: string,
+    extent: Rectangle,
+    width: number,
+    height: number,
+  ): Promise<ImageData>;
   renderXYZTile(
     x: number,
     y: number,
@@ -49,10 +55,28 @@ export class QgisApiAdapter implements QgisApi {
   fullExtent(): Rectangle {
     return this._api.fullExtent();
   }
+  srid(): string {
+    return this._api.srid();
+  }
+
   render(extent: Rectangle, width: number, height: number): Promise<ImageData> {
     return new Promise((resolve) => {
       this._api.renderMap(extent, width, height, () => {
         const data = new Uint8ClampedArray(this._api.mapData());
+        const imageData = new ImageData(data, width, height);
+        resolve(imageData);
+      });
+    });
+  }
+  renderImage(
+    srid: string,
+    extent: Rectangle,
+    width: number,
+    height: number,
+  ): Promise<ImageData> {
+    return new Promise((resolve) => {
+      this._api.renderImage(srid, extent, width, height, (tileData) => {
+        const data = new Uint8ClampedArray(tileData);
         const imageData = new ImageData(data, width, height);
         resolve(imageData);
       });
@@ -64,7 +88,13 @@ export class QgisApiAdapter implements QgisApi {
     z: number,
     tileSize: number,
   ): Promise<ImageData> {
-    throw new Error("Method not implemented.");
+    return new Promise((resolve) => {
+      this._api.renderXYZTile(x, y, z, tileSize, (tileData) => {
+        const data = new Uint8ClampedArray(tileData);
+        const imageData = new ImageData(data, tileSize, tileSize);
+        resolve(imageData);
+      });
+    });
   }
 
   /**
