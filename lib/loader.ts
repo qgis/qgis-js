@@ -14,6 +14,7 @@ export function loadModule(prefix: string = "/"): Promise<QtRuntimeFactory> {
         throw new Error("Failed to load main script");
       }
 
+      //FIXME remove and passs EXPORT_ES6
       // Qt will not pass -s EXPORT_ES6 (https://emsettings.surma.technology/#EXPORT_ES6),
       // this is a hack to make it work anyway by adding the export of the createQtAppInstance function
       const mainScriptModule =

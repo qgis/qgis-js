@@ -118,5 +118,22 @@ body {
 }
 
 .tabset {
+  position: relative;
   max-width: 65em;
+}
+
+.project {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 15px 0;
+}
+
+.project > div {
+  display: inline;
+  padding-right: 15px;
+}
+
+#projects {
+  min-width: 15em;
 }

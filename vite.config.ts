@@ -3,6 +3,7 @@ import { defineConfig } from "vite";
 
 import QgisRuntimePlugin from "./lib/vite/QgisRuntimePlugin";
 import CrossOriginIsolationPlugin from "./lib/vite/CrossOriginIsolationPlugin";
+import DirectoryListingPlugin from "./lib/vite/DirectoryListingPlugin";
 
 import dts from "vite-plugin-dts";
 
@@ -17,6 +18,7 @@ export default defineConfig({
       name: "qgis-js",
       outputDir: "build-wasm",
     }),
+    DirectoryListingPlugin(["public/projects"]),
     CrossOriginIsolationPlugin(),
     dts({
       rollupTypes: true,

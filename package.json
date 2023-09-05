@@ -7,12 +7,16 @@
   "main": "dist/qgis.js",
   "types": "dist/qgis.d.ts",
   "scripts": {
-    "build": "vite build",
+    "build": "vite build && rm -rf dist/projects",
     "dev": "vite dev",
+    "site": "vite dev",
     "lint": "npm run lint:prettier && npm run lint:clang-format",
     "lint:prettier": "npx prettier . --write",
     "lint:pretty-quick": "pretty-quick --staged",
     "lint:clang-format": "clang-format -i \"--glob=src/**/*.{cpp,hpp}\""
+  },
+  "dependencies": {
+    "browser-fs-access": "0.34.1"
   },
   "devDependencies": {
     "@types/node": "^16.7.13",

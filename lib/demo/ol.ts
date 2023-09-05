@@ -21,50 +21,60 @@ export function olDemoXYZ(
   target: HTMLDivElement,
   api: QgisApi,
   ol: QgisOpenLayers,
-) {
-  new Map({
-    target,
-    maxTilesLoading: 4,
-    layers: [
-      new WebGLTileLayer({
-        source: ol.QgisXYZDataSource(api, {
-          debug: false,
+): () => void {
+  const update = () => {
+    target.innerHTML = "";
+    new Map({
+      target,
+      maxTilesLoading: 4,
+      layers: [
+        new WebGLTileLayer({
+          source: ol.QgisXYZDataSource(api, {
+            debug: false,
+          }),
         }),
-      }),
-      ...(useBaseMap
-        ? [
-            new WebGLTileLayer({
-              opacity: 1,
-              source: new XYZ({
-                url: `https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}.png`,
-                maxZoom: 15,
+        ...(useBaseMap
+          ? [
+              new WebGLTileLayer({
+                opacity: 1,
+                source: new XYZ({
+                  url: `https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}.png`,
+                  maxZoom: 15,
+                }),
               }),
-            }),
-          ]
-        : []),
-    ].reverse(),
-    view: new View({
-      center: fromLonLat([-3.1072, 51.0595]),
-      zoom: 12,
-    }),
-  });
+            ]
+          : []),
+      ].reverse(),
+      view: new View({
+        center: fromLonLat([-3.1072, 51.0595]),
+        zoom: 12,
+      }),
+    });
+  };
+  update();
+  return update;
 }
 
 export function olDemoCanvas(
   target: HTMLDivElement,
   api: QgisApi,
   ol: QgisOpenLayers,
-) {
-  new Map({
-    target,
-    layers: [
-      new ImageLayer({
-        source: ol.QgisCanvasDataSource(api),
+): () => void {
+  const update = () => {
+    target.innerHTML = "";
+    new Map({
+      target,
+      layers: [
+        new ImageLayer({
+          source: ol.QgisCanvasDataSource(api),
+        }),
+      ].reverse(),
+      view: new View({
+        center: fromLonLat([-3.1072, 51.0595]),
+        zoom: 15,
       }),
-    ].reverse(),
-    view: new View({
-      center: fromLonLat([-3.1072, 51.0595]),
-      zoom: 15,
-    }),
-  });
+    });
+  };
+  update();
+  return update;
 }
