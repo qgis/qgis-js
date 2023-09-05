@@ -42,6 +42,11 @@ int main(int argc, char *argv[]) {
   QCoreApplication::setOrganizationDomain("qgis.org");
   QCoreApplication::setApplicationName("qgis-js");
 
+  // prevent warning from QWasmLocalStorageSettingsPrivate
+  QSettings::setDefaultFormat(QSettings::IniFormat);
+  QSettings::setPath(
+    QSettings::IniFormat, QSettings::UserScope, temp.path() + QString("/settings"));
+
   app = new QCoreApplication(argc, argv);
   qDebug() << "QgsApplication::init";
   QgsApplication::init(temp.path());
