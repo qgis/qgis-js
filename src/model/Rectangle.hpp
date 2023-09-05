@@ -20,5 +20,6 @@ EMSCRIPTEN_BINDINGS(QgsRectangle) {
     .property("xMaximum", &QgsRectangle::xMaximum, &QgsRectangle::setXMaximum)
     .property("yMaximum", &QgsRectangle::yMaximum, &QgsRectangle::setYMaximum)
     .function("scale", &QgsRectangle_scale)
-    .function("move", &QgsRectangle_move);
+    .function("move", &QgsRectangle_move)
+    .function("center", &QgsRectangle::center);
 }

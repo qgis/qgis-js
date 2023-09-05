@@ -34,9 +34,6 @@ async function initDemo() {
   });
   console.timeEnd("boot");
 
-  // API tests
-  if (apiTest) testApi(api);
-
   // prepare project management
   const updates: Array<Function> = [];
   const { openProject, loadLocalProject, loadRemoteProjects } = useProjects(
@@ -83,6 +80,9 @@ async function initDemo() {
 
   // open first project
   await openProject(remoteProjects[0]);
+
+  // API tests
+  if (apiTest) testApi(api);
 
   // paint a first dummy frame
   console.time("first frame");

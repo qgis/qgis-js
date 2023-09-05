@@ -22,8 +22,21 @@ export function olDemoXYZ(
   api: QgisApi,
   ol: QgisOpenLayers,
 ): () => void {
-  const update = () => {
-    target.innerHTML = "";
+  let view: View | undefined = undefined;
+
+  const getBbox = () => {
+    const initioalSrid = api.srid();
+    const initialExtent = api.fullExtent();
+    return initioalSrid === "EPSG:3857"
+      ? initialExtent
+      : api.transformRectangle(initialExtent, initioalSrid, "EPSG:3857");
+  };
+
+  const init = () => {
+    view = new View({});
+    const bbox = getBbox();
+    view.fit([bbox.xMinimum, bbox.yMinimum, bbox.xMaximum, bbox.yMaximum]);
+
     new Map({
       target,
       maxTilesLoading: 4,
@@ -45,13 +58,21 @@ export function olDemoXYZ(
             ]
           : []),
       ].reverse(),
-      view: new View({
-        center: fromLonLat([-3.1072, 51.0595]),
-        zoom: 12,
-      }),
+      view: view,
     });
   };
+
+  const update = () => {
+    const bbox = getBbox();
+    view!.fit([bbox.xMinimum, bbox.yMinimum, bbox.xMaximum, bbox.yMaximum], {
+      padding: [50, 50, 50, 50],
+      duration: 500,
+    });
+  };
+
+  init();
   update();
+
   return update;
 }
 
@@ -62,6 +83,13 @@ export function olDemoCanvas(
 ): () => void {
   const update = () => {
     target.innerHTML = "";
+
+    // TODO switch map to the projects CRS
+    /*
+    const initialExtent = api.fullExtent();
+    const center = initialExtent.center();
+    */
+
     new Map({
       target,
       layers: [

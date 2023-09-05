@@ -116,6 +116,15 @@ emscripten::val QgisApi_mapData() {
     gLastImage.width() * gLastImage.height() * 4, (const unsigned char *)gLastImage.constBits()));
 }
 
+const QgsRectangle QgisApi_transformRectangle(
+  const QgsRectangle &inputRectangle, std::string inputSrid, std::string outputSrid) {
+  QgsCoordinateTransform transform(
+    QgsCoordinateReferenceSystem(QString::fromStdString(inputSrid)),
+    QgsCoordinateReferenceSystem(QString::fromStdString(outputSrid)),
+    QgsProject::instance());
+  return transform.transformBoundingBox(inputRectangle);
+}
+
 EMSCRIPTEN_BINDINGS(QgisApi) {
   emscripten::function("loadProject", &QgisApi_loadProject);
   emscripten::function("fullExtent", &QgisApi_fullExtent);
@@ -124,4 +133,5 @@ EMSCRIPTEN_BINDINGS(QgisApi) {
   emscripten::function("renderImage", &QgisApi_renderImage);
   emscripten::function("renderXYZTile", &QgisApi_renderXYZTile);
   emscripten::function("mapData", &QgisApi_mapData);
+  emscripten::function("transformRectangle", &QgisApi_transformRectangle);
 }

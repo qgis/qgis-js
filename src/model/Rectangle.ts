@@ -1,3 +1,5 @@
+import { PointXY } from "./PointXY";
+
 /**
  * @public
  */
@@ -9,6 +11,7 @@ export interface Rectangle {
 
   scale(factor: number): void;
   move(dx: number, dy: number): void;
+  center(): PointXY;
 }
 
 /**
