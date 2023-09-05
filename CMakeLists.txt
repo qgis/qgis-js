@@ -55,7 +55,8 @@ set_target_properties(qgis-js PROPERTIES LINK_FLAGS "-fwasm-exceptions")
 
 set_target_properties(qgis-js PROPERTIES LINK_FLAGS "--bind")
 set_target_properties(qgis-js PROPERTIES LINK_FLAGS "--preload-file ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/share/proj@/proj --preload-file ${CMAKE_SOURCE_DIR}/resources/srs.db@/qgis/resources/srs.db")
-target_link_options(qgis-js PRIVATE "SHELL:-s EXPORTED_RUNTIME_METHODS=['FS'] -s EXTRA_EXPORTED_RUNTIME_METHODS=['FS'] -s FORCE_FILESYSTEM=1")
+# FIXME we rely on the deprecated EXTRA_EXPORTED_RUNTIME_METHODS because EXPORTED_RUNTIME_METHODS is set by qt
+target_link_options(qgis-js PRIVATE "SHELL:-s EXTRA_EXPORTED_RUNTIME_METHODS=[FS,registeredTypes] -s FORCE_FILESYSTEM=1")
 
 
 target_include_directories(qgis-js PRIVATE ${QGIS_INCLUDE_DIR})

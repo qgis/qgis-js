@@ -3,12 +3,8 @@ import { InternalQgisApi } from "../api/internal";
 
 import { Rectangle, PointXY } from "./model";
 
-/**
- * @public
- */
-export interface QgisApi extends CommonQgisApi {
+export interface QgisApiAdapter {
   loadProject(filename: string): boolean;
-  fullExtent(): Rectangle;
   render(extent: Rectangle, width: number, height: number): Promise<ImageData>;
   renderImage(
     srdi: string,
@@ -22,7 +18,12 @@ export interface QgisApi extends CommonQgisApi {
     z: number,
     tileSize: number,
   ): Promise<ImageData>;
+}
 
+/**
+ * @public
+ */
+export interface QgisApi extends CommonQgisApi, QgisApiAdapter {
   /**
    * @internal
    */
@@ -32,31 +33,16 @@ export interface QgisApi extends CommonQgisApi {
 /**
  * @public
  */
-export class QgisApiAdapter implements QgisApi {
+export class QgisApiAdapterImplementation implements QgisApiAdapter {
   private readonly _api: InternalQgisApi;
 
   constructor(api: InternalQgisApi) {
     this._api = api;
   }
 
-  PointXY(): PointXY {
-    //@ts-ignore
-    return new this._api.PointXY(...arguments);
-  }
-
-  Rectangle(): Rectangle {
-    //@ts-ignore
-    return new this._api.Rectangle(...arguments);
-  }
-
+  // TODO make this async
   loadProject(filename: string): boolean {
     return this._api.loadProject(filename);
-  }
-  fullExtent(): Rectangle {
-    return this._api.fullExtent();
-  }
-  srid(): string {
-    return this._api.srid();
   }
 
   render(extent: Rectangle, width: number, height: number): Promise<ImageData> {
@@ -103,4 +89,55 @@ export class QgisApiAdapter implements QgisApi {
   internal() {
     return this._api;
   }
+}
+
+export function getQgisApiProxy(api: InternalQgisApi): QgisApi {
+  const adapter = new QgisApiAdapterImplementation(api);
+  // @ts-ignore
+
+  const registeredClasses: Array<{
+    name: string;
+    constructor: Function;
+  }> = [
+    ...new Set(
+      // @ts-ignore
+      Object.values(api.registeredTypes)
+        .filter((type: any) => type.registeredClass)
+        .map((type: any) => type.registeredClass),
+    ),
+  ];
+
+  return new Proxy<QgisApi>(
+    // @ts-ignore
+    {},
+    {
+      has(_target, property) {
+        return property in adapter || property in api;
+      },
+      get(_target, property) {
+        if (property in adapter) {
+          // @ts-ignore
+          return adapter[property];
+        } else if (property in api) {
+          // check if the property is a registered class
+          const registeredClass = registeredClasses.find(
+            (registeredClass) => registeredClass.name === property,
+          );
+          if (registeredClass) {
+            // we have to invoke "new" and forward all arguments to the constructor
+            return (...args: any[]) => {
+              // @ts-ignore
+              return new api[property](...args);
+            };
+          }
+          // otherwise we just return the property of the InternalQgisApi
+          else {
+            // TODO this exposes also the internal API?
+            // @ts-ignore
+            return api[property];
+          }
+        }
+      },
+    },
+  );
 }

@@ -1,4 +1,4 @@
-import { QgisApiAdapter } from "./api/public";
+import { getQgisApiProxy } from "./api/public";
 
 import { QgisRuntime, QgisRuntimeConfig, QtRuntimeFactory } from "./runtime";
 import { EmscriptenRuntimeModule } from "./emscripten";
@@ -56,7 +56,7 @@ export async function qgis(config: QgisRuntimeConfig): Promise<QgisRuntime> {
         async function () {
           const runtime = await runtimePromise;
           resolve({
-            api: new QgisApiAdapter(runtime),
+            api: getQgisApiProxy(runtime),
             module: runtime as EmscriptenRuntimeModule,
             fs: runtime.FS,
             ol: async () => await resolveOpenLayers(),
