@@ -1,4 +1,4 @@
-import { getQgisApiProxy } from "./api/public";
+import { getQgisApiProxy } from "./QgisApiAdapter";
 
 import { QgisRuntime, QgisRuntimeConfig, QtRuntimeFactory } from "./runtime";
 import { EmscriptenRuntimeModule } from "./emscripten";

@@ -1,48 +1,11 @@
-import { CommonQgisApi } from "./common";
-import { InternalQgisApi } from "../api/internal";
+import { InternalQgisApi, QgisApi, QgisApiAdapter } from "../src/api/QgisApi";
+import { Rectangle } from "../src/api/QgisModel";
 
-import { Rectangle, PointXY } from "./model";
-
-export interface QgisApiAdapter {
-  loadProject(filename: string): boolean;
-  render(extent: Rectangle, width: number, height: number): Promise<ImageData>;
-  renderImage(
-    srdi: string,
-    extent: Rectangle,
-    width: number,
-    height: number,
-  ): Promise<ImageData>;
-  renderXYZTile(
-    x: number,
-    y: number,
-    z: number,
-    tileSize: number,
-  ): Promise<ImageData>;
-}
-
-/**
- * @public
- */
-export interface QgisApi extends CommonQgisApi, QgisApiAdapter {
-  /**
-   * @internal
-   */
-  internal(): InternalQgisApi;
-}
-
-/**
- * @public
- */
 export class QgisApiAdapterImplementation implements QgisApiAdapter {
   private readonly _api: InternalQgisApi;
 
   constructor(api: InternalQgisApi) {
     this._api = api;
-  }
-
-  // TODO make this async
-  loadProject(filename: string): boolean {
-    return this._api.loadProject(filename);
   }
 
   render(extent: Rectangle, width: number, height: number): Promise<ImageData> {
