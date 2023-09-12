@@ -27,5 +27,4 @@ export interface QgisRuntime {
   api: QgisApi;
   module: EmscriptenRuntimeModule;
   fs: EmscriptenFS;
-  ol(): Promise<QgisOpenLayers | undefined>;
 }

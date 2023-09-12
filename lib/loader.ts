@@ -3,8 +3,6 @@ import { getQgisApiProxy } from "./QgisApiAdapter";
 import { QgisRuntime, QgisRuntimeConfig, QtRuntimeFactory } from "./runtime";
 import { EmscriptenRuntimeModule } from "./emscripten";
 
-import { resolveOpenLayers } from "./ol/QgisOl";
-
 export function loadModule(prefix: string = "/"): Promise<QtRuntimeFactory> {
   return new Promise(async (resolve, reject) => {
     try {
@@ -41,7 +39,6 @@ export async function qgis(config: QgisRuntimeConfig): Promise<QgisRuntime> {
             api: getQgisApiProxy(runtime),
             module: runtime as EmscriptenRuntimeModule,
             fs: runtime.FS,
-            ol: async () => await resolveOpenLayers(),
           });
         },
       ],

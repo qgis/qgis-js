@@ -60,17 +60,3 @@ export class QgisOpenLayers {
     );
   }
 }
-
-export async function resolveOpenLayers(): Promise<QgisOpenLayers | undefined> {
-  return new Promise(async (resolve) => {
-    try {
-      // ensure "ol" is available
-      const ol = await import(/* @vite-ignore */ "ol");
-      if (ol) {
-        resolve(new QgisOpenLayers());
-        return;
-      }
-    } catch (error) {}
-    resolve(undefined);
-  });
-}
