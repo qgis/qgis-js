@@ -1,8 +1,5 @@
 import { PointXY } from "./PointXY";
 
-/**
- * @public
- */
 export interface Rectangle {
   xMaximum: number;
   xMinimum: number;
@@ -14,10 +11,9 @@ export interface Rectangle {
   center(): PointXY;
 }
 
-/**
- * @public
- */
 export interface RectangleConstructors {
-  Rectangle(): Rectangle;
-  Rectangle(xMin: number, yMin: number, xMax: number, yMax: number): Rectangle;
+  Rectangle: {
+    new (): Rectangle;
+    new (xMin: number, yMin: number, xMax: number, yMax: number): Rectangle;
+  };
 }

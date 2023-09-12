@@ -45,30 +45,10 @@ export class QgisApiAdapterImplementation implements QgisApiAdapter {
       });
     });
   }
-
-  /**
-   * @internal
-   */
-  internal() {
-    return this._api;
-  }
 }
 
 export function getQgisApiProxy(api: InternalQgisApi): QgisApi {
   const adapter = new QgisApiAdapterImplementation(api);
-  // @ts-ignore
-
-  const registeredClasses: Array<{
-    name: string;
-    constructor: Function;
-  }> = [
-    ...new Set(
-      // @ts-ignore
-      Object.values(api.registeredTypes)
-        .filter((type: any) => type.registeredClass)
-        .map((type: any) => type.registeredClass),
-    ),
-  ];
 
   return new Proxy<QgisApi>(
     // @ts-ignore
@@ -82,23 +62,8 @@ export function getQgisApiProxy(api: InternalQgisApi): QgisApi {
           // @ts-ignore
           return adapter[property];
         } else if (property in api) {
-          // check if the property is a registered class
-          const registeredClass = registeredClasses.find(
-            (registeredClass) => registeredClass.name === property,
-          );
-          if (registeredClass) {
-            // we have to invoke "new" and forward all arguments to the constructor
-            return (...args: any[]) => {
-              // @ts-ignore
-              return new api[property](...args);
-            };
-          }
-          // otherwise we just return the property of the InternalQgisApi
-          else {
-            // TODO this exposes also the internal API?
-            // @ts-ignore
-            return api[property];
-          }
+          // @ts-ignore
+          return api[property];
         }
       },
     },

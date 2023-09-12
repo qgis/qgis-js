@@ -7,16 +7,16 @@ import { jsDemo } from "./js";
 import { olDemoXYZ, olDemoCanvas } from "./ol";
 
 const printVersion = true;
-const apiTest = false;
+const apiTest = true;
 
 function testApi(api: QgisApi) {
-  const p1 = api.PointXY();
+  const p1 = new api.PointXY();
   console.dir(p1);
 
-  const r1 = api.Rectangle();
+  const r1 = new api.Rectangle();
   console.log(r1);
 
-  const r2 = api.Rectangle(1, 2, 3, 4);
+  const r2 = new api.Rectangle(1, 2, 3, 4);
   console.log(r2.xMinimum, r2.yMinimum, r2.xMaximum, r2.yMaximum);
   r2.scale(5);
   console.log(r2.xMinimum, r2.yMinimum, r2.xMaximum, r2.yMaximum);
