@@ -1,7 +1,6 @@
 import { EmscriptenRuntimeModule, EmscriptenFS } from "./emscripten";
 
-import { InternalQgisApi } from "./api/internal";
-import { QgisApi } from "./api/public";
+import { QgisApi, InternalQgisApi } from "../src/api/QgisApi";
 
 import type { QgisOpenLayers } from "./ol/QgisOl";
 
@@ -17,7 +16,6 @@ export interface QgisRuntimeModule
 export interface QtAppConfig {}
 
 export interface QtRuntimeFactory {
-  mainScriptSource: string;
   createQtAppInstance(config: QtAppConfig): Promise<QgisRuntimeModule>;
 }
 

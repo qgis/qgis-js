@@ -9,26 +9,9 @@ export function loadModule(prefix: string = "/"): Promise<QtRuntimeFactory> {
   return new Promise(async (resolve, reject) => {
     try {
       const mainScriptPath = prefix + "/" + "qgis-js" + ".js";
-      const mainScriptSource = await (await fetch(mainScriptPath)).text();
-      if (!mainScriptSource || mainScriptSource.length === 0) {
-        throw new Error("Failed to load main script");
-      }
-
-      //FIXME remove and passs EXPORT_ES6
-      // Qt will not pass -s EXPORT_ES6 (https://emsettings.surma.technology/#EXPORT_ES6),
-      // this is a hack to make it work anyway by adding the export of the createQtAppInstance function
-      const mainScriptModule =
-        `//# sourceURL=${mainScriptPath}` +
-        mainScriptSource +
-        "\n\n" +
-        `export { createQtAppInstance };`;
-      const encodedJs = encodeURIComponent(mainScriptModule);
-      const dataUri = "data:text/javascript;charset=utf-8," + encodedJs;
-
-      import(/* @vite-ignore */ dataUri).then((module) => {
+      import(/* @vite-ignore */ mainScriptPath).then((module) => {
         resolve({
-          mainScriptSource,
-          createQtAppInstance: module.createQtAppInstance,
+          createQtAppInstance: module.default,
         });
       });
     } catch (error) {
@@ -39,9 +22,7 @@ export function loadModule(prefix: string = "/"): Promise<QtRuntimeFactory> {
 
 export async function qgis(config: QgisRuntimeConfig): Promise<QgisRuntime> {
   return new Promise(async (resolve) => {
-    const { createQtAppInstance, mainScriptSource } = await loadModule(
-      config.prefix,
-    );
+    const { createQtAppInstance } = await loadModule(config.prefix);
 
     const canvas = document.querySelector("#screen") as HTMLDivElement | null;
 
@@ -64,9 +45,6 @@ export async function qgis(config: QgisRuntimeConfig): Promise<QgisRuntime> {
           });
         },
       ],
-      mainScriptUrlOrBlob: new Blob([mainScriptSource], {
-        type: "text/javascript",
-      }),
       /*
         setStatus: function (statusText: string) {
           console.log(statusText);
