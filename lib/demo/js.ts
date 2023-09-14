@@ -1,6 +1,5 @@
-import { QgisApi } from "../api/public";
-
-import { Rectangle } from "../api/model";
+import { QgisApi } from "../../src/api/QgisApi";
+import { Rectangle } from "../../src/api/QgisModel";
 
 const mapScaleFactor = 1.5;
 const mapMoveFactor = 0.1;

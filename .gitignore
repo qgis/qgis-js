@@ -1,4 +1,6 @@
+package-lock.json
 CMakeLists.txt.user
 build-wasm
 node_modules
 dist
+packages/*/dist

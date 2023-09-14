@@ -79,9 +79,9 @@ After successful configure, build the WebAssembly binary:
 cmake --build build-wasm
 ```
 
-Finally run the code:
+Finally install and run the npm meta pckage:
 
 ```
-cp -r js/* build-wasm/
-(cd build-wasm && emrun qgis.html)
+npx pnpm install
+npm run dev
 ```

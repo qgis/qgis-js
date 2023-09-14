@@ -1,7 +1,11 @@
 import { QGIS_JS_VERSION, qgis } from "..";
-import { QgisApi } from "../api/public";
+
+import { QgisApi } from "../../src/api/QgisApi";
+
 import { Project } from "../fs/Project";
 import { useProjects } from "./fs";
+
+import { QgisOpenLayers } from "../../packages/qgis-js-ol/src/QgisOl";
 
 import { jsDemo } from "./js";
 import { olDemoXYZ, olDemoCanvas } from "./ol";
@@ -29,7 +33,7 @@ async function initDemo() {
 
   // boot the runtime
   console.time("boot");
-  const { api, fs, ol } = await qgis({
+  const { api, fs } = await qgis({
     prefix: "/assets/wasm",
   });
   console.timeEnd("boot");
@@ -96,7 +100,7 @@ async function initDemo() {
   updates.push(jsDemo(jsDemoCanvas, api));
 
   // ol demo
-  const qgisOl = await ol();
+  const qgisOl = new QgisOpenLayers();
   if (qgisOl) {
     const olDemoXYZDiv = document.getElementById(
       "ol-demo-xyz",

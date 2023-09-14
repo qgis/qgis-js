@@ -1,0 +1,15 @@
+{
+  "name": "@qgis-js/ol",
+  "version": "0.0.1",
+  "description": "OpenLayers sources for qgis-js",
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "main": "dist/qgis-js-ol.js",
+  "types": "dist/qgis-js-ol.d.ts",
+  "dependencies": {
+    "qgis-js": "0.0.1"
+  },
+  "peerDependencies": {
+    "ol": "^8"
+  }
+}

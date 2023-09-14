@@ -1,0 +1,25 @@
+{
+  "name": "qgis-js",
+  "version": "0.0.1",
+  "description": "QGIS ported to WebAssembly to run it on the web platform",
+  "license": "GPL-3.0-or-later",
+  "type": "module",
+  "main": "dist/qgis.js",
+  "types": "dist/qgis.d.ts",
+  "scripts": {},
+  "dependencies": {
+    "browser-fs-access": "0.34.1",
+    "@types/emscripten": "1.39.7"
+  },
+  "keywords": [
+    "qgis",
+    "qgisjs",
+    "qgis-js",
+    "qgiswasm",
+    "qgis-wasm",
+    "webassembly",
+    "wasm",
+    "geo",
+    "geospatial"
+  ]
+}
