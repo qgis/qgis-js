@@ -1,8 +1,6 @@
 import { EmscriptenRuntimeModule, EmscriptenFS } from "./emscripten";
 
-import { QgisApi, InternalQgisApi } from "../src/api/QgisApi";
-
-import type { QgisOpenLayers } from "./ol/QgisOl";
+import { QgisApi, InternalQgisApi } from "../../../src/api/QgisApi";
 
 /**
  * Qt emscripten runtime module that implements the QgisInternalApi

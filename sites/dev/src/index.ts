@@ -1,13 +1,13 @@
-import { QGIS_JS_VERSION, qgis } from "..";
+import { QGIS_JS_VERSION, qgis } from "qgis-js";
 
-import { QgisApi } from "../../src/api/QgisApi";
+import { QgisApi } from "qgis-js";
 
-import { Project } from "../fs/Project";
+import { Project } from "qgis-js/src/fs/Project";
 import { useProjects } from "./fs";
 
-import { QgisOpenLayers } from "../../packages/qgis-js-ol/src/QgisOl";
-
 import { jsDemo } from "./js";
+
+import { QgisOpenLayers } from "@qgis-js/ol";
 import { olDemoXYZ, olDemoCanvas } from "./ol";
 
 const printVersion = true;

@@ -1,14 +1,14 @@
-import { Folder } from "../fs/FileSystem";
+import { Folder } from "qgis-js/src/fs/FileSystem";
 
-import { PROJECTS_UPLOAD_DIR, Project } from "../fs/Project";
+import { PROJECTS_UPLOAD_DIR, Project } from "qgis-js/src/fs/Project";
 import {
   LocalEntries,
   LocalProject,
   openLocalDirectory,
-} from "../fs/LocalProject";
-import { RemoteProject } from "../fs/RemoteProject";
+} from "qgis-js/src/fs/LocalProject";
+import { RemoteProject } from "qgis-js/src/fs/RemoteProject";
 
-import { EmscriptenFS } from "../emscripten";
+import { EmscriptenFS } from "qgis-js/src/emscripten";
 
 export function useProjects(
   fs: EmscriptenFS,

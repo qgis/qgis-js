@@ -1,9 +1,9 @@
 import { resolve } from "path";
 import { defineConfig } from "vite";
 
-import QgisRuntimePlugin from "./lib/vite/QgisRuntimePlugin";
-import CrossOriginIsolationPlugin from "./lib/vite/CrossOriginIsolationPlugin";
-import DirectoryListingPlugin from "./lib/vite/DirectoryListingPlugin";
+import QgisRuntimePlugin from "../../vite/QgisRuntimePlugin";
+import CrossOriginIsolationPlugin from "../../vite/CrossOriginIsolationPlugin";
+import DirectoryListingPlugin from "../../vite/DirectoryListingPlugin";
 
 import dts from "vite-plugin-dts";
 
@@ -22,12 +22,12 @@ export default defineConfig({
     CrossOriginIsolationPlugin(),
     dts({
       rollupTypes: true,
-      entryRoot: "lib",
+      entryRoot: "src",
     }),
   ],
   build: {
     lib: {
-      entry: [resolve(__dirname, "lib/index.ts")],
+      entry: [resolve(__dirname, "src/index.ts")],
       name: "qgis-js",
       formats: ["es"],
       fileName: "qgis",

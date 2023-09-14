@@ -1,6 +1,6 @@
-import { QgisApi } from "../../src/api/QgisApi";
+import { QgisApi } from "qgis-js";
 
-import { QgisOpenLayers } from "../../packages/qgis-js-ol/src/QgisOl";
+import { QgisOpenLayers } from "@qgis-js/ol";
 
 import Map from "ol/Map.js";
 import View from "ol/View.js";

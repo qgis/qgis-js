@@ -1,5 +1,9 @@
-import { InternalQgisApi, QgisApi, QgisApiAdapter } from "../src/api/QgisApi";
-import { Rectangle } from "../src/api/QgisModel";
+import {
+  InternalQgisApi,
+  QgisApi,
+  QgisApiAdapter,
+} from "../../../src/api/QgisApi";
+import { Rectangle } from "../../../src/api/QgisModel";
 
 export class QgisApiAdapterImplementation implements QgisApiAdapter {
   private readonly _api: InternalQgisApi;

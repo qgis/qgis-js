@@ -14,14 +14,8 @@ export type QgisCanvasRenderFunction = (
   height: number,
 ) => Promise<ImageData>;
 
-/**
- * @public
- */
 export interface QgisCanvasDataSourceOptions extends Options {}
 
-/**
- * @public
- */
 export class QgisCanvasDataSource extends ImageSource {
   protected renderFunction: QgisCanvasRenderFunction;
 

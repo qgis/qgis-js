@@ -1,4 +1,4 @@
-import { QgisApi } from "../api/public";
+import type { QgisApi } from "qgis-js";
 
 import {
   QgisXYZDataSource,
@@ -10,9 +10,6 @@ import {
 } from "./QgisCanvasDataSource";
 import type { TileCoord } from "ol/tilecoord";
 
-/**
- * @public
- */
 export type Mode = "xyz" | "canvas";
 
 export class QgisOpenLayers {
@@ -44,7 +41,7 @@ export class QgisOpenLayers {
       ) => {
         return api.renderImage(
           srid,
-          api.Rectangle(xMin, yMin, xMax, yMax),
+          new api.Rectangle(xMin, yMin, xMax, yMax),
           width,
           height,
         );

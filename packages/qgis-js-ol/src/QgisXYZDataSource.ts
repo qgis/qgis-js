@@ -11,16 +11,10 @@ export type QgisXYZRenderFunction = (
   tileSize: number,
 ) => Promise<ImageData>;
 
-/**
- * @public
- */
 export interface QgisXYZDataSourceOptions extends Options {
   debug?: boolean;
 }
 
-/**
- * @public
- */
 export class QgisXYZDataSource extends XYZ {
   /**
    * @internal

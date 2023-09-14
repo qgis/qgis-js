@@ -6,10 +6,19 @@
   "type": "module",
   "main": "dist/qgis-js-ol.js",
   "types": "dist/qgis-js-ol.d.ts",
+  "scripts": {
+    "build": "vite build"
+  },
   "dependencies": {
     "qgis-js": "0.0.1"
   },
   "peerDependencies": {
     "ol": "^8"
+  },
+  "devDependencies": {
+    "typescript": "5.0.4",
+    "vite": "^4.4.9",
+    "vite-plugin-dts": "^3.5.2",
+    "@types/node": "^16.7.13"
   }
 }
