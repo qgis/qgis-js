@@ -33,11 +33,13 @@ export function olDemoXYZ(
   };
 
   const init = () => {
-    view = new View({});
-    const bbox = getBbox();
-    view.fit([bbox.xMinimum, bbox.yMinimum, bbox.xMaximum, bbox.yMaximum]);
+    const center = getBbox().center();
+    view = new View({
+      center: [center.x, center.y],
+      zoom: 10,
+    });
 
-    new Map({
+    const map = new Map({
       target,
       maxTilesLoading: 4,
       layers: [
@@ -60,18 +62,21 @@ export function olDemoXYZ(
       ].reverse(),
       view: view,
     });
+
+    map.once("precompose", function (_event) {
+      // fit the view to the extent of the data once the map gets actually rendered
+      update();
+    });
   };
 
   const update = () => {
     const bbox = getBbox();
     view!.fit([bbox.xMinimum, bbox.yMinimum, bbox.xMaximum, bbox.yMaximum], {
-      padding: [50, 50, 50, 50],
       duration: 500,
     });
   };
 
   init();
-  update();
 
   return update;
 }
