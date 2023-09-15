@@ -13,6 +13,22 @@ export default defineConfig({
   define: {
     __QGIS_JS_VERSION: JSON.stringify(packageJson.version),
   },
+  resolve: {
+    alias: [
+      // don't use the bundlet version of qgis-js and qgis-js-ol to enable HMR
+      {
+        find: /^qgis-js$/,
+        replacement: resolve(__dirname, "../../packages/qgis-js/src/index.ts"),
+      },
+      {
+        find: /^@qgis-js\/ol$/,
+        replacement: resolve(
+          __dirname,
+          "../../packages/qgis-js-ol/src/index.ts",
+        ),
+      },
+    ],
+  },
   plugins: [
     QgisRuntimePlugin({
       name: "qgis-js",
