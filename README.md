@@ -57,6 +57,7 @@ source "~/inst/emsdk/emsdk_env.sh"
 Run CMake (the first run will take long time as it will build all dependencies with vcpkg:
 
 ```
+EMSCRIPTEN_DIR=~/inst/emsdk/upstream/emscripten \
 QT_HOST_PATH=~/Qt/6.5.2/gcc_64 \
 Qt6_DIR=~/Qt/6.5.2/wasm_multithread \
 VCPKG_BINARY_SOURCES=clear \

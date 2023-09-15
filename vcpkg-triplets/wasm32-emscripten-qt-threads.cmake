@@ -27,7 +27,7 @@ message(STATUS "MY TRIPLET!")
 
 # this needs to be present for vcpkg installs, but also the same VCPKG_CHAINLOAD_TOOLCHAIN_FILE
 # needs to be present when running CMake so that the project gets it
-set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "/home/boardend/dev/qgis-js/qgis-js/vcpkg-triplets/my_toolchain.cmake")
+set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/my_toolchain.cmake)
 
 # to avoid building both debug and release of all libs
 #set(VCPKG_BUILD_TYPE "release")
@@ -39,7 +39,7 @@ set(VCPKG_ENV_PASSTHROUGH_UNTRACKED EMSDK EMSCRIPTEN PATH)
 
 set(VCPKG_ENV_PASSTHROUGH Qt6_DIR) # needed by port/qt6/vcpkg-cmake-wrapper.cmake
 set(VCPKG_ENV_PASSTHROUGH QT_HOST_PATH) # needed by port/qt6/vcpkg-cmake-wrapper.cmake
-set(QT_HOST_PATH $ENV{QT_HOST_PATH} CACHE PATH "needed by QtPublicDependencyHelpers.cmake" FORCE) 
+set(QT_HOST_PATH $ENV{QT_HOST_PATH} CACHE PATH "needed by QtPublicDependencyHelpers.cmake" FORCE)
 
 #  does not work with chainload toolchain!
 #set(VCPKG_CXX_FLAGS "-pthread")
