@@ -23,11 +23,11 @@ set(VCPKG_LIBRARY_LINKAGE static)
 set(VCPKG_CMAKE_SYSTEM_NAME Emscripten)
 
 
-message(STATUS "MY TRIPLET!")
+message(STATUS "WASM-QT-THREADS triplet")
 
 # this needs to be present for vcpkg installs, but also the same VCPKG_CHAINLOAD_TOOLCHAIN_FILE
 # needs to be present when running CMake so that the project gets it
-set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/my_toolchain.cmake)
+set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE ${CMAKE_CURRENT_LIST_DIR}/toolchain.cmake)
 
 # to avoid building both debug and release of all libs
 #set(VCPKG_BUILD_TYPE "release")

@@ -1,5 +1,5 @@
 
-message(STATUS "MY TOOLCHAIN FILE!")
+message(STATUS "Using qgis-js toolchain")
 
 set(QT_CHAINLOAD_TOOLCHAIN_FILE "$ENV{EMSCRIPTEN_DIR}/cmake/Modules/Platform/Emscripten.cmake")
 include("$ENV{Qt6_DIR}/lib/cmake/Qt6/qt.toolchain.cmake")

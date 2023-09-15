@@ -67,7 +67,7 @@ VCPKG_BINARY_SOURCES=clear \
   -DVCPKG_TARGET_TRIPLET=wasm32-emscripten-qt-threads \
   -DVCPKG_OVERLAY_TRIPLETS=./vcpkg-triplets \
   -DVCPKG_OVERLAY_PORTS=./vcpkg-ports \
-  -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=~/qgis/wasm/test_vcpkg/vcpkg-triplets/my_toolchain.cmake \
+  -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=~/qgis/wasm/test_vcpkg/vcpkg-triplets/toolchain.cmake \
   -DCMAKE_BUILD_TYPE=
 ```
 
