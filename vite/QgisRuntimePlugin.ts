@@ -21,6 +21,16 @@ export interface Runtime {
   outputDir: string;
 }
 
+function patchEmccJs(content: string): string {
+  // prevent setting of read-only property "stack" in Firefox
+  // (will throw an error in strict mode)
+  const search = `e.stack = arr.join("\\n");`;
+  return content.replaceAll(
+    search,
+    `if (! (navigator.userAgent.indexOf("Firefox") !== -1)) { ${search} }`,
+  );
+}
+
 export default function QgisRuntimePlugin(_runtime: Runtime | null): Plugin {
   let runtime: Runtime;
   if (_runtime === null) {
@@ -85,7 +95,7 @@ export default function QgisRuntimePlugin(_runtime: Runtime | null): Plugin {
                 ) {
                   const content = raw.toString();
                   res.setHeader("Content-Type", "application/javascript");
-                  res.end(content);
+                  res.end(patchEmccJs(content));
                 } else if (filePath.endsWith("." + RUNTIME_WASM_MAP)) {
                   const content = raw.toString();
                   res.setHeader("Content-Type", "application/json");
@@ -107,10 +117,19 @@ export default function QgisRuntimePlugin(_runtime: Runtime | null): Plugin {
         const filePath = join(repoRoot, runtime.outputDir, id);
         if (existsSync(filePath)) {
           const raw = readFileSync(filePath);
+
+          let source = raw as Uint8Array;
+
+          if (filePath.endsWith("." + RUNTIME_JS)) {
+            const encoder = new TextEncoder();
+            const content = patchEmccJs(raw.toString());
+            source = encoder.encode(content);
+          }
+
           this.emitFile({
             fileName: `${filesRuntimeDir ? filesRuntimeDir + "/" : ""}${id}`,
             type: "asset",
-            source: raw as Uint8Array,
+            source,
           });
         }
       });
