@@ -1,0 +1,856 @@
+diff --git a/port/cpl_vsil.cpp b/port/cpl_vsil.cpp
+index bc8cdcf..e8bfa38 100644
+--- a/port/cpl_vsil.cpp
++++ b/port/cpl_vsil.cpp
+@@ -3095,6 +3095,9 @@ VSIFileManager *VSIFileManager::Get()
+     VSIInstall7zFileHandler();
+     VSIInstallRarFileHandler();
+ #endif
++#ifdef __EMSCRIPTEN__
++    VSIInstallCurlFileHandler();
++#endif
+ #ifdef HAVE_CURL
+     VSIInstallCurlFileHandler();
+     VSIInstallCurlStreamingFileHandler();
+diff --git a/port/cpl_vsil_curl.cpp b/port/cpl_vsil_curl.cpp
+index 420a8cc..94b6c96 100644
+--- a/port/cpl_vsil_curl.cpp
++++ b/port/cpl_vsil_curl.cpp
+@@ -36,6 +36,10 @@
+ #include <map>
+ #include <memory>
+ 
++#include <iostream>
++
++#define DEBUG_VERBOSE 1
++
+ #include "cpl_aws.h"
+ #include "cpl_json.h"
+ #include "cpl_json_header.h"
+@@ -60,7 +64,11 @@
+ #define S_IXOTH 00001
+ #endif
+ 
+-#ifndef HAVE_CURL
++#ifdef __EMSCRIPTEN__
++#include <emscripten/fetch.h>
++#endif
++
++#if !defined(HAVE_CURL) && !defined(__EMSCRIPTEN__)
+ 
+ void VSIInstallCurlFileHandler(void)
+ {
+@@ -120,7 +128,7 @@ int VSICurlUninstallReadCbk(VSILFILE * /* fp */)
+ #ifndef DOXYGEN_SKIP
+ 
+ #define ENABLE_DEBUG 1
+-#define ENABLE_DEBUG_VERBOSE 0
++#define ENABLE_DEBUG_VERBOSE 1
+ 
+ #define unchecked_curl_easy_setopt(handle, opt, param)                         \
+     CPL_IGNORE_RET_VAL(curl_easy_setopt(handle, opt, param))
+@@ -598,9 +606,11 @@ void VSICURLInitWriteFuncStruct(WriteFuncStruct *psStruct, VSILFILE *fp,
+     psStruct->pReadCbkUserData = pReadCbkUserData;
+     psStruct->bInterrupted = false;
+ 
++#if 0
+ #if !CURL_AT_LEAST_VERSION(7, 54, 0)
+     psStruct->bIsProxyConnectHeader = false;
+ #endif  //! CURL_AT_LEAST_VERSION(7,54,0)
++#endif
+ }
+ 
+ /************************************************************************/
+@@ -635,6 +645,7 @@ size_t VSICurlHandleWriteFunc(void *buffer, size_t count, size_t nmemb,
+                 {
+                     psStruct->nHTTPCode = atoi(pszSpace + 1);
+ 
++#if 0
+ #if !CURL_AT_LEAST_VERSION(7, 54, 0)
+                     // Workaround to ignore extra HTTP response headers from
+                     // proxies in older versions of curl.
+@@ -653,6 +664,7 @@ size_t VSICurlHandleWriteFunc(void *buffer, size_t count, size_t nmemb,
+                         }
+                     }
+ #endif  //! CURL_AT_LEAST_VERSION(7,54,0)
++#endif
+                 }
+             }
+             else if (STARTS_WITH_CI(pszLine, "Content-Length: "))
+@@ -694,6 +706,7 @@ size_t VSICurlHandleWriteFunc(void *buffer, size_t count, size_t nmemb,
+ 
+             if (pszLine[0] == '\r' && pszLine[1] == '\n')
+             {
++#if 0
+ #if !CURL_AT_LEAST_VERSION(7, 54, 0)
+                 if (psStruct->bIsProxyConnectHeader)
+                 {
+@@ -701,6 +714,7 @@ size_t VSICurlHandleWriteFunc(void *buffer, size_t count, size_t nmemb,
+                 }
+                 else
+ #endif  //! CURL_AT_LEAST_VERSION(7,54,0)
++#endif
+                 {
+                     // Detect servers that don't support range downloading.
+                     if (psStruct->nHTTPCode == 200 &&
+@@ -817,6 +831,7 @@ static GIntBig VSICurlGetExpiresFromS3LikeSignedURL(const char *pszURL)
+ /*                           MultiPerform()                             */
+ /************************************************************************/
+ 
++#if 0
+ void MultiPerform(CURLM *hCurlMultiHandle, CURL *hEasyHandle)
+ {
+     int repeats = 0;
+@@ -858,6 +873,7 @@ void MultiPerform(CURLM *hCurlMultiHandle, CURL *hEasyHandle)
+     if (hEasyHandle)
+         curl_multi_remove_handle(hCurlMultiHandle, hEasyHandle);
+ }
++#endif
+ 
+ /************************************************************************/
+ /*                       VSICurlDummyWriteFunc()                        */
+@@ -872,6 +888,7 @@ static size_t VSICurlDummyWriteFunc(void *, size_t, size_t, void *)
+ /*                  VSICURLResetHeaderAndWriterFunctions()              */
+ /************************************************************************/
+ 
++#if 0
+ void VSICURLResetHeaderAndWriterFunctions(CURL *hCurlHandle)
+ {
+     unchecked_curl_easy_setopt(hCurlHandle, CURLOPT_HEADERFUNCTION,
+@@ -879,6 +896,7 @@ void VSICURLResetHeaderAndWriterFunctions(CURL *hCurlHandle)
+     unchecked_curl_easy_setopt(hCurlHandle, CURLOPT_WRITEFUNCTION,
+                                VSICurlDummyWriteFunc);
+ }
++#endif
+ 
+ /************************************************************************/
+ /*                        Iso8601ToUnixTime()                           */
+@@ -1032,10 +1050,212 @@ void VSICurlHandle::ManagePlanetaryComputerSigning() const
+     }
+ }
+ 
++
++bool fetchApiContentLength(emscripten_fetch_t *fetch, uint64_t &contentLength)
++{
++    size_t headersLengthBytes = emscripten_fetch_get_response_headers_length(fetch) + 1;
++    char *headerString = new char[headersLengthBytes];
++    emscripten_fetch_get_response_headers(fetch, headerString, headersLengthBytes);
++    char **responseHeaders = emscripten_fetch_unpack_response_headers(headerString);
++    delete[] headerString;
++
++    bool res = false;
++    for(int numHeaders = 0; responseHeaders[numHeaders * 2]; ++numHeaders)
++    {
++        // Check both the header and its value are present.
++        std::string key = responseHeaders[numHeaders * 2];
++        if (key == "content-length")
++        {
++            contentLength = atoi(responseHeaders[(numHeaders * 2) + 1]);
++            res = true;
++        }
++    }
++
++    emscripten_fetch_free_unpacked_response_headers(responseHeaders);
++    return res;
++}
++
+ /************************************************************************/
+ /*                     GetFileSizeOrHeaders()                           */
+ /************************************************************************/
+ 
++vsi_l_offset VSICurlHandle::GetFileSizeOrHeaders(bool bSetError,
++                                                 bool bGetHeaders)
++{
++    // TODO: a bunch of features unsupported for now
++    // - planetary computer URL signing
++    // - retry with GET if HEAD fails
++    // - retry after short sleep
++    // - S3 support (UseLimitRangeGetInsteadOfHead())
++    // - S3 redirects (bS3LikeRedirect)
++    // - S3 IsDirectoryFromExists
++    // - S3 ProcessGetFileSizeResult
++    // - hack for Mapbox mbtiles driver
++    // - optionally do not allow automatic redirection (AllowAutomaticRedirection())
++    // - get file time (mtime)
++    // - ftp support
++    // - ETag parsing (oFileProp.ETag)
++    // - Azure Data Lake Storage
++    // - guess if it is a directory (oFileProp.bIsDirectory)
++
++    if (oFileProp.bHasComputedFileSize && !bGetHeaders)
++        return oFileProp.fileSize;
++
++    NetworkStatisticsFileSystem oContextFS(poFS->GetFSPrefix());
++    NetworkStatisticsFile oContextFile(m_osFilename);
++    NetworkStatisticsAction oContextAction("GetFileSize");
++
++    oFileProp.bHasComputedFileSize = true;
++
++    CPLString osURL(m_pszURL + m_osQueryString);
++
++    CPLString osVerb = "HEAD";
++
++    emscripten_fetch_attr_t attr;
++    emscripten_fetch_attr_init(&attr);
++    strcpy(attr.requestMethod, "HEAD");
++
++    // TODO: set request headers
++    m_papszHTTPOptions;
++
++    attr.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY | EMSCRIPTEN_FETCH_SYNCHRONOUS;
++    emscripten_fetch_t *fetch = emscripten_fetch(&attr, osURL); // Blocks here until the operation is complete.
++
++    oFileProp.eExists = EXIST_UNKNOWN;
++
++    long mtime = 0;
++
++    NetworkStatisticsLogger::LogHEAD();
++
++    if (oFileProp.eExists != EXIST_YES)
++    {
++        int response_code = fetch->status;
++
++        bool bAlreadyLogged = false;
++        if (response_code >= 400)
++        {
++            const bool bLogResponse =
++                CPLTestBool(CPLGetConfigOption("CPL_CURL_VERBOSE", "NO"));
++            if (bLogResponse)
++            {
++                // TODO: try to get server's message from fetch->data
++                bAlreadyLogged = true;
++                CPLDebug(
++                    poFS->GetDebugKey(),
++                    "GetFileSize(%s): response_code=%d, server error msg=%s",
++                    osURL.c_str(), static_cast<int>(response_code),
++                    "(no message provided)");
++            }
++        }
++        else if ( response_code == 0 )
++        {
++            // TODO: verify this is the case e.g. with CORS error
++            bAlreadyLogged = true;
++            CPLDebug(poFS->GetDebugKey(),
++                     "GetFileSize(%s): response_code=%d, curl error msg=%s",
++                     osURL.c_str(), static_cast<int>(response_code),
++                     "(unknown)");
++        }
++
++        CPLString osEffectiveURL;
++        const char *pszEffectiveURL = fetch->url;  // URL may change after redirect
++        if (pszEffectiveURL)
++            osEffectiveURL = pszEffectiveURL;
++
++        if (!osEffectiveURL.empty() && strstr(osEffectiveURL, osURL) == nullptr)
++        {
++            CPLDebug(poFS->GetDebugKey(), "Effective URL: %s",
++                     osEffectiveURL.c_str());
++
++            if (m_bUseRedirectURLIfNoQueryStringParams &&
++                osEffectiveURL.find('?') == std::string::npos)
++            {
++                oFileProp.osRedirectURL = osEffectiveURL;
++                poFS->SetCachedFileProp(m_pszURL, oFileProp);
++            }
++        }
++
++        // with emscripten's fetch API, when using HEAD method, we need to parse the content length ourselves
++        uint64_t dfSize;
++        bool gotSize = fetchApiContentLength(fetch, dfSize);
++
++        if (gotSize)
++        {
++            oFileProp.eExists = EXIST_YES;
++            oFileProp.fileSize = static_cast<GUIntBig>(dfSize);
++        }
++        else if (response_code == 200)
++        {
++            oFileProp.eExists = EXIST_YES;
++            CPLDebug(
++                poFS->GetDebugKey(),
++                "HEAD did not provide file size. (Not retrying with GET - TODO)");
++            oFileProp.fileSize = 0;
++        }
++
++        if ((response_code == 200 || response_code == 206))
++        {
++            if (bGetHeaders)
++            {
++                // TODO: fetch headers
++                // NOTE: due to CORS, only some headers may be returned!
++
++                // see this for example:
++                // https://github.com/emscripten-core/emscripten/blob/main/test/fetch/headers_received.cpp
++            }
++        }
++
++        if (response_code == 405)
++        {
++            CPLDebug(poFS->GetDebugKey(),
++                     "HEAD not allowed. (Not retrying with GET - TODO)");
++
++        }
++        else if (response_code == 416)
++        {
++            oFileProp.eExists = EXIST_YES;
++            oFileProp.fileSize = 0;
++        }
++        else if (response_code != 200)
++        {
++            if (bSetError)
++            {
++                // TODO
++            }
++            else
++            {
++                if (response_code != 400 && response_code != 404)
++                {
++                    CPLError(CE_Warning, CPLE_AppDefined,
++                             "HTTP response code on %s: %d", osURL.c_str(),
++                             static_cast<int>(response_code));
++                }
++                // else a CPLDebug() is emitted below
++            }
++
++            oFileProp.eExists = EXIST_NO;
++            oFileProp.fileSize = 0;
++        }
++
++        if (!bAlreadyLogged)
++        {
++            CPLDebug(poFS->GetDebugKey(),
++                     "GetFileSize(%s)=" CPL_FRMT_GUIB "  response_code=%d",
++                     osURL.c_str(), oFileProp.fileSize,
++                     static_cast<int>(response_code));
++        }
++    }
++
++    emscripten_fetch_close(fetch);
++
++    if (mtime > 0)
++        oFileProp.mTime = mtime;
++    poFS->SetCachedFileProp(m_pszURL, oFileProp);
++
++    return oFileProp.fileSize;
++}
++
++#if 0
+ vsi_l_offset VSICurlHandle::GetFileSizeOrHeaders(bool bSetError,
+                                                  bool bGetHeaders)
+ {
+@@ -1539,6 +1759,7 @@ retry:
+ 
+     return oFileProp.fileSize;
+ }
++#endif
+ 
+ /************************************************************************/
+ /*                                 Exists()                             */
+@@ -1605,6 +1826,135 @@ CPLString VSICurlHandle::GetRedirectURLIfValid(bool &bHasExpired) const
+ /*                          DownloadRegion()                            */
+ /************************************************************************/
+ 
++std::string VSICurlHandle::DownloadRegion(const vsi_l_offset startOffset,
++                                          const int nBlocks)
++{
++    // TODO unsupported:
++    // - planetary computer signing
++    // - optionally disable automatic redirection
++    // - detection that range requests are not supported (in VSICurlHandleWriteFunc)
++
++    if (bInterrupted && bStopOnInterruptUntilUninstall)
++        return std::string();
++
++    if (oFileProp.eExists == EXIST_NO)
++        return std::string();
++
++    bool bHasExpired = false;
++    CPLString osURL(GetRedirectURLIfValid(bHasExpired));
++    bool bUsedRedirect = osURL != m_pszURL;
++
++    vsi_l_offset nStartOffset = startOffset;
++    vsi_l_offset nEndOffset =
++        startOffset + nBlocks * VSICURLGetDownloadChunkSize() - 1;
++    // Some servers don't like we try to read after end-of-file (#5786).
++    if (oFileProp.bHasComputedFileSize &&
++        nEndOffset >= oFileProp.fileSize)
++    {
++        nEndOffset = oFileProp.fileSize - 1;
++    }
++
++    char rangeStr[512] = {};
++    snprintf(rangeStr, sizeof(rangeStr), CPL_FRMT_GUIB "-" CPL_FRMT_GUIB,
++             startOffset, nEndOffset);
++
++    if (ENABLE_DEBUG)
++        CPLDebug(poFS->GetDebugKey(), "Downloading %s (%s)...", rangeStr,
++                 osURL.c_str());
++
++    CPLString osHeaderRange;  // leave in this scope
++    osHeaderRange.Printf("bytes=%s", rangeStr);
++
++    emscripten_fetch_attr_t attr;
++    emscripten_fetch_attr_init(&attr);
++    strcpy(attr.requestMethod, "GET");
++
++    const char * hdrs[] = { "Range", osHeaderRange };
++    attr.requestHeaders = hdrs;
++
++    // TODO: add request headers
++    m_papszHTTPOptions;
++
++    attr.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY | EMSCRIPTEN_FETCH_SYNCHRONOUS;
++    emscripten_fetch_t *fetch = emscripten_fetch(&attr, osURL); // Blocks here until the operation is complete.
++
++    // TODO sWriteFuncData.bInterrupted
++
++    long response_code = fetch->status;
++
++    if (ENABLE_DEBUG)
++    {
++        CPLDebug(poFS->GetDebugKey(),
++                 "DownloadRegion(%s): response_code=%d, msg=%s", osURL.c_str(),
++                 static_cast<int>(response_code), "(?)");
++    }
++
++    long mtime = 0;
++    // TODO: get mtime?
++    if (mtime > 0)
++    {
++        oFileProp.mTime = mtime;
++        poFS->SetCachedFileProp(m_pszURL, oFileProp);
++    }
++
++    if (ENABLE_DEBUG)
++        CPLDebug(poFS->GetDebugKey(), "Got response_code=%ld", response_code);
++
++    if (bUsedRedirect)
++    {
++        // TODO: some special case for nasa.gov with retry
++    }
++
++    if (response_code == 401)
++    {
++        CPLDebug(poFS->GetDebugKey(), "Unauthorized, trying to authenticate (TODO)");
++        return std::string();
++    }
++
++    // TODO UpdateRedirectInfo(hCurlHandle, sWriteFuncHeaderData);
++
++    if ((response_code != 200 && response_code != 206 && response_code != 225 &&
++         response_code != 226 && response_code != 426))
++    {
++        // TODO: CanRestartOnError ?
++
++        // TODO: attempty a retry
++
++        if (response_code >= 400)
++        {
++            CPLError(CE_Failure, CPLE_AppDefined, "%d: %s",
++                     static_cast<int>(response_code), "(?)");
++        }
++
++        if (!oFileProp.bHasComputedFileSize && startOffset == 0)
++        {
++            oFileProp.bHasComputedFileSize = true;
++            oFileProp.fileSize = 0;
++            oFileProp.eExists = EXIST_NO;
++            poFS->SetCachedFileProp(m_pszURL, oFileProp);
++        }
++        return std::string();
++    }
++
++    if (!oFileProp.bHasComputedFileSize && fetch->data)
++    {
++        // TODO:
++        // Try to retrieve the filesize from the HTTP headers
++        // if in the form: "Content-Range: bytes x-y/filesize".
++    }
++
++    DownloadRegionPostProcess(startOffset, nBlocks, fetch->data,
++                              fetch->numBytes);
++
++    std::string osRet;
++    osRet.assign(fetch->data, fetch->numBytes);
++
++    emscripten_fetch_close(fetch);
++
++    return osRet;
++}
++
++#if 0
+ std::string VSICurlHandle::DownloadRegion(const vsi_l_offset startOffset,
+                                           const int nBlocks)
+ {
+@@ -1899,11 +2249,13 @@ retry:
+ 
+     return osRet;
+ }
++#endif
+ 
+ /************************************************************************/
+ /*                      UpdateRedirectInfo()                            */
+ /************************************************************************/
+ 
++#if 0
+ void VSICurlHandle::UpdateRedirectInfo(
+     CURL *hCurlHandle, const WriteFuncStruct &sWriteFuncHeaderData)
+ {
+@@ -1950,6 +2302,7 @@ void VSICurlHandle::UpdateRedirectInfo(
+         }
+     }
+ }
++#endif
+ 
+ /************************************************************************/
+ /*                      DownloadRegionPostProcess()                     */
+@@ -2140,6 +2493,20 @@ int VSICurlHandle::ReadMultiRange(int const nRanges, void **const ppData,
+                                   const vsi_l_offset *const panOffsets,
+                                   const size_t *const panSizes)
+ {
++
++    // TODO: if there are multiple ranges, do multiple fetches at once
++    // (rather than serializing them which happens now)
++
++    return VSIVirtualHandle::ReadMultiRange(nRanges, ppData, panOffsets,
++                                            panSizes);
++}
++
++#if 0
++int VSICurlHandle::ReadMultiRange(int const nRanges, void **const ppData,
++                                  const vsi_l_offset *const panOffsets,
++                                  const size_t *const panSizes)
++{
++
+     if (bInterrupted && bStopOnInterruptUntilUninstall)
+         return FALSE;
+ 
+@@ -2394,11 +2761,22 @@ int VSICurlHandle::ReadMultiRange(int const nRanges, void **const ppData,
+ 
+     return nRet;
+ }
++#endif
+ 
+ /************************************************************************/
+ /*                       ReadMultiRangeSingleGet()                      */
+ /************************************************************************/
+ 
++int VSICurlHandle::ReadMultiRangeSingleGet(int const nRanges,
++                                           void **const ppData,
++                                           const vsi_l_offset *const panOffsets,
++                                           const size_t *const panSizes)
++{
++    // TODO
++    return 0;
++}
++
++#if 0
+ // TODO: the interest of this mode is rather dubious now. We could probably
+ // remove it
+ int VSICurlHandle::ReadMultiRangeSingleGet(int const nRanges,
+@@ -2406,6 +2784,7 @@ int VSICurlHandle::ReadMultiRangeSingleGet(int const nRanges,
+                                            const vsi_l_offset *const panOffsets,
+                                            const size_t *const panSizes)
+ {
++
+     CPLString osRanges;
+     CPLString osFirstRange;
+     CPLString osLastRange;
+@@ -2775,6 +3154,7 @@ end:
+ 
+     return nRet;
+ }
++#endif
+ 
+ /************************************************************************/
+ /*                              PRead()                                 */
+@@ -2783,6 +3163,15 @@ end:
+ size_t VSICurlHandle::PRead(void *pBuffer, size_t nSize,
+                             vsi_l_offset nOffset) const
+ {
++    // TODO
++    return 0;
++}
++
++#if 0
++size_t VSICurlHandle::PRead(void *pBuffer, size_t nSize,
++                            vsi_l_offset nOffset) const
++{
++
+     // Try to use AdviseRead ranges fetched asynchronously
+     if (!m_aoAdviseReadRanges.empty())
+     {
+@@ -2946,6 +3335,7 @@ size_t VSICurlHandle::PRead(void *pBuffer, size_t nSize,
+ 
+     return nRet;
+ }
++#endif
+ 
+ /************************************************************************/
+ /*                         AdviseRead()                                 */
+@@ -2954,6 +3344,14 @@ size_t VSICurlHandle::PRead(void *pBuffer, size_t nSize,
+ void VSICurlHandle::AdviseRead(int nRanges, const vsi_l_offset *panOffsets,
+                                const size_t *panSizes)
+ {
++    // TODO
++}
++
++#if 0
++void VSICurlHandle::AdviseRead(int nRanges, const vsi_l_offset *panOffsets,
++                               const size_t *panSizes)
++{
++
+     if (!CPLTestBool(
+             CPLGetConfigOption("GDAL_HTTP_ENABLE_ADVISE_READ", "TRUE")))
+         return;
+@@ -3268,6 +3666,7 @@ void VSICurlHandle::AdviseRead(int nRanges, const vsi_l_offset *panOffsets,
+     };
+     m_oThreadAdviseRead = std::thread(task);
+ }
++#endif
+ 
+ /************************************************************************/
+ /*                               Write()                                */
+@@ -3319,6 +3718,7 @@ VSICurlFilesystemHandlerBase::VSICurlFilesystemHandlerBase()
+ /*                           CachedConnection                           */
+ /************************************************************************/
+ 
++#if 0
+ namespace
+ {
+ struct CachedConnection
+@@ -3380,10 +3780,13 @@ GetConnectionCache()
+ }
+ #endif
+ 
++#endif
++
+ /************************************************************************/
+ /*                              clear()                                 */
+ /************************************************************************/
+ 
++#if 0
+ void CachedConnection::clear()
+ {
+     if (hCurlMultiHandle)
+@@ -3392,6 +3795,7 @@ void CachedConnection::clear()
+         hCurlMultiHandle = nullptr;
+     }
+ }
++#endif
+ 
+ /************************************************************************/
+ /*                  ~VSICurlFilesystemHandlerBase()                         */
+@@ -3400,7 +3804,9 @@ void CachedConnection::clear()
+ VSICurlFilesystemHandlerBase::~VSICurlFilesystemHandlerBase()
+ {
+     VSICurlFilesystemHandlerBase::ClearCache();
++#if 0
+     GetConnectionCache().erase(this);
++#endif
+ 
+     if (hMutex != nullptr)
+         CPLDestroyMutex(hMutex);
+@@ -3432,6 +3838,7 @@ bool VSICurlFilesystemHandlerBase::AllowCachedDataFor(const char *pszFilename)
+ /*                     GetCurlMultiHandleFor()                          */
+ /************************************************************************/
+ 
++#if 0
+ CURLM *
+ VSICurlFilesystemHandlerBase::GetCurlMultiHandleFor(const CPLString & /*osURL*/)
+ {
+@@ -3442,6 +3849,7 @@ VSICurlFilesystemHandlerBase::GetCurlMultiHandleFor(const CPLString & /*osURL*/)
+     }
+     return conn.hCurlMultiHandle;
+ }
++#endif
+ 
+ /************************************************************************/
+ /*                          GetRegionCache()                            */
+@@ -3648,7 +4056,9 @@ void VSICurlFilesystemHandlerBase::ClearCache()
+     oCacheDirList.clear();
+     nCachedFilesInDirList = 0;
+ 
++#if 0
+     GetConnectionCache()[this].clear();
++#endif
+ }
+ 
+ /************************************************************************/
+@@ -4541,6 +4951,16 @@ char **VSICurlFilesystemHandlerBase::GetFileList(const char *pszDirname,
+                                                  int nMaxFiles,
+                                                  bool *pbGotFileList)
+ {
++    // TODO
++    return nullptr;
++}
++
++#if 0
++char **VSICurlFilesystemHandlerBase::GetFileList(const char *pszDirname,
++                                                 int nMaxFiles,
++                                                 bool *pbGotFileList)
++{
++
+     if (ENABLE_DEBUG)
+         CPLDebug(GetDebugKey(), "GetFileList(%s)", pszDirname);
+ 
+@@ -4808,6 +5228,7 @@ char **VSICurlFilesystemHandlerBase::GetFileList(const char *pszDirname,
+ 
+     return nullptr;
+ }
++#endif
+ 
+ /************************************************************************/
+ /*                       GetS3IgnoredStorageClasses()                   */
+@@ -5136,6 +5557,7 @@ char **VSICurlFilesystemHandlerBase::GetFileMetadata(const char *pszFilename,
+ /*                       VSIAppendWriteHandle()                         */
+ /************************************************************************/
+ 
++#if 0
+ VSIAppendWriteHandle::VSIAppendWriteHandle(VSICurlFilesystemHandlerBase *poFS,
+                                            const char *pszFSPrefix,
+                                            const char *pszFilename,
+@@ -5341,6 +5763,7 @@ long CurlRequestHelper::perform(CURL *hCurlHandle, struct curl_slist *headers,
+     curl_easy_getinfo(hCurlHandle, CURLINFO_HTTP_CODE, &response_code);
+     return response_code;
+ }
++#endif
+ 
+ /************************************************************************/
+ /*                       NetworkStatisticsLogger                        */
+@@ -5731,6 +6154,7 @@ int VSICurlUninstallReadCbk(VSILFILE *fp)
+ /*                       VSICurlSetOptions()                            */
+ /************************************************************************/
+ 
++#if 0
+ struct curl_slist *VSICurlSetOptions(CURL *hCurlHandle, const char *pszURL,
+                                      const char *const *papszOptions)
+ {
+@@ -5853,6 +6277,7 @@ struct curl_slist *VSICurlSetCreationHeadersFromOptions(
+ 
+     return headers;
+ }
++#endif
+ 
+ #endif  // DOXYGEN_SKIP
+ //! @endcond
+diff --git a/port/cpl_vsil_curl_class.h b/port/cpl_vsil_curl_class.h
+index b58ae37..df22838 100644
+--- a/port/cpl_vsil_curl_class.h
++++ b/port/cpl_vsil_curl_class.h
+@@ -29,7 +29,8 @@
+ #ifndef CPL_VSIL_CURL_CLASS_H_INCLUDED
+ #define CPL_VSIL_CURL_CLASS_H_INCLUDED
+ 
+-#ifdef HAVE_CURL
++#if defined(HAVE_CURL) || defined(__EMSCRIPTEN__)
++
+ 
+ #include "cpl_aws.h"
+ #include "cpl_azure.h"
+@@ -39,7 +40,9 @@
+ #include "cpl_vsil_curl_priv.h"
+ #include "cpl_mem_cache.h"
+ 
++#ifndef __EMSCRIPTEN__
+ #include "cpl_curl_priv.h"
++#endif
+ 
+ #include <algorithm>
+ #include <condition_variable>
+@@ -61,6 +64,7 @@
+ 
+ void VSICurlStreamingClearCache(void);  // from cpl_vsil_curl_streaming.cpp
+ 
++#if 0
+ struct curl_slist *VSICurlSetOptions(CURL *hCurlHandle, const char *pszURL,
+                                      const char *const *papszOptions);
+ struct curl_slist *VSICurlMergeHeaders(struct curl_slist *poDest,
+@@ -71,6 +75,7 @@ struct curl_slist *VSICurlSetContentTypeFromExt(struct curl_slist *polist,
+ 
+ struct curl_slist *VSICurlSetCreationHeadersFromOptions(
+     struct curl_slist *headers, CSLConstList papszOptions, const char *pszPath);
++#endif
+ 
+ namespace cpl
+ {
+@@ -126,12 +131,14 @@ struct WriteFuncStruct
+     void *pReadCbkUserData = nullptr;
+     bool bInterrupted = false;
+ 
++#if 0
+ #if !CURL_AT_LEAST_VERSION(7, 54, 0)
+     // Workaround to ignore extra HTTP response headers from
+     // proxies in older versions of curl.
+     // CURLOPT_SUPPRESS_CONNECT_HEADERS fixes this
+     bool bIsProxyConnectHeader = false;
+ #endif  //! CURL_AT_LEAST_VERSION(7,54,0)
++#endif
+ };
+ 
+ struct PutData
+@@ -307,7 +314,9 @@ class VSICurlFilesystemHandlerBase : public VSIFilesystemHandler
+     void SetCachedFileProp(const char *pszURL, FileProp &oFileProp);
+     void InvalidateCachedData(const char *pszURL);
+ 
++#if 0
+     CURLM *GetCurlMultiHandleFor(const CPLString &osURL);
++#endif
+ 
+     virtual void ClearCache();
+     virtual void PartialClearCache(const char *pszFilename);
+@@ -405,8 +414,10 @@ class VSICurlHandle : public VSIVirtualHandle
+                                 const size_t *panSizes);
+     CPLString GetRedirectURLIfValid(bool &bHasExpired) const;
+ 
++#if 0
+     void UpdateRedirectInfo(CURL *hCurlHandle,
+                             const WriteFuncStruct &sWriteFuncHeaderData);
++#endif
+ 
+     // Used by AdviseRead()
+     struct AdviseReadRange
+@@ -517,6 +528,7 @@ class VSICurlHandle : public VSIVirtualHandle
+     }
+ };
+ 
++#if 0
+ /************************************************************************/
+ /*                        IVSIS3LikeFSHandler                           */
+ /************************************************************************/
+@@ -753,6 +765,7 @@ class VSIAppendWriteHandle : public VSIVirtualHandle
+         return m_pabyBuffer != nullptr;
+     }
+ };
++#endif
+ 
+ /************************************************************************/
+ /*                     VSIDIRWithMissingDirSynthesis                    */
+@@ -773,6 +786,8 @@ struct VSIDIRWithMissingDirSynthesis : public VSIDIR
+ /*                         CurlRequestHelper                            */
+ /************************************************************************/
+ 
++#if 0
++
+ struct CurlRequestHelper
+ {
+     WriteFuncStruct sWriteFuncData{};
+@@ -786,6 +801,7 @@ struct CurlRequestHelper
+                  VSICurlFilesystemHandlerBase *poFS,
+                  IVSIS3LikeHandleHelper *poS3HandleHelper);
+ };
++#endif
+ 
+ /************************************************************************/
+ /*                       NetworkStatisticsLogger                        */
+@@ -941,8 +957,10 @@ void VSICURLInitWriteFuncStruct(WriteFuncStruct *psStruct, VSILFILE *fp,
+                                 void *pReadCbkUserData);
+ size_t VSICurlHandleWriteFunc(void *buffer, size_t count, size_t nmemb,
+                               void *req);
++#if 0
+ void MultiPerform(CURLM *hCurlMultiHandle, CURL *hEasyHandle = nullptr);
+ void VSICURLResetHeaderAndWriterFunctions(CURL *hCurlHandle);
++#endif
+ 
+ int VSICurlParseUnixPermissions(const char *pszPermissions);
+ 

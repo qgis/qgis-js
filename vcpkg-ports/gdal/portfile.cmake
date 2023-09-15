@@ -8,6 +8,8 @@ vcpkg_from_github(
         find-link-libraries.patch
         fix-gdal-target-interfaces.patch
         libkml.patch
+        # our patch to make it possible to read COGs in wasm builds
+        vsicurl-fetch-api.diff
 )
 # `vcpkg clean` stumbles over one subdir
 file(REMOVE_RECURSE "${SOURCE_PATH}/autotest")
