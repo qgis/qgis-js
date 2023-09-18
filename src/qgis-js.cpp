@@ -20,14 +20,14 @@
 #include <qgsproviderregistry.h>
 #include <qgssettingsregistrycore.h>
 
-#include <QCoreApplication>
 #include <QFileInfo>
+#include <QGuiApplication>
 #include <QTemporaryDir>
 #include <QTimer>
 #include <QtGlobal>
 
 static const QTemporaryDir temp;
-static QCoreApplication *app;
+static QGuiApplication *app;
 
 static const bool testLibraries = false;
 
@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
   QSettings::setPath(
     QSettings::IniFormat, QSettings::UserScope, temp.path() + QString("/settings"));
 
-  app = new QCoreApplication(argc, argv);
+  app = new QGuiApplication(argc, argv);
   qDebug() << "QgsApplication::init";
   QgsApplication::init(temp.path());
   QgsApplication::setPkgDataPath("/qgis"); // as set in CMakeLists.txt
