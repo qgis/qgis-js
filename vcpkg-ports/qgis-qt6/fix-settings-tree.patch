@@ -1,8 +1,8 @@
 diff --git a/src/core/settings/qgssettingstree.h b/src/core/settings/qgssettingstree.h
-index 1dc8ce95471..ac46cc78c7d 100644
+index 1dc8ce9547..ff72b960c6 100644
 --- a/src/core/settings/qgssettingstree.h
 +++ b/src/core/settings/qgssettingstree.h
-@@ -40,29 +40,56 @@ class CORE_EXPORT QgsSettingsTree
+@@ -40,29 +40,53 @@ class CORE_EXPORT QgsSettingsTree
      static QgsSettingsTreeNode *treeRoot();
  
      // only create first level here
@@ -29,9 +29,6 @@ index 1dc8ce95471..ac46cc78c7d 100644
 -    static inline QgsSettingsTreeNode *sTreeWms = treeRoot()->createChildNode( QStringLiteral( "wms" ) );
 -    static inline QgsSettingsTreeNode *sTreeMeasure = treeRoot()->createChildNode( QStringLiteral( "measure" ) );
 -    static inline QgsSettingsTreeNode *sTreeAnnotations = treeRoot()->createChildNode( QStringLiteral( "annotations" ) );
-+    //static inline QgsSettingsTreeNode *sTreeApp = treeRoot()->createChildNode( QStringLiteral( "app" ) );
-+    //static inline QgsSettingsTreeNode *sTreeConnections = treeRoot()->createChildNode( QStringLiteral( "connections" ) );
-+    //static inline QgsSettingsTreeNode *sTreeCore = treeRoot()->createChildNode( QStringLiteral( "core" ) );
 +    static QgsSettingsTreeNode *treeApp() { return treeRoot()->childNode( QStringLiteral( "app" ) ); }
 +    static QgsSettingsTreeNode *treeConnections() { return treeRoot()->childNode( QStringLiteral( "connections" ) ); }
 +    static QgsSettingsTreeNode *treeCore() { return treeRoot()->childNode( QStringLiteral( "core" ) ); }
@@ -83,23 +80,10 @@ index 1dc8ce95471..ac46cc78c7d 100644
  #endif
  
 diff --git a/src/core/settings/qgssettingstreenode.cpp b/src/core/settings/qgssettingstreenode.cpp
-index 85b10359908..ecc36c69a95 100644
+index 85b1035990..0375308e3a 100644
 --- a/src/core/settings/qgssettingstreenode.cpp
 +++ b/src/core/settings/qgssettingstreenode.cpp
-@@ -19,7 +19,7 @@
- #include "qgssettings.h"
- 
- #include <QDir>
--
-+#include <QtDebug>
- 
- QgsSettingsTreeNode::~QgsSettingsTreeNode()
- {
-@@ -33,14 +33,26 @@ QgsSettingsTreeNode::~QgsSettingsTreeNode()
- QgsSettingsTreeNode *QgsSettingsTreeNode::createRootNode()
- {
-   QgsSettingsTreeNode *te = new QgsSettingsTreeNode();
-+  qDebug() << "creating root node!" << te;
+@@ -36,6 +36,15 @@ QgsSettingsTreeNode *QgsSettingsTreeNode::createRootNode()
    te->mType = Qgis::SettingsTreeNodeType::Root;
    te->mKey = QString();
    te->mCompleteKey = QStringLiteral( "/" );
@@ -115,34 +99,3 @@ index 85b10359908..ecc36c69a95 100644
    return te;
  }
  
- QgsSettingsTreeNode *QgsSettingsTreeNode::createChildNode( const QString &key )
- {
-+  qDebug() << "createChildNode() " << this << key;
-+
-   QgsSettingsTreeNode *te = childNode( key );
-   if ( te )
-     return te;
-@@ -48,6 +60,7 @@ QgsSettingsTreeNode *QgsSettingsTreeNode::createChildNode( const QString &key )
-     throw QgsSettingsException( QObject::tr( "Settings tree node '%1' already holds a child setting with key '%2'." ).arg( this->key(), key ) );
- 
-   te = new QgsSettingsTreeNode();
-+  qDebug() << "created new!" << te;
-   te->mType = Qgis::SettingsTreeNodeType::Standard;
-   te->init( this, key );
-   registerChildNode( te );
-@@ -56,6 +69,7 @@ QgsSettingsTreeNode *QgsSettingsTreeNode::createChildNode( const QString &key )
- 
- QgsSettingsTreeNamedListNode *QgsSettingsTreeNode::createNamedListNode( const QString &key, const Qgis::SettingsTreeNodeOptions &options )
- {
-+  qDebug() << "createNamedListNode() " << this << key;
-   QgsSettingsTreeNode *nte = childNode( key );
-   if ( nte )
-   {
-@@ -68,6 +82,7 @@ QgsSettingsTreeNamedListNode *QgsSettingsTreeNode::createNamedListNode( const QS
-     throw QgsSettingsException( QObject::tr( "Settings tree node '%1' already holds a child setting with key '%2'." ).arg( this->key(), key ) );
- 
-   QgsSettingsTreeNamedListNode *te = new QgsSettingsTreeNamedListNode();
-+  qDebug() << "created new!" << te;
-   te->mType = Qgis::SettingsTreeNodeType::NamedList;
-   te->init( this, key );
-   te->initNamedList( options );
