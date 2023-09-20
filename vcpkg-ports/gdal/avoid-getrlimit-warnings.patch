@@ -1,0 +1,13 @@
+diff --git a/port/cpl_vsisimple.cpp b/port/cpl_vsisimple.cpp
+index 61d807bfc9..e613ae9e09 100644
+--- a/port/cpl_vsisimple.cpp
++++ b/port/cpl_vsisimple.cpp
+@@ -1596,7 +1596,7 @@ GIntBig CPLGetUsablePhysicalRAM(void)
+     if (nRAM > INT_MAX)
+         nRAM = INT_MAX;
+ #endif
+-#if HAVE_GETRLIMIT
++#if HAVE_GETRLIMIT && !defined(EMSCRIPTEN)
+     struct rlimit sLimit;
+ #if HAVE_RLIMIT_AS
+     const int res = RLIMIT_AS;

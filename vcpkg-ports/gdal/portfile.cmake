@@ -10,6 +10,7 @@ vcpkg_from_github(
         libkml.patch
         # our patch to make it possible to read COGs in wasm builds
         vsicurl-fetch-api.diff
+        avoid-getrlimit-warnings.patch
 )
 # `vcpkg clean` stumbles over one subdir
 file(REMOVE_RECURSE "${SOURCE_PATH}/autotest")
@@ -38,7 +39,7 @@ vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS
         libkml           GDAL_USE_LIBKML
         lzma             GDAL_USE_LIBLZMA
         libxml2          GDAL_USE_LIBXML2
-        mysql-libmariadb GDAL_USE_MYSQL 
+        mysql-libmariadb GDAL_USE_MYSQL
         netcdf           GDAL_USE_NETCDF
         odbc             GDAL_USE_ODBC
         openjpeg         GDAL_USE_OPENJPEG
