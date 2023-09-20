@@ -13,17 +13,30 @@
 #include <emscripten/bind.h>
 
 static QImage gLastImage;
+static QList<QgsMapLayer *> gVisibleLayers;
 
 bool QgisApi_loadProject(std::string filename) {
+
+  gVisibleLayers.clear();
+
   bool res = QgsProject::instance()->read(QString::fromStdString(filename));
   if (!res) return false;
+
+  QgsLayerTree *root = QgsProject::instance()->layerTreeRoot();
+  const QList<QgsMapLayer *> allLayers = root->layerOrder();
+  for (QgsMapLayer *layer : allLayers) {
+    QgsLayerTreeLayer *nodeLayer = root->findLayer(layer->id());
+    if (nodeLayer && nodeLayer->layer()->isSpatial() && nodeLayer->isVisible())
+      gVisibleLayers << layer;
+  }
+
   return true;
 }
 
 QgsRectangle QgisApi_fullExtent() {
   QgsMapSettings mapSettings;
   mapSettings.setDestinationCrs(QgsProject::instance()->crs());
-  mapSettings.setLayers(QgsProject::instance()->layerTreeRoot()->layerOrderRespectingGroupLayers());
+  mapSettings.setLayers(gVisibleLayers);
   return mapSettings.fullExtent();
 }
 
@@ -37,7 +50,7 @@ void QgisApi_renderMap(
   // mapSettings.setBackgroundColor(Qt::green);
   mapSettings.setOutputSize(QSize(width, height));
   mapSettings.setDestinationCrs(QgsProject::instance()->crs());
-  mapSettings.setLayers(QgsProject::instance()->layerTreeRoot()->layerOrderRespectingGroupLayers());
+  mapSettings.setLayers(gVisibleLayers);
   mapSettings.setExtent(extent);
 
   QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob(mapSettings);
@@ -62,7 +75,7 @@ void QgisApi_renderXYZTile(
   mapSettings.setBackgroundColor(Qt::transparent);
   mapSettings.setOutputSize(QSize(tileSize, tileSize));
 
-  mapSettings.setLayers(QgsProject::instance()->layerTreeRoot()->layerOrderRespectingGroupLayers());
+  mapSettings.setLayers(gVisibleLayers);
 
   mapSettings.setDestinationCrs(QgsCoordinateReferenceSystem(QStringLiteral("EPSG:3857")));
 
@@ -94,7 +107,7 @@ void QgisApi_renderImage(
   mapSettings.setBackgroundColor(Qt::transparent);
   mapSettings.setOutputSize(QSize(width, height));
 
-  mapSettings.setLayers(QgsProject::instance()->layerTreeRoot()->layerOrderRespectingGroupLayers());
+  mapSettings.setLayers(gVisibleLayers);
 
   mapSettings.setDestinationCrs(QgsCoordinateReferenceSystem(QString::fromStdString(srid)));
 
