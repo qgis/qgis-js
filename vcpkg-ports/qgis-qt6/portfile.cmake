@@ -19,6 +19,7 @@ vcpkg_from_github(
         fix-settings-tree.patch
         fix-ssl-network-access-manager.patch
         disable-auth-manager.patch
+        no-user-agent-override.patch
         02-exclude-wfs-provider.patch
         03-fix-missing-QTimeZone.patch
         04-fix-missing-QCryptographicHash.patch
@@ -86,11 +87,11 @@ list(APPEND QGIS_OPTIONS -DQGIS_PLUGIN_SUBDIR=lib)
 list(APPEND QGIS_OPTIONS -DQGIS_INCLUDE_SUBDIR=include/qgis)
 
 list(APPEND QGIS_OPTIONS -DWITH_INTERNAL_POLY2TRI=ON)
-    
+
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
     #PREFER_NINJA
-    OPTIONS ${QGIS_OPTIONS} 
+    OPTIONS ${QGIS_OPTIONS}
     OPTIONS_DEBUG ${QGIS_OPTIONS_DEBUG}
     OPTIONS_RELEASE ${QGIS_OPTIONS_RELEASE}
 )

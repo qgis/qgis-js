@@ -1,0 +1,18 @@
+diff --git a/src/core/network/qgsnetworkaccessmanager.cpp b/src/core/network/qgsnetworkaccessmanager.cpp
+index bec4ff2300..41763db2f4 100644
+--- a/src/core/network/qgsnetworkaccessmanager.cpp
++++ b/src/core/network/qgsnetworkaccessmanager.cpp
+@@ -298,11 +298,13 @@ QNetworkReply *QgsNetworkAccessManager::createRequest( QNetworkAccessManager::Op
+ 
+   QNetworkRequest *pReq( const_cast< QNetworkRequest * >( &req ) ); // hack user agent
+ 
++#ifndef EMSCRIPTEN
+   QString userAgent = s.value( QStringLiteral( "/qgis/networkAndProxy/userAgent" ), "Mozilla/5.0" ).toString();
+   if ( !userAgent.isEmpty() )
+     userAgent += ' ';
+   userAgent += QStringLiteral( "QGIS/%1/%2" ).arg( Qgis::versionInt() ).arg( QSysInfo::prettyProductName() );
+   pReq->setRawHeader( "User-Agent", userAgent.toLatin1() );
++#endif
+ 
+ #ifndef QT_NO_SSL
+   const bool ishttps = pReq->url().scheme().compare( QLatin1String( "https" ), Qt::CaseInsensitive ) == 0;
