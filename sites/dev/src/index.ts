@@ -90,7 +90,7 @@ async function initDemo() {
 
   // paint a first dummy frame
   console.time("first frame");
-  await api.render(api.fullExtent(), 42, 42);
+  await api.renderImage(api.srid(), api.fullExtent(), 42, 42);
   console.timeEnd("first frame");
 
   // js demo

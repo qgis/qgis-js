@@ -1,5 +1,6 @@
-import { QgisApi } from "../../src/api/QgisApi";
-import { Rectangle } from "../../src/api/QgisModel";
+import { QgisApi } from "qgis-js";
+
+import type { Rectangle } from "qgis-js";
 
 const mapScaleFactor = 1.5;
 const mapMoveFactor = 0.1;
@@ -18,7 +19,12 @@ export function jsDemo(canvas: HTMLCanvasElement, api: QgisApi): () => void {
     const imageWidth = cssRect.width * devicePixelRatio;
     const imageHeight = cssRect.height * devicePixelRatio;
 
-    const image = await api.render(lastExtent!, imageWidth, imageHeight);
+    const image = await api.renderImage(
+      api.srid(),
+      lastExtent!,
+      imageWidth,
+      imageHeight,
+    );
 
     const context = canvas.getContext("2d");
     canvas.width = imageWidth;

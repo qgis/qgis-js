@@ -12,7 +12,6 @@
 
 #include <emscripten/bind.h>
 
-static QImage gLastImage;
 static QList<QgsMapLayer *> gVisibleLayers;
 
 bool QgisApi_loadProject(std::string filename) {
@@ -42,25 +41,6 @@ QgsRectangle QgisApi_fullExtent() {
 
 std::string QgisApi_srid() {
   return QgsProject::instance()->crs().authid().toStdString();
-}
-
-void QgisApi_renderMap(
-  const QgsRectangle &extent, int width, int height, emscripten::val callback) {
-  QgsMapSettings mapSettings;
-  // mapSettings.setBackgroundColor(Qt::green);
-  mapSettings.setOutputSize(QSize(width, height));
-  mapSettings.setDestinationCrs(QgsProject::instance()->crs());
-  mapSettings.setLayers(gVisibleLayers);
-  mapSettings.setExtent(extent);
-
-  QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob(mapSettings);
-  QObject::connect(job, &QgsMapRendererSequentialJob::finished, [job, callback] {
-    gLastImage = job->renderedImage();
-    gLastImage.rgbSwap(); // for html canvas
-    callback();
-    job->deleteLater();
-  });
-  job->start();
 }
 
 void QgisApi_renderXYZTile(
@@ -124,11 +104,6 @@ void QgisApi_renderImage(
   job->start();
 }
 
-emscripten::val QgisApi_mapData() {
-  return emscripten::val(emscripten::typed_memory_view(
-    gLastImage.width() * gLastImage.height() * 4, (const unsigned char *)gLastImage.constBits()));
-}
-
 const QgsRectangle QgisApi_transformRectangle(
   const QgsRectangle &inputRectangle, std::string inputSrid, std::string outputSrid) {
   QgsCoordinateTransform transform(
@@ -142,9 +117,7 @@ EMSCRIPTEN_BINDINGS(QgisApi) {
   emscripten::function("loadProject", &QgisApi_loadProject);
   emscripten::function("fullExtent", &QgisApi_fullExtent);
   emscripten::function("srid", &QgisApi_srid);
-  emscripten::function("renderMap", &QgisApi_renderMap);
   emscripten::function("renderImage", &QgisApi_renderImage);
   emscripten::function("renderXYZTile", &QgisApi_renderXYZTile);
-  emscripten::function("mapData", &QgisApi_mapData);
   emscripten::function("transformRectangle", &QgisApi_transformRectangle);
 }

@@ -12,15 +12,6 @@ export class QgisApiAdapterImplementation implements QgisApiAdapter {
     this._api = api;
   }
 
-  render(extent: Rectangle, width: number, height: number): Promise<ImageData> {
-    return new Promise((resolve) => {
-      this._api.renderMap(extent, width, height, () => {
-        const data = new Uint8ClampedArray(this._api.mapData());
-        const imageData = new ImageData(data, width, height);
-        resolve(imageData);
-      });
-    });
-  }
   renderImage(
     srid: string,
     extent: Rectangle,
