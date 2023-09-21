@@ -8,4 +8,6 @@ export type {
   InternalQgisApi,
 } from "../../../src/api/QgisApi";
 
+export type { PointXY, Rectangle } from "../../../src/api/QgisModel";
+
 export { qgis } from "./loader";

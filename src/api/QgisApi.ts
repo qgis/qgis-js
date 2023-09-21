@@ -12,7 +12,6 @@ export interface CommonQgisApi extends QgisModelConstructors {
 }
 
 export interface QgisApiAdapter {
-  render(extent: Rectangle, width: number, height: number): Promise<ImageData>;
   renderImage(
     srdi: string,
     extent: Rectangle,
@@ -30,12 +29,6 @@ export interface QgisApiAdapter {
 export interface QgisApi extends CommonQgisApi, QgisApiAdapter {}
 
 export interface InternalQgisApi extends CommonQgisApi {
-  renderMap(
-    extent: Rectangle,
-    width: number,
-    height: number,
-    callback: () => void,
-  ): void;
   renderImage(
     srid: string,
     extent: Rectangle,
@@ -50,5 +43,4 @@ export interface InternalQgisApi extends CommonQgisApi {
     tileSize: number,
     callback: (tileData: ArrayBufferLike) => void,
   ): number;
-  mapData(): ArrayBufferLike;
 }
