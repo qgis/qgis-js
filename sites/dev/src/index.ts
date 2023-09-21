@@ -9,6 +9,7 @@ import { jsDemo } from "./js";
 
 import { QgisOpenLayers } from "@qgis-js/ol";
 import { olDemoXYZ, olDemoCanvas } from "./ol";
+import { layersControl } from "./layers";
 
 const printVersion = true;
 const apiTest = true;
@@ -92,6 +93,20 @@ async function initDemo() {
   console.time("first frame");
   await api.renderImage(api.srid(), api.fullExtent(), 42, 42);
   console.timeEnd("first frame");
+
+  const layersControlDiv = document.getElementById(
+    "layers-control",
+  ) as HTMLDivElement | null;
+  if (layersControlDiv) {
+    updates.push(
+      layersControl(layersControlDiv, api, () => {
+        // update all demos
+        setTimeout(() => {
+          updates.forEach((update) => update());
+        }, 0);
+      }),
+    );
+  }
 
   // js demo
   const jsDemoCanvas = document.getElementById(

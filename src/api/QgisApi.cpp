@@ -10,24 +10,32 @@
 #include <QImage>
 #include <QString>
 
+#include "../model/MapLayer.hpp"
+#include "../model/PointXY.hpp"
+#include "../model/Rectangle.hpp"
+
 #include <emscripten/bind.h>
 
-static QList<QgsMapLayer *> gVisibleLayers;
+QList<QgsMapLayer *> QgisApi_allLayers() {
+  return QgsProject::instance()->layerTreeRoot()->layerOrder();
+}
 
-bool QgisApi_loadProject(std::string filename) {
-
-  gVisibleLayers.clear();
-
-  bool res = QgsProject::instance()->read(QString::fromStdString(filename));
-  if (!res) return false;
-
-  QgsLayerTree *root = QgsProject::instance()->layerTreeRoot();
+QList<QgsMapLayer *> QgisApi_visibleLayers() {
+  QList<QgsMapLayer *> result = {};
+  auto root = QgsProject::instance()->layerTreeRoot();
   const QList<QgsMapLayer *> allLayers = root->layerOrder();
   for (QgsMapLayer *layer : allLayers) {
     QgsLayerTreeLayer *nodeLayer = root->findLayer(layer->id());
-    if (nodeLayer && nodeLayer->layer()->isSpatial() && nodeLayer->isVisible())
-      gVisibleLayers << layer;
+    if (nodeLayer && nodeLayer->layer()->isSpatial() && nodeLayer->isVisible()) {
+      result << layer;
+    }
   }
+  return result;
+}
+
+bool QgisApi_loadProject(std::string filename) {
+  bool res = QgsProject::instance()->read(QString::fromStdString(filename));
+  if (!res) return false;
 
   return true;
 }
@@ -35,7 +43,7 @@ bool QgisApi_loadProject(std::string filename) {
 QgsRectangle QgisApi_fullExtent() {
   QgsMapSettings mapSettings;
   mapSettings.setDestinationCrs(QgsProject::instance()->crs());
-  mapSettings.setLayers(gVisibleLayers);
+  mapSettings.setLayers(QgisApi_visibleLayers());
   return mapSettings.fullExtent();
 }
 
@@ -55,7 +63,7 @@ void QgisApi_renderXYZTile(
   mapSettings.setBackgroundColor(Qt::transparent);
   mapSettings.setOutputSize(QSize(tileSize, tileSize));
 
-  mapSettings.setLayers(gVisibleLayers);
+  mapSettings.setLayers(QgisApi_visibleLayers());
 
   mapSettings.setDestinationCrs(QgsCoordinateReferenceSystem(QStringLiteral("EPSG:3857")));
 
@@ -87,7 +95,7 @@ void QgisApi_renderImage(
   mapSettings.setBackgroundColor(Qt::transparent);
   mapSettings.setOutputSize(QSize(width, height));
 
-  mapSettings.setLayers(gVisibleLayers);
+  mapSettings.setLayers(QgisApi_visibleLayers());
 
   mapSettings.setDestinationCrs(QgsCoordinateReferenceSystem(QString::fromStdString(srid)));
 
@@ -113,6 +121,14 @@ const QgsRectangle QgisApi_transformRectangle(
   return transform.transformBoundingBox(inputRectangle);
 }
 
+const std::vector<MapLayer *> QgisApi_mapLayers() {
+  std::vector<MapLayer *> result = {};
+  for (QgsMapLayer *layer : QgisApi_allLayers()) {
+    result.push_back(new MapLayer(layer));
+  }
+  return result;
+}
+
 EMSCRIPTEN_BINDINGS(QgisApi) {
   emscripten::function("loadProject", &QgisApi_loadProject);
   emscripten::function("fullExtent", &QgisApi_fullExtent);
@@ -120,4 +136,6 @@ EMSCRIPTEN_BINDINGS(QgisApi) {
   emscripten::function("renderImage", &QgisApi_renderImage);
   emscripten::function("renderXYZTile", &QgisApi_renderXYZTile);
   emscripten::function("transformRectangle", &QgisApi_transformRectangle);
+  emscripten::function("mapLayers", &QgisApi_mapLayers, emscripten::allow_raw_pointers());
+  emscripten::register_vector<MapLayer *>("vector<MapLayer *>");
 }

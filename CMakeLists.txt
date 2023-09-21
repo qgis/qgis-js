@@ -43,7 +43,6 @@ find_library(
 set(QGISJS_SOURCES
   src/qgis-js.cpp
   src/api/QgisApi.cpp
-  src/api/QgisModel.cpp
 )
 
 # this creates also .html + qtloader.js + adds various flags to the build
