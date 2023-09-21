@@ -10,7 +10,9 @@ import ImageLayer from "ol/layer/Image";
 
 import XYZ from "ol/source/XYZ.js";
 
-import { fromLonLat } from "ol/proj.js";
+import Projection from "ol/proj/Projection.js";
+
+import { ScaleLine, defaults as defaultControls } from "ol/control.js";
 
 // @ts-ignore
 import("ol/ol.css");
@@ -41,6 +43,8 @@ export function olDemoXYZ(
 
     const map = new Map({
       target,
+      view,
+      controls: defaultControls().extend([new ScaleLine()]),
       maxTilesLoading: 4,
       layers: [
         new WebGLTileLayer({
@@ -60,7 +64,6 @@ export function olDemoXYZ(
             ]
           : []),
       ].reverse(),
-      view: view,
     });
 
     map.once("precompose", function (_event) {
@@ -86,26 +89,43 @@ export function olDemoCanvas(
   api: QgisApi,
   ol: QgisOpenLayers,
 ): () => void {
+  // recreate the entire map on each update to get new projections working
   const update = () => {
     target.innerHTML = "";
 
-    // TODO switch map to the projects CRS
-    /*
-    const initialExtent = api.fullExtent();
-    const center = initialExtent.center();
-    */
+    const srid = api.srid();
+
+    // from "WMS without Projection" example
+    // https://openlayers.org/en/latest/examples/wms-no-proj.html
+    const projection = new Projection({
+      code: srid,
+      // TODO map unit of QgsCoordinateReferenceSystem to ol unit
+      // https://api.qgis.org/api/classQgsCoordinateReferenceSystem.html#ad57c8a9222c27173c7234ca270306128
+      // https://openlayers.org/en/latest/apidoc/module-ol_proj_Units.html
+      units: "m",
+    });
+
+    const view = new View({
+      projection,
+      zoom: 10,
+    });
 
     new Map({
       target,
+      view,
+      controls: defaultControls().extend([new ScaleLine()]),
       layers: [
         new ImageLayer({
-          source: ol.QgisCanvasDataSource(api),
+          source: ol.QgisCanvasDataSource(api, {
+            projection,
+          }),
         }),
       ].reverse(),
-      view: new View({
-        center: fromLonLat([-3.1072, 51.0595]),
-        zoom: 15,
-      }),
+    });
+
+    const bbox = api.fullExtent();
+    view!.fit([bbox.xMinimum, bbox.yMinimum, bbox.xMaximum, bbox.yMaximum], {
+      duration: 500,
     });
   };
   update();
