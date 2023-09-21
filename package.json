@@ -6,6 +6,10 @@
     "node": ">=16.0.0"
   },
   "scripts": {
+    "compile": "pnpm run compile:dev",
+    "compile:dev": "cmake --build build-wasm",
+    "compile:debug": "cmake --build build-wasm -DCMAKE_BUILD_TYPE=Debug",
+    "compile:release": "cmake --build build-wasm -DCMAKE_BUILD_TYPE=Release",
     "build": "pnpm -r --filter=./packages/** run build",
     "dev": "pnpm --filter @qgis-js/dev dev",
     "site": "vite dev",
