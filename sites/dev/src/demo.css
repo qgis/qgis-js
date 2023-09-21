@@ -21,6 +21,32 @@ h1 {
   resize: both;
 }
 
+#layers-control {
+  position: fixed;
+  bottom: 0;
+  right: 2em;
+}
+
+#layers-control .layers {
+  width: 25em;
+  padding: 0.5em;
+  background-color: #ccc;
+}
+
+#layers-control .layers .layer {
+  padding: 0 0.5em;
+  margin-bottom: 0.5em;
+  clear: both;
+}
+
+#layers-control .layers .layer :first-child {
+  margin-right: 0.5em;
+}
+
+#layers-control .layers .layer :last-child {
+  float: right;
+}
+
 #js-demo-canvas {
   position: absolute;
   top: 0;
@@ -29,7 +55,6 @@ h1 {
   right: 0;
   width: 100%;
   height: 100%;
-  background-color: #589632;
 }
 
 #js-demo-controls {

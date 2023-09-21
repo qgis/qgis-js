@@ -3,7 +3,7 @@ import {
   QgisApi,
   QgisApiAdapter,
 } from "../../../src/api/QgisApi";
-import { Rectangle } from "../../../src/api/QgisModel";
+import { MapLayer, Rectangle } from "../../../src/api/QgisModel";
 
 export class QgisApiAdapterImplementation implements QgisApiAdapter {
   private readonly _api: InternalQgisApi;
@@ -39,6 +39,15 @@ export class QgisApiAdapterImplementation implements QgisApiAdapter {
         resolve(imageData);
       });
     });
+  }
+
+  mapLayers(): readonly MapLayer[] {
+    const mapLayersRaw = this._api.mapLayers();
+    const result = new Array<MapLayer>(mapLayersRaw.size());
+    for (let i = 0; i < mapLayersRaw.size(); i++) {
+      result[i] = mapLayersRaw.get(i);
+    }
+    return result;
   }
 }
 

@@ -1,4 +1,4 @@
-import { QgisModelConstructors, Rectangle } from "./QgisModel";
+import { QgisModelConstructors, Rectangle, MapLayer } from "./QgisModel";
 
 export interface CommonQgisApi extends QgisModelConstructors {
   loadProject(filename: string): boolean;
@@ -24,6 +24,7 @@ export interface QgisApiAdapter {
     z: number,
     tileSize: number,
   ): Promise<ImageData>;
+  mapLayers(): readonly MapLayer[];
 }
 
 export interface QgisApi extends CommonQgisApi, QgisApiAdapter {}
@@ -43,4 +44,5 @@ export interface InternalQgisApi extends CommonQgisApi {
     tileSize: number,
     callback: (tileData: ArrayBufferLike) => void,
   ): number;
+  mapLayers(): any;
 }
