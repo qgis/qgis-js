@@ -1,3 +1,4 @@
+EMSCRIPTEN_DIR=~/dev/qgis-js/emsdk/upstream/emscripten \
 QT_HOST_PATH=~/Qt/6.5.2/gcc_64 \
 Qt6_DIR=~/Qt/6.5.2/wasm_multithread \
 VCPKG_BINARY_SOURCES=clear \
@@ -7,5 +8,5 @@ VCPKG_BINARY_SOURCES=clear \
   -DVCPKG_TARGET_TRIPLET=wasm32-emscripten-qt-threads \
   -DVCPKG_OVERLAY_TRIPLETS=./vcpkg-triplets \
   -DVCPKG_OVERLAY_PORTS=./vcpkg-ports \
-  -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=$PWD/vcpkg-triplets/my_toolchain.cmake \
+  -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=$PWD/vcpkg-triplets/toolchain.cmake \
   -DCMAKE_BUILD_TYPE=
