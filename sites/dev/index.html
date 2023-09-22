@@ -5,6 +5,22 @@
     <meta charset="UTF-8" />
     <link rel="icon" href="data:," />
     <link href="src/demo.css" rel="stylesheet" type="text/css" />
+    <script>
+      if (window["SharedArrayBuffer"] === undefined) {
+        console.log("Installing COOP/COEP service worker");
+
+        window.coi = {
+          shouldRegister: () => true,
+          shouldDeregister: () => true,
+          coepCredentialless: () => !(window.chrome || window.netscape),
+          quiet: true,
+        };
+
+        const coiServiceworker = document.createElement("script");
+        coiServiceworker.setAttribute("src", "coi-serviceworker.min.js");
+        document.head.appendChild(coiServiceworker);
+      }
+    </script>
   </head>
 
   <body>
