@@ -23,7 +23,19 @@
       <input type="radio" name="tabset" id="tab2" aria-controls="openlayers" />
       <label for="tab2">OpenLayers </label>
 
-      <div class="project">
+      <div id="status">
+        <div id="status-message">Initializing...</div>
+        <div id="status-progress">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="project" style="visibility: hidden">
         <div>
           <label for="projects">Project:</label>
 
