@@ -19,6 +19,7 @@ export interface QtRuntimeFactory {
 
 export interface QgisRuntimeConfig {
   prefix?: string;
+  onStatus?: (status: string) => void;
 }
 
 export interface QgisRuntime {

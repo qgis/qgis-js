@@ -44,11 +44,7 @@ export async function qgis(config: QgisRuntimeConfig): Promise<QgisRuntime> {
           });
         },
       ],
-      /*
-        setStatus: function (statusText: string) {
-          console.log(statusText);
-        },
-        */
+      ...(config.onStatus ? { setStatus: config.onStatus } : {}),
     });
   });
 }
