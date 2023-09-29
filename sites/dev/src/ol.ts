@@ -2,6 +2,8 @@ import { QgisApi } from "qgis-js";
 
 import { QgisOpenLayers } from "@qgis-js/ol";
 
+import type { QgisXYZDataSource, QgisCanvasDataSource } from "@qgis-js/ol";
+
 import Map from "ol/Map.js";
 import View from "ol/View.js";
 
@@ -17,14 +19,19 @@ import { ScaleLine, defaults as defaultControls } from "ol/control.js";
 // @ts-ignore
 import("ol/ol.css");
 
+const animationDuration = 500;
+
 const useBaseMap = true;
 
 export function olDemoXYZ(
   target: HTMLDivElement,
   api: QgisApi,
   ol: QgisOpenLayers,
-): () => void {
+): { init: () => void; update: () => void; render: () => void } {
   let view: View | undefined = undefined;
+  let map: Map | undefined = undefined;
+  let layer: WebGLTileLayer | undefined = undefined;
+  let source: QgisXYZDataSource | undefined = undefined;
 
   const getBbox = () => {
     const initioalSrid = api.srid();
@@ -35,36 +42,41 @@ export function olDemoXYZ(
   };
 
   const init = () => {
+    target.innerHTML = "";
+
     const center = getBbox().center();
+
     view = new View({
       center: [center.x, center.y],
       zoom: 10,
     });
 
-    const map = new Map({
-      target,
-      view,
-      controls: defaultControls().extend([new ScaleLine()]),
-      maxTilesLoading: 4,
-      layers: [
-        new WebGLTileLayer({
-          source: ol.QgisXYZDataSource(api, {
-            debug: false,
-          }),
-        }),
-        ...(useBaseMap
-          ? [
-              new WebGLTileLayer({
-                opacity: 1,
-                source: new XYZ({
-                  url: `https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}.png`,
-                  maxZoom: 15,
-                }),
-              }),
-            ]
-          : []),
-      ].reverse(),
+    source = ol.QgisXYZDataSource(api, {
+      debug: false,
     });
+
+    (layer = new WebGLTileLayer({
+      source,
+    })),
+      (map = new Map({
+        target,
+        view,
+        controls: defaultControls().extend([new ScaleLine()]),
+        layers: [
+          layer,
+          ...(useBaseMap
+            ? [
+                new WebGLTileLayer({
+                  opacity: 1,
+                  source: new XYZ({
+                    url: `https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}.png`,
+                    maxZoom: 15,
+                  }),
+                }),
+              ]
+            : []),
+        ].reverse(),
+      }));
 
     map.once("precompose", function (_event) {
       // fit the view to the extent of the data once the map gets actually rendered
@@ -75,28 +87,44 @@ export function olDemoXYZ(
   const update = () => {
     const bbox = getBbox();
     view!.fit([bbox.xMinimum, bbox.yMinimum, bbox.xMaximum, bbox.yMaximum], {
-      duration: 500,
+      duration: animationDuration,
     });
+    setTimeout(() => {
+      render();
+    }, 0);
+  };
+
+  const render = () => {
+    source?.clear();
+    layer?.getRenderer()?.clearCache();
+    layer?.changed();
   };
 
   init();
 
-  return update;
+  return {
+    init,
+    update,
+    render,
+  };
 }
 
 export function olDemoCanvas(
   target: HTMLDivElement,
   api: QgisApi,
   ol: QgisOpenLayers,
-): () => void {
-  // recreate the entire map on each update to get new projections working
-  const update = () => {
+): { init: () => void; update: () => void; render: () => void } {
+  let view: View | undefined = undefined;
+  let srid: string | undefined = undefined;
+  let map: Map | undefined = undefined;
+  let layer: ImageLayer<QgisCanvasDataSource> | undefined = undefined;
+  let source: QgisCanvasDataSource | undefined = undefined;
+
+  const init = () => {
     target.innerHTML = "";
 
-    const srid = api.srid();
+    srid = api.srid();
 
-    // from "WMS without Projection" example
-    // https://openlayers.org/en/latest/examples/wms-no-proj.html
     const projection = new Projection({
       code: srid,
       // TODO map unit of QgsCoordinateReferenceSystem to ol unit
@@ -105,29 +133,61 @@ export function olDemoCanvas(
       units: "m",
     });
 
-    const view = new View({
+    const bbox = api.fullExtent();
+    const center = bbox.center();
+
+    view = new View({
       projection,
+      center: [center.x, center.y],
       zoom: 10,
     });
 
-    new Map({
+    source = ol.QgisCanvasDataSource(api, {
+      projection,
+    });
+
+    layer = new ImageLayer({
+      source,
+    });
+
+    map = new Map({
       target,
       view,
       controls: defaultControls().extend([new ScaleLine()]),
-      layers: [
-        new ImageLayer({
-          source: ol.QgisCanvasDataSource(api, {
-            projection,
-          }),
-        }),
-      ].reverse(),
+      layers: [layer],
     });
 
-    const bbox = api.fullExtent();
-    view!.fit([bbox.xMinimum, bbox.yMinimum, bbox.xMaximum, bbox.yMaximum], {
-      duration: 500,
+    map.once("precompose", function (_event) {
+      const bbox = api.fullExtent();
+      view!.fit([bbox.xMinimum, bbox.yMinimum, bbox.xMaximum, bbox.yMaximum], {
+        duration: animationDuration,
+      });
     });
   };
-  update();
-  return update;
+
+  // recreate the entire map on each update to get new projections working
+  const update = () => {
+    init();
+  };
+
+  const render = () => {
+    setTimeout(() => {
+      // recreate the source to force reload the image in the layer
+      source = ol.QgisCanvasDataSource(api, {
+        projection: new Projection({
+          code: srid!,
+          units: "m",
+        }),
+      });
+      layer?.setSource(source);
+    }, 0);
+  };
+
+  init();
+
+  return {
+    init,
+    update,
+    render,
+  };
 }

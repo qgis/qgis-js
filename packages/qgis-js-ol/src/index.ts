@@ -4,11 +4,16 @@ import {
   QgisXYZDataSource,
   QgisXYZDataSourceOptions,
 } from "./QgisXYZDataSource";
+
+export type { QgisXYZDataSource };
+
 import {
   QgisCanvasDataSource,
   QgisCanvasDataSourceOptions,
 } from "./QgisCanvasDataSource";
 import type { TileCoord } from "ol/tilecoord";
+
+export type { QgisCanvasDataSource };
 
 export type Mode = "xyz" | "canvas";
 

@@ -5,13 +5,11 @@ import type { Rectangle } from "qgis-js";
 const mapScaleFactor = 1.5;
 const mapMoveFactor = 0.1;
 
-export function jsDemo(canvas: HTMLCanvasElement, api: QgisApi): () => void {
+export function jsDemo(
+  canvas: HTMLCanvasElement,
+  api: QgisApi,
+): { update: () => void; render: () => void } {
   let lastExtent: Rectangle | null = null;
-
-  function onStart() {
-    lastExtent = api.fullExtent();
-    renderMap();
-  }
 
   async function renderMap() {
     var devicePixelRatio = window.devicePixelRatio || 1;
@@ -19,18 +17,20 @@ export function jsDemo(canvas: HTMLCanvasElement, api: QgisApi): () => void {
     const imageWidth = cssRect.width * devicePixelRatio;
     const imageHeight = cssRect.height * devicePixelRatio;
 
-    const image = await api.renderImage(
-      api.srid(),
-      lastExtent!,
-      imageWidth,
-      imageHeight,
-    );
+    if (imageWidth && imageHeight) {
+      const image = await api.renderImage(
+        api.srid(),
+        lastExtent!,
+        imageWidth,
+        imageHeight,
+      );
 
-    const context = canvas.getContext("2d");
-    canvas.width = imageWidth;
-    canvas.height = imageHeight;
-    context!.scale(devicePixelRatio, devicePixelRatio);
-    context!.putImageData(image, 0, 0);
+      const context = canvas.getContext("2d");
+      canvas.width = imageWidth;
+      canvas.height = imageHeight;
+      context!.scale(devicePixelRatio, devicePixelRatio);
+      context!.putImageData(image, 0, 0);
+    }
   }
 
   document.getElementById("zoomin")!.onclick = function () {
@@ -70,11 +70,19 @@ export function jsDemo(canvas: HTMLCanvasElement, api: QgisApi): () => void {
     renderMap();
   };
 
+  function onStart() {
+    lastExtent = api.fullExtent();
+    renderMap();
+  }
+
   onStart();
 
-  const update = () => {
-    onStart();
+  return {
+    update: () => {
+      onStart();
+    },
+    render: () => {
+      renderMap();
+    },
   };
-
-  return update;
 }

@@ -13,6 +13,7 @@ import { layersControl } from "./layers";
 
 const printVersion = true;
 const apiTest = false;
+const timer = false;
 
 function testApi(api: QgisApi) {
   const p1 = new api.PointXY();
@@ -59,27 +60,29 @@ async function initDemo() {
 
   try {
     // boot the runtime
-    console.time("boot");
+    if (timer) console.time("boot");
     const { api, fs } = await qgis({
       prefix: "/assets/wasm",
       onStatus: (status: string) => {
         onStatus(status);
       },
     });
-    console.timeEnd("boot");
+    if (timer) console.timeEnd("boot");
 
     // prepare project management
     onStatus("Loading projects...");
-    const updates: Array<Function> = [];
+    const updateCallbacks: Array<Function> = [];
+    const renderCallbacks: Array<Function> = [];
+
     const { openProject, loadLocalProject, loadRemoteProjects } = useProjects(
       fs,
       (project: string) => {
-        console.time("project");
+        if (timer) console.time("project");
         api.loadProject(project);
-        console.timeEnd("project");
+        if (timer) console.timeEnd("project");
         // update all demos
         setTimeout(() => {
-          updates.forEach((update) => update());
+          updateCallbacks.forEach((update) => update());
         }, 0);
       },
     );
@@ -108,10 +111,10 @@ async function initDemo() {
     };
 
     // load remote projects
-    console.time("remote projects");
+    if (timer) console.time("remote projects");
     const remoteProjects = await loadRemoteProjects();
     remoteProjects.forEach((project) => listProject(project));
-    console.timeEnd("remote projects");
+    if (timer) console.timeEnd("remote projects");
 
     // open first project
     onStatus("Opening first project...");
@@ -122,9 +125,9 @@ async function initDemo() {
 
     // paint a first dummy frame
     onStatus("Rendering first frame...");
-    console.time("first frame");
+    if (timer) console.time("first frame");
     await api.renderImage(api.srid(), api.fullExtent(), 42, 42);
-    console.timeEnd("first frame");
+    if (timer) console.timeEnd("first frame");
 
     onReady();
 
@@ -132,11 +135,11 @@ async function initDemo() {
       "layers-control",
     ) as HTMLDivElement | null;
     if (layersControlDiv) {
-      updates.push(
+      updateCallbacks.push(
         layersControl(layersControlDiv, api, () => {
           // update all demos
           setTimeout(() => {
-            updates.forEach((update) => update());
+            renderCallbacks.forEach((render) => render());
           }, 0);
         }),
       );
@@ -146,7 +149,9 @@ async function initDemo() {
     const jsDemoCanvas = document.getElementById(
       "js-demo-canvas",
     ) as HTMLCanvasElement;
-    updates.push(jsDemo(jsDemoCanvas, api));
+    const { update, render } = jsDemo(jsDemoCanvas, api);
+    updateCallbacks.push(update);
+    renderCallbacks.push(render);
 
     // ol demo
     const qgisOl = new QgisOpenLayers();
@@ -155,14 +160,18 @@ async function initDemo() {
         "ol-demo-xyz",
       ) as HTMLDivElement | null;
       if (olDemoXYZDiv) {
-        updates.push(olDemoXYZ(olDemoXYZDiv, api, qgisOl));
+        const { update, render } = olDemoXYZ(olDemoXYZDiv, api, qgisOl);
+        updateCallbacks.push(update);
+        renderCallbacks.push(render);
       }
 
       const olDemoCanvasDiv = document.getElementById(
         "ol-demo-canvas",
       ) as HTMLDivElement | null;
       if (olDemoCanvasDiv) {
-        updates.push(olDemoCanvas(olDemoCanvasDiv, api, qgisOl));
+        const { update, render } = olDemoCanvas(olDemoCanvasDiv, api, qgisOl);
+        updateCallbacks.push(update);
+        renderCallbacks.push(render);
       }
     }
   } catch (error) {
