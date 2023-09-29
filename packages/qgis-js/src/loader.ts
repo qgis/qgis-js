@@ -30,7 +30,7 @@ export async function qgis(config: QgisRuntimeConfig): Promise<QgisRuntime> {
       locateFile: (path: string) => `${config.prefix}/` + path,
       preRun: [
         function (module: any) {
-          module.qtContainerElements = [canvas];
+          module.qtContainerElements = canvas ? [canvas] : [];
           module.qtFontDpi = 96;
         },
       ],

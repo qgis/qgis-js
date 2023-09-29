@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
     QSettings::IniFormat, QSettings::UserScope, temp.path() + QString("/settings"));
 
   app = new QGuiApplication(argc, argv);
-  qDebug() << "QgsApplication::init";
+  // qDebug() << "QgsApplication::init";
   QgsApplication::init(temp.path());
   QgsApplication::setPkgDataPath("/qgis"); // as set in CMakeLists.txt
 
