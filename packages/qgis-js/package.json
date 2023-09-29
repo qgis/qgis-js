@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "browser-fs-access": "0.34.1",
+    "p-limit": "4.0.0",
     "@types/emscripten": "1.39.7"
   },
   "devDependencies": {

@@ -5,11 +5,24 @@ import {
 } from "../../../src/api/QgisApi";
 import { MapLayer, Rectangle } from "../../../src/api/QgisModel";
 
+import { threadPoolSize } from "./runtime";
+
+import pLimit from "p-limit";
+import type { LimitFunction } from "p-limit";
+
 export class QgisApiAdapterImplementation implements QgisApiAdapter {
   private readonly _api: InternalQgisApi;
+  private readonly _threadPoolSize: number;
+  private readonly _limit: LimitFunction;
 
   constructor(api: InternalQgisApi) {
     this._api = api;
+    this._threadPoolSize = threadPoolSize();
+    this._limit = pLimit(this._threadPoolSize);
+  }
+
+  protected runLimited<T>(fn: () => Promise<T>): Promise<T> {
+    return this._limit(fn);
   }
 
   renderImage(
@@ -18,11 +31,13 @@ export class QgisApiAdapterImplementation implements QgisApiAdapter {
     width: number,
     height: number,
   ): Promise<ImageData> {
-    return new Promise((resolve) => {
-      this._api.renderImage(srid, extent, width, height, (tileData) => {
-        const data = new Uint8ClampedArray(tileData);
-        const imageData = new ImageData(data, width, height);
-        resolve(imageData);
+    return this.runLimited(() => {
+      return new Promise((resolve) => {
+        this._api.renderImage(srid, extent, width, height, (tileData) => {
+          const data = new Uint8ClampedArray(tileData);
+          const imageData = new ImageData(data, width, height);
+          resolve(imageData);
+        });
       });
     });
   }
@@ -32,11 +47,13 @@ export class QgisApiAdapterImplementation implements QgisApiAdapter {
     z: number,
     tileSize: number,
   ): Promise<ImageData> {
-    return new Promise((resolve) => {
-      this._api.renderXYZTile(x, y, z, tileSize, (tileData) => {
-        const data = new Uint8ClampedArray(tileData);
-        const imageData = new ImageData(data, tileSize, tileSize);
-        resolve(imageData);
+    return this.runLimited(() => {
+      return new Promise((resolve) => {
+        this._api.renderXYZTile(x, y, z, tileSize, (tileData) => {
+          const data = new Uint8ClampedArray(tileData);
+          const imageData = new ImageData(data, tileSize, tileSize);
+          resolve(imageData);
+        });
       });
     });
   }
