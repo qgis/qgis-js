@@ -148,10 +148,18 @@ async function initDemo() {
     // js demo
     const jsDemoCanvas = document.getElementById(
       "js-demo-canvas",
-    ) as HTMLCanvasElement;
-    const { update, render } = jsDemo(jsDemoCanvas, api);
-    updateCallbacks.push(update);
-    renderCallbacks.push(render);
+    ) as HTMLCanvasElement | null;
+    if (jsDemoCanvas) {
+      const { update, render } = jsDemo(jsDemoCanvas, api);
+      updateCallbacks.push(update);
+      renderCallbacks.push(render);
+      // ensure js demo gets refreshed when the section gets visible
+      const jsButton = document.getElementById("tab1") as HTMLInputElement;
+      jsButton.addEventListener("change", () => {
+        console.log(jsButton.checked);
+        if (jsButton.checked) update();
+      });
+    }
 
     // ol demo
     const qgisOl = new QgisOpenLayers();
@@ -179,4 +187,6 @@ async function initDemo() {
   }
 }
 
-initDemo();
+document.addEventListener("DOMContentLoaded", function () {
+  initDemo();
+});

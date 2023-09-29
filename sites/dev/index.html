@@ -36,8 +36,20 @@
         checked
       />
       <label for="tab1">JavaScript</label>
-      <input type="radio" name="tabset" id="tab2" aria-controls="openlayers" />
-      <label for="tab2">OpenLayers </label>
+      <input
+        type="radio"
+        name="tabset"
+        id="tab2"
+        aria-controls="openlayers_xyz"
+      />
+      <label for="tab2">ol: XYZ Tiles </label>
+      <input
+        type="radio"
+        name="tabset"
+        id="tab3"
+        aria-controls="openlayers_canvas"
+      />
+      <label for="tab3">ol: Canvas Tile</label>
 
       <div id="status">
         <div id="status-message">Initializing...</div>
@@ -99,18 +111,26 @@
             sanctus est Lorem ipsum dolor sit amet.
           </p>
         </section>
-        <section id="openlayers" class="tab-panel">
-          <h2>OpenLayers</h2>
+        <section id="openlayers_xyz" class="tab-panel">
+          <h2>OpenLayers: XYZ Tiles</h2>
           <p>
             <strong>Lorem ipsum dolor sit amet:</strong> Consetetur sadipscing
             elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore
             magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
             justo duo dolores et ea rebum.
           </p>
-          <h2>XYZ Tiles</h2>
           <div id="ol-demo-xyz" class="demo"></div>
           <p>At vero eos et accusam et justo duo dolores et ea rebum.</p>
-          <h2>Canvas Tiles</h2>
+        </section>
+
+        <section id="openlayers_canvas" class="tab-panel">
+          <h2>OpenLayers: Canvas Tile</h2>
+          <p>
+            <strong>Lorem ipsum dolor sit amet:</strong> Consetetur sadipscing
+            elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore
+            magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
+            justo duo dolores et ea rebum.
+          </p>
           <div id="ol-demo-canvas" class="demo"></div>
           <p>At vero eos et accusam et justo duo dolores et ea rebum.</p>
         </section>
@@ -118,8 +138,6 @@
     </div>
 
     <div id="layers-control"></div>
-
-    <div id="app"></div>
 
     <script type="module" src="src/index.ts"></script>
   </body>
