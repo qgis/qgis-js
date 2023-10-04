@@ -69,9 +69,18 @@ export function olDemoXYZ(
                 new WebGLTileLayer({
                   opacity: 1,
                   source: new XYZ({
-                    url: `https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}.png`,
-                    maxZoom: 15,
+                    url: `https://tile.openstreetmap.org/{z}/{x}/{y}.png`,
                   }),
+                  style: {
+                    //exposure: ["var", "exposure"],
+                    //contrast: ["var", "contrast"],
+                    saturation: ["var", "saturation"],
+                    variables: {
+                      //exposure: 0,
+                      //contrast: 0,
+                      saturation: -0.75,
+                    },
+                  },
                 }),
               ]
             : []),
