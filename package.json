@@ -29,7 +29,7 @@
     "dev": "pnpm --filter @qgis-js/dev dev",
     "dev:build": "pnpm --filter @qgis-js/dev build",
     "dev:preview": "npm run dev:build && pnpm --filter @qgis-js/dev preview",
-    "site": "vite dev",
+    "site": "pnpm --filter @qgis-js/site vitepress:dev",
     "deploy": "pnpm -r --filter=./sites/** run deploy",
     "publish": "pnpm publish -r --filter=./packages/qgis-js-** --access=public",
     "lint": "npm run lint:prettier && npm run lint:clang-format",

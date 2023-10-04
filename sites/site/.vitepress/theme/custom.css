@@ -1,0 +1,18 @@
+:root {
+  --vp-c-brand-1: #589632;
+  --vp-c-brand-2: #f0e64a;
+  --vp-c-brand-3: #589632;
+}
+
+:root {
+  --vp-font-family-base: "Trueno", Helvetica, Arial, sans-serif;
+  --vp-font-family-mono: Consolas, monaco, monospace;
+}
+
+body {
+  font-weight: 200;
+}
+
+.image-bg {
+  opacity: 0.2;
+}

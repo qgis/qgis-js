@@ -1,0 +1,20 @@
+{
+  "name": "@qgis-js/site",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "npm run vitepress:build",
+    "vitepress:dev": "vitepress dev",
+    "vitepress:build": "vitepress build",
+    "vitepress:preview": "vitepress preview"
+  },
+  "dependencies": {
+    "qgis-js": "0.0.1",
+    "@qgis-js/ol": "0.0.1"
+  },
+  "devDependencies": {
+    "typescript": "5.0.4",
+    "vite": "^4.4.9",
+    "vitepress": "1.0.0-rc.20"
+  }
+}

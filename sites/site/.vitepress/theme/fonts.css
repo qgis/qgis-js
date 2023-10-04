@@ -1,0 +1,90 @@
+@font-face {
+  font-family: "Trueno";
+  src: url("./fonts/TruenoBlackItalic.otf") format("opentype");
+  font-weight: 900;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Trueno";
+  src: url("./fonts/TruenoBold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Trueno";
+  src: url("./fonts/TruenoBoldItalic.otf") format("opentype");
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Trueno";
+  src: url("./fonts/TruenoExtraBold.otf") format("opentype");
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Trueno";
+  src: url("./fonts/TruenoExtraBoldItalic.otf") format("opentype");
+  font-weight: 800;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Trueno";
+  src: url("./fonts/TruenoLight.otf") format("opentype");
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Trueno";
+  src: url("./fonts/TruenoLightItalic.otf") format("opentype");
+  font-weight: 200;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Trueno";
+  src: url("./fonts/TruenoRegular.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Trueno";
+  src: url("./fonts/TruenoRegularItalic.otf") format("opentype");
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Trueno";
+  src: url("./fonts/TruenoSemiBold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Trueno";
+  src: url("./fonts/TruenoSemiBoldItalic.otf") format("opentype");
+  font-weight: 600;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Trueno";
+  src: url("./fonts/TruenoUltraLight.otf") format("opentype");
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Trueno";
+  src: url("./fonts/TruenoUltraLightItalic.otf") format("opentype");
+  font-weight: 100;
+  font-style: italic;
+}

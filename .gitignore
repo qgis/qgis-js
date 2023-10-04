@@ -7,3 +7,4 @@ packages/*/dist
 packages/*/etc
 bin/act
 docs/api
+sites/site/.vitepress/cache
