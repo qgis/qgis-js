@@ -1,8 +1,27 @@
 # qgis-js
 
-Work in progress!
+QGIS core library made into a JavaScript package that can be run in web browsers!
 
-## Install dependencies
+QGIS code and all its dependencies get compiled to WebAssembly using Emscripten, and there are JavaScript bindings on top of that to use QGIS core APIs.
+
+A modern web browser is needed (e.g. Chrome >= 95, Firefox >= 100) because the package needs some more recent WebAssembly features: threads and exception handling.
+
+⚠️ Work in progress! Currently this package only does basic things like loading a QGIS project and map rendering (to an image).
+
+Currently we are only focused on having QGIS core library working. It is out of scope to bring the full QGIS desktop app, GUI library or Python bindings.
+
+There is also code for integration with OpenLayers (see qgis-js-ol package).
+
+## Limitations
+
+Compared to the native build of QGIS, there are various limitations of running in the web browser:
+
+- Network requests to other hosts (WMS, WMTS, raster/vector tiles, ...) may not work if not allowed by those hosts because of [CORS mechanism](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) in browsers
+- Some providers that need to do communication with a server using sockets will not work (e.g. PostgreSQL)
+
+## How to build
+
+### Install dependencies
 
 Install the following packages (on Ubuntu 22.04):
 
@@ -37,7 +56,7 @@ Install Qt6:
 - Patch Qt installation
   - go to `qt-patches` directory in this repo and run `bash qt-patch.sh` (fix QT_DIR if you're not using `~/Qt` for Qt6 install)
 
-## Build
+### Build
 
 This is assuming the following paths:
 
