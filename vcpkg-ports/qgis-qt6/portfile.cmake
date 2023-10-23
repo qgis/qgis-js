@@ -26,7 +26,7 @@ vcpkg_from_github(
         06-GDAL-no-QThread-sleep.patch
         07-fix-QgsArcGisRestQueryUtils-includes.patch
         08-skip-QgsExpression-initFunctionHelp.patch
-        09-empty-QgsExpression-Functions.patch
+        09-fix-QgsExpression-Functions.patch
         10-exclude-qgscoordinatereferencesystem_legacy.patch
         11-disable-openedFileLimit.patch
 )

@@ -1,0 +1,15 @@
+diff --git a/src/core/CMakeLists.txt b/src/core/CMakeLists.txt
+index 02dce34c302..3bca83c548d 100644
+--- a/src/core/CMakeLists.txt
++++ b/src/core/CMakeLists.txt
+@@ -2172,6 +2172,10 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
+ 
+ add_library(qgis_core ${LIBRARY_TYPE} ${QGIS_CORE_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_PRIVATE_HDRS} ${IMAGE_RCCS})
+ 
++# fix "local count too large" when compiling qgsexpressionfunction.cpp with emscripten with Debug build type
++# (see https://github.com/emscripten-core/emscripten/issues/19346)
++set_source_files_properties(expression/qgsexpressionfunction.cpp PROPERTIES COMPILE_FLAGS "-O1")
++
+ 
+ # require c++17
+ target_compile_features(qgis_core PRIVATE cxx_std_17)
