@@ -3,7 +3,8 @@
   "private": true,
   "packageManager": "pnpm@8.7.5",
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=16.0.0",
+    "vcpkg": "2023.10.19"
   },
   "scripts": {
     "compile": "pnpm run compile:dev",
