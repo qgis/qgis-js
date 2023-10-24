@@ -19,6 +19,8 @@
   },
   "files.insertFinalNewline": true,
   "search.exclude": {
+    "build/emsdk": true,
+    "build/vcpkg": true,
     "*/*/node_modules": true,
     "*/*/dist": true,
     "*/*/temp": true,
