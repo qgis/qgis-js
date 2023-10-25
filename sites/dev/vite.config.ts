@@ -32,7 +32,7 @@ export default defineConfig({
   plugins: [
     QgisRuntimePlugin({
       name: "qgis-js",
-      outputDir: "build-wasm",
+      outputDir: "build/wasm",
     }),
     DirectoryListingPlugin(["public/projects"]),
     CrossOriginIsolationPlugin(),
