@@ -7,11 +7,12 @@
     "vcpkg": "2023.10.19",
     "emsdk": "3.1.29"
   },
+  "type": "module",
   "scripts": {
     "compile": "pnpm run compile:dev",
-    "compile:dev": "cmake --build build-wasm",
-    "compile:debug": "cmake --build build-wasm -DCMAKE_BUILD_TYPE=Debug",
-    "compile:release": "cmake --build build-wasm -DCMAKE_BUILD_TYPE=Release",
+    "compile:dev": "./compile.ts",
+    "compile:debug": "./compile.ts --buildType Debug",
+    "compile:release": "./compile.ts --buildType Release",
     "build": "pnpm -r --filter=./packages/** run build",
     "dev": "pnpm --filter @qgis-js/dev dev",
     "site": "vite dev",
@@ -23,6 +24,8 @@
   },
   "devDependencies": {
     "pnpm": "8.7.5",
+    "zx": "7.2.3",
+    "vite-node": "0.34.6",
     "prettier": "3.0.3",
     "pretty-quick": "3.1.3",
     "clang-format": "1.8.0"

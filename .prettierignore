@@ -1,8 +1,9 @@
-js
 public
 dist
 node_modules
-build-wasm
+build/wasm
+build/emsdk
+build/vcpkg
 qt-patches
 resources
 vcpkg-ports
