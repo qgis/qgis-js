@@ -53,7 +53,10 @@ target_compile_options(qgis-js PRIVATE "-fwasm-exceptions")
 set_target_properties(qgis-js PROPERTIES LINK_FLAGS "-fwasm-exceptions")
 
 set_target_properties(qgis-js PROPERTIES LINK_FLAGS "--bind")
-set_target_properties(qgis-js PROPERTIES LINK_FLAGS "--preload-file ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/share/proj@/proj --preload-file ${CMAKE_SOURCE_DIR}/resources/srs.db@/qgis/resources/srs.db")
+set_target_properties(qgis-js PROPERTIES LINK_FLAGS "--preload-file \
+${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/share/proj@/proj \
+--preload-file \
+${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/share/qgis/resources/srs.db@/qgis/resources/srs.db")
 
 target_include_directories(qgis-js PRIVATE ${QGIS_INCLUDE_DIR})
 target_link_libraries(qgis-js PRIVATE ${QGIS_LIBRARY})
