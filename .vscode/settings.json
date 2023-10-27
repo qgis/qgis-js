@@ -2,13 +2,7 @@
   "workbench.editor.enablePreview": false,
   "editor.tabSize": 2,
   "editor.formatOnSave": true,
-  "prettier.configPath": ".prettierrc.json",
-  "prettier.documentSelectors": [
-    "**/*.{js,cjs,json,ts,vue,html,css,svg,yaml,md,webmanifest,clang-format,npmrc}"
-  ],
-  "C_Cpp.autoAddFileAssociations": false,
-  "C_Cpp.clang_format_path": "${workspaceRoot}/node_modules/clang-format/bin/linux_x64/clang-format",
-  "clang-format.executable": "${workspaceRoot}/node_modules/clang-format/bin/linux_x64/clang-format",
+  "files.insertFinalNewline": true,
   "files.associations": {
     "**/package.json": "json",
     "**/*.json": "jsonc",
@@ -17,7 +11,9 @@
     "**/*.hpp": "cpp",
     "functional": "cpp"
   },
-  "files.insertFinalNewline": true,
+  "terminal.integrated.env.linux": {
+    "PATH": "${workspaceRoot}/build/emsdk:${workspaceRoot}/build/emsdk/upstream/emscripten:${workspaceRoot}/build/emsdk/upstream/bin:${workspaceRoot}/build/vcpkg:${env:PATH}"
+  },
   "search.exclude": {
     "build/emsdk": true,
     "build/vcpkg": true,
@@ -26,5 +22,27 @@
     "*/*/temp": true,
     "*/*/.vitepress/dist": true
   },
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "C_Cpp.autoAddFileAssociations": false,
+  "C_Cpp.clang_format_path": "${workspaceRoot}/node_modules/clang-format/bin/linux_x64/clang-format",
+  "cmake.cmakePath": "${workspaceFolder}/build/vcpkg/downloads/tools/cmake-3.27.1-linux/cmake-3.27.1-linux-x86_64/bin/cmake",
+  "cmake.environment": {
+    "QT_HOST_PATH": "${userHome}/Qt/6.5.2/gcc_64",
+    "Qt6_DIR": "${userHome}/Qt/6.5.2/wasm_multithread",
+    "VCPKG_BINARY_SOURCES": "clear"
+  },
+  "cmake.configureSettings": {
+    "CMAKE_TOOLCHAIN_FILE": "${workspaceFolder}/build/vcpkg/scripts/buildsystems/vcpkg.cmake",
+    "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${workspaceFolder}/build/vcpkg-toolchains/qgis-js.cmake",
+    "VCPKG_TARGET_TRIPLET": "wasm32-emscripten-qt-threads",
+    "VCPKG_OVERLAY_TRIPLETS": "./build/vcpkg-triplets",
+    "VCPKG_OVERLAY_PORTS": "./build/vcpkg-ports"
+  },
+  "cmake.buildDirectory": "${workspaceFolder}/build/wasm",
+  "cmake.emscriptenSearchDirs": ["build/emsdk/upstream/emscripten"],
+  "prettier.configPath": ".prettierrc.json",
+  "prettier.documentSelectors": [
+    "**/*.{js,cjs,json,ts,vue,html,css,svg,yaml,md,webmanifest,clang-format,npmrc}"
+  ],
+  "clang-format.executable": "${workspaceRoot}/node_modules/clang-format/bin/linux_x64/clang-format"
 }

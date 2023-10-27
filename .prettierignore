@@ -4,7 +4,7 @@ node_modules
 build/wasm
 build/emsdk
 build/vcpkg
+build/vcpkg-ports
+build/vcpkg-toolchains
+build/vcpkg-triplets
 qt-patches
-resources
-vcpkg-ports
-vcpkg-triplets

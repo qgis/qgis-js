@@ -12,7 +12,7 @@
         "${env:HOME}/Qt/6.5.2/wasm_multithread/include/QtXml",
         "${workspaceFolder}/build/wasm/vcpkg_installed/wasm32-emscripten-qt-threads/include",
         "${workspaceFolder}/build/wasm/vcpkg_installed/wasm32-emscripten-qt-threads/include/qgis",
-        "${env:EMSDK}/upstream/emscripten/cache/sysroot/include"
+        "${workspaceFolder}/build/emsdk/upstream/emscripten/system/include"
       ],
       "defines": [],
       "compilerPath": "/usr/bin/gcc",

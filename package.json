@@ -4,8 +4,10 @@
   "packageManager": "pnpm@8.7.5",
   "engines": {
     "node": ">=16.0.0",
+    "emsdk": "3.1.29",
     "vcpkg": "2023.10.19",
-    "emsdk": "3.1.29"
+    "qt": "6.5.2",
+    "qgis": "3.32.1"
   },
   "type": "module",
   "scripts": {
