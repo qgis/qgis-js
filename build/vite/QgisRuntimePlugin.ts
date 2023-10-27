@@ -42,7 +42,7 @@ export default function QgisRuntimePlugin(_runtime: Runtime | null): Plugin {
   let config: ResolvedConfig;
   let runtimeDir = () => `${config.build.assetsDir}/${BASE_DIR}`;
 
-  const repoRoot = resolve(__dirname, "../");
+  const repoRoot = resolve(__dirname, "../..");
 
   function file(ending: string) {
     return `${runtime.name}.${ending}`;

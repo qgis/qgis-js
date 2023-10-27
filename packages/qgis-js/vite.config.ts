@@ -1,7 +1,7 @@
 import { resolve } from "path";
 import { defineConfig } from "vite";
 
-import QgisRuntimePlugin from "../../vite/QgisRuntimePlugin";
+import QgisRuntimePlugin from "../../build/vite/QgisRuntimePlugin";
 
 import dts from "vite-plugin-dts";
 
