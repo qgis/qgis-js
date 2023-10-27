@@ -53,40 +53,30 @@ Install Qt6:
 - Install at least the following 6.5.2 packages:
   - WebAssembly (multi-threaded)
   - Qt 5 Compatibility Module
-- Patch Qt installation
+- Patch Qt installation (TODO this seems not to be nessesary anymore?)
   - go to `qt-patches` directory in this repo and run `bash qt-patch.sh` (fix QT_DIR if you're not using `~/Qt` for Qt6 install)
 
 ### Build
 
 This is assuming the following paths:
 
-- vcpkg in `~/inst/vcpkg`
-- emsdk in `~/inst/emsdk`
 - Qt in `~/Qt`
-- this repo in `~/qgis/wasm/test_vcpkg`
-
-Fix hardcoded paths in `vcpkg-triplets/*.cmake` to point to your paths (TODO: fix!).
-
-Get emscripten tools in PATH:
-
-```
-source "~/inst/emsdk/emsdk_env.sh"
-```
 
 Run CMake (the first run will take long time as it will build all dependencies with vcpkg:
 
 ```
-EMSCRIPTEN_DIR=~/inst/emsdk/upstream/emscripten \
 QT_HOST_PATH=~/Qt/6.5.2/gcc_64 \
 Qt6_DIR=~/Qt/6.5.2/wasm_multithread \
 VCPKG_BINARY_SOURCES=clear \
-~/inst/vcpkg/downloads/tools/cmake-3.27.1-linux/cmake-3.27.1-linux-x86_64/bin/cmake \
-  -B build/wasm -S . -G Ninja \
-  -DCMAKE_TOOLCHAIN_FILE=~/inst/vcpkg/scripts/buildsystems/vcpkg.cmake \
+$(echo ./build/vcpkg/downloads/tools/cmake-*/*/bin/cmake) \
+  -S . \
+  -B build/wasm \
+  -G Ninja \
+  -DCMAKE_TOOLCHAIN_FILE=$PWD/build/vcpkg/scripts/buildsystems/vcpkg.cmake \
+  -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=$PWD/build/vcpkg-toolchains/qgis-js.cmake \
+  -DVCPKG_OVERLAY_TRIPLETS=./build/vcpkg-triplets \
+  -DVCPKG_OVERLAY_PORTS=./build/vcpkg-ports \
   -DVCPKG_TARGET_TRIPLET=wasm32-emscripten-qt-threads \
-  -DVCPKG_OVERLAY_TRIPLETS=./vcpkg-triplets \
-  -DVCPKG_OVERLAY_PORTS=./vcpkg-ports \
-  -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=~/qgis/wasm/test_vcpkg/vcpkg-triplets/toolchain.cmake \
   -DCMAKE_BUILD_TYPE=
 ```
 
