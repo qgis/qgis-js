@@ -1,23 +1,16 @@
-echo "- installing emsdk"
-(
-  cd build/emsdk;
-  ./emsdk install 3.1.29;
-  ./emsdk activate 3.1.29;
-  cd ../..;
-)
+#!/bin/bash
+set -eo pipefail
 
-echo "installing vcpkg"
-(
-  ./build/vcpkg/bootstrap-vcpkg.sh \
-    -disableMetrics
-)
+git submodule init build/emsdk
+build/emsdk/emsdk install 3.1.29;
+build/emsdk/emsdk activate 3.1.29;
 
-echo "running vcpkg install"
-(
-  ./build/vcpkg/vcpkg install \
-    --x-install-root=build/wasm/vcpkg_installed \
-    --only-downloads \
-    --overlay-triplets=build/vcpkg-triplets \
-    --overlay-ports=build/vcpkg-ports \
-    --triplet wasm32-emscripten-qt-threads
-)
+git submodule init build/vcpkg
+./build/vcpkg/bootstrap-vcpkg.sh -disableMetrics
+
+./build/vcpkg/vcpkg install \
+--x-install-root=build/wasm/vcpkg_installed \
+--only-downloads \
+--overlay-triplets=build/vcpkg-triplets \
+--overlay-ports=build/vcpkg-ports \
+--triplet wasm32-emscripten-qt-threads

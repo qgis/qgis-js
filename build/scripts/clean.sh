@@ -1,8 +1,8 @@
-echo "- cleaning build/emsdk"
-(cd build/emsdk;git clean -xfd)
+#!/bin/bash
+set -eo pipefail
 
-echo "- cleaning build/vcpkg"
-(cd build/vcpkg;git clean -xfd)
+(cd build/emsdk; git clean -xfd)
 
-echo "- cleaning build/wasm"
+(cd build/vcpkg; git clean -xfd)
+
 rm -rf build/wasm && mkdir build/wasm

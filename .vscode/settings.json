@@ -35,8 +35,8 @@
     "CMAKE_TOOLCHAIN_FILE": "${workspaceFolder}/build/vcpkg/scripts/buildsystems/vcpkg.cmake",
     "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${workspaceFolder}/build/vcpkg-toolchains/qgis-js.cmake",
     "VCPKG_TARGET_TRIPLET": "wasm32-emscripten-qt-threads",
-    "VCPKG_OVERLAY_TRIPLETS": "./build/vcpkg-triplets",
-    "VCPKG_OVERLAY_PORTS": "./build/vcpkg-ports"
+    "VCPKG_OVERLAY_TRIPLETS": "${workspaceFolder}/build/vcpkg-triplets",
+    "VCPKG_OVERLAY_PORTS": "${workspaceFolder}/build/vcpkg-ports"
   },
   "cmake.buildDirectory": "${workspaceFolder}/build/wasm",
   "cmake.emscriptenSearchDirs": ["build/emsdk/upstream/emscripten"],

@@ -2,6 +2,8 @@
 
 QGIS core library made into a JavaScript package that can be run in web browsers!
 
+## About
+
 QGIS code and all its dependencies get compiled to WebAssembly using Emscripten, and there are JavaScript bindings on top of that to use QGIS core APIs.
 
 A modern web browser is needed (e.g. Chrome >= 95, Firefox >= 100) because the package needs some more recent WebAssembly features: threads and exception handling.
@@ -23,75 +25,121 @@ Compared to the native build of QGIS, there are various limitations of running i
 
 ### Install dependencies
 
-Install the following packages (on Ubuntu 22.04):
+#### Install the following **system packages** (on Ubuntu 22.04):
 
 ```
 sudo apt-get install pkg-config ninja-build flex bison
 ```
 
-Install vcpkg:
+#### Install **Qt6**:
 
-```
-git clone https://github.com/microsoft/vcpkg
-./vcpkg/bootstrap-vcpkg.sh
-```
+- Download the [Qt Online Installer](https://www.qt.io/download-qt-installer-oss)
+  - You need a free Qt account to use the installer
+- Install at least the following **6.5.2** packages:
 
-(my vcpkg commit was `c95000e1b`)
-
-Install Emscripten:
-
-```
-git clone https://github.com/emscripten-core/emsdk.git
-cd emsdk
-./emsdk install 3.1.29
-./emsdk activate 3.1.29
-```
-
-Install Qt6:
-
-- Download Qt online installer: https://www.qt.io/download-open-source (one needs free Qt account to use the installer)
-- Install at least the following 6.5.2 packages:
   - WebAssembly (multi-threaded)
   - Qt 5 Compatibility Module
-- Patch Qt installation (TODO this seems not to be nessesary anymore?)
-  - go to `qt-patches` directory in this repo and run `bash qt-patch.sh` (fix QT_DIR if you're not using `~/Qt` for Qt6 install)
+  <!---
+  TODO this seems not to be nessesary anymore?
+  - Patch Qt installation
+    - go to `qt-patches` directory in this repo and run `bash qt-patch.sh` (fix QT_DIR if you're not using `~/Qt` for Qt6 install)
+      -->
 
-### Build
+> Alternativly you can use [Another Qt installer (aqt)](https://github.com/miurahr/aqtinstall) with Python
 
-This is assuming the following paths:
+<!--
+> TODO: Implement ENV handling for Qt6
+-->
 
-- Qt in `~/Qt`
-
-Run CMake (the first run will take long time as it will build all dependencies with vcpkg:
-
-```
-QT_HOST_PATH=~/Qt/6.5.2/gcc_64 \
-Qt6_DIR=~/Qt/6.5.2/wasm_multithread \
-VCPKG_BINARY_SOURCES=clear \
-$(echo ./build/vcpkg/downloads/tools/cmake-*/*/bin/cmake) \
-  -S . \
-  -B build/wasm \
-  -G Ninja \
-  -DCMAKE_TOOLCHAIN_FILE=$PWD/build/vcpkg/scripts/buildsystems/vcpkg.cmake \
-  -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=$PWD/build/vcpkg-toolchains/qgis-js.cmake \
-  -DVCPKG_OVERLAY_TRIPLETS=./build/vcpkg-triplets \
-  -DVCPKG_OVERLAY_PORTS=./build/vcpkg-ports \
-  -DVCPKG_TARGET_TRIPLET=wasm32-emscripten-qt-threads \
-  -DCMAKE_BUILD_TYPE=
-```
-
-(Empty CMAKE_BUILD_TYPE is good for dev, with fast link times. One can use `Release` for optimized
-release build or `Debug` for debug build with symbols included - both take much longer to build.)
-
-After successful configure, build the WebAssembly binary:
-
-```
-cmake --build build/wasm
-```
-
-Finally install and run the npm meta pckage:
+#### Install dependencies with pnpm:
 
 ```
 npx pnpm install
+```
+
+> This will also invoke `./qgis-js.ts -v install` on "postinstall" which
+>
+> - downloads and installs emsdk in `build/emdsk`
+> - downloads and installs vcpkg in `build/vcpkg`
+> - boostraps vcpkg and downlaod the ports sources
+>
+> see also [`build/scripts/install.sh`](./build/scripts/install.sh) for manual installation
+
+### Compile qgis-js with Emscripten
+
+```
+npm run compile
+```
+
+> Can also be ivoked with `compile:debug` or `compile:release`, see [Build types](#Build-types)
+
+> Will take about 30 minutes on a modern machine to compile all the vcpkg ports during the first run... ☕
+
+> see also [`build/scripts/compile.sh`](./build/scripts/compile.sh) for manual compiltion
+
+### Build `qgis-js` packages
+
+You want to compile with a `Release` [build type](#build-types) first
+
+```
+npm run compile:release
+```
+
+After successful compilation, you can build the packages with Vite:
+
+```
+npm run build
+```
+
+> see the [packages listed at the beginning of this README](#qgis-js)
+
+### Development
+
+You probably want to compile with a `Dev` or `Debug` [build type](#build-types) first
+
+```
+npm run compile:dev
+```
+
+Start a Vite development server:
+
+```
 npm run dev
 ```
+
+Open your browser at http://localhost:5173
+
+## Build types
+
+### `Dev` build type
+
+- Optimized for **fast link times** during development
+  - Symbols are present (e.g. meaningful stacktraces)
+  - Enables some Emscripten assertions
+  - No DWARF debug info
+- Empty `CMAKE_BUILD_TYPE` in CMake
+
+### `Debug` build type
+
+- Optimized for **debugging** with DWARF in Chromium based browsers
+  - Includes symbols and DWARF debug info
+  - Enables most Emscripten assertions
+- see [docs/debugging.md](docs/debugging.md) on how to get started
+- Will take much longer to build than the default `Dev` build type
+- `CMAKE_BUILD_TYPE=Debug` in CMake
+
+### `Release` build type
+
+- Optimized for **performance and minimal package size**
+  - No symbols, assertions or DWARF debug info
+  - Minified JavaScript files
+- Will take much longer to build than the default `Dev` build type
+- `CMAKE_BUILD_TYPE=Release` in CMake
+
+## Contributing
+
+Contributions welcome, see [CONTRIBUTING.md](CONTRIBUTING.md) on how to get started
+
+## License
+
+[GNU General Public License v2.0](LICENSE)
