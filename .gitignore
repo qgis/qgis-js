@@ -4,3 +4,4 @@ build/wasm
 node_modules
 dist
 packages/*/dist
+bin/act

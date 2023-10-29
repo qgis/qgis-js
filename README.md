@@ -33,23 +33,20 @@ sudo apt-get install pkg-config ninja-build flex bison
 
 #### Install **Qt6**:
 
-- Download the [Qt Online Installer](https://www.qt.io/download-qt-installer-oss)
+- **Download** the [Qt Online Installer](https://www.qt.io/download-qt-installer-oss)
+
   - You need a free Qt account to use the installer
-- Install at least the following **6.5.2** packages:
+
+- **Install** at least the following **6.5.2** packages:
 
   - WebAssembly (multi-threaded)
-  - Qt 5 Compatibility Module
-  <!---
-  TODO this seems not to be nessesary anymore?
-  - Patch Qt installation
-    - go to `qt-patches` directory in this repo and run `bash qt-patch.sh` (fix QT_DIR if you're not using `~/Qt` for Qt6 install)
-      -->
+    - Qt 5 Compatibility Module
 
 > Alternativly you can use [Another Qt installer (aqt)](https://github.com/miurahr/aqtinstall) with Python
 
-<!--
-> TODO: Implement ENV handling for Qt6
--->
+- **Patch** Qt installation
+  - Run `build/scripts/qt-patches.sh` to patch the Qt installation
+    - Set `QGIS_JS_QT` env var if you're not using `~/Qt/6.5.2`
 
 #### Install dependencies with pnpm:
 
