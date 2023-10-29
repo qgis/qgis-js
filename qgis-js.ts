@@ -190,7 +190,16 @@ export class CompileAction extends CommandLineAction {
       // set qgis-js internal environment variables
       process.env.QGIS_JS_VCPKG = `${repo}/build/vcpkg`;
       process.env.QGIS_JS_EMSDK = `${repo}/build/emsdk`;
-      process.env.QGIS_JS_QT = `${home}/Qt/6.5.2`;
+
+      if (!process.env.QGIS_JS_QT) {
+        process.env.QGIS_JS_QT = `${home}/Qt/6.5.2`;
+      }
+      //check if QGIS_JS_QT exists
+      if (!fs.existsSync(process.env.QGIS_JS_QT)) {
+        throw new Error(
+          `Qt installation not found at ${process.env.QGIS_JS_QT}`,
+        );
+      }
 
       // set environment variables for CMake
       process.env.QT_HOST_PATH = `${process.env.QGIS_JS_QT}/gcc_64`;
@@ -201,8 +210,11 @@ export class CompileAction extends CommandLineAction {
         process.env.EMCC_DEBUG = "1";
       }
 
+      // locate CMake from vcpkg
+      const cmake = await vcpkgTool("cmake-*/*/bin/cmake");
+
       // configure and build vcpgk dependencies
-      await $`${await vcpkgTool("cmake-*/*/bin/cmake")} \
+      await $`${cmake} \
 -S . \
 -B build/wasm \
 -G Ninja \
@@ -216,7 +228,7 @@ export class CompileAction extends CommandLineAction {
 -DCMAKE_BUILD_TYPE=${buildType !== "Dev" ? buildType : ""}`;
 
       // build
-      await $`cmake --build build/wasm`;
+      await $`${cmake} --build build/wasm`;
 
       resolve();
     });

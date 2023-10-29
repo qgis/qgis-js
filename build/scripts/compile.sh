@@ -12,4 +12,5 @@ $(echo ./build/vcpkg/downloads/tools/cmake-*/*/bin/cmake) \
 -DVCPKG_TARGET_TRIPLET=wasm32-emscripten-qt-threads \
 -DCMAKE_BUILD_TYPE=
 
-cmake --build build/wasm
+$(echo ./build/vcpkg/downloads/tools/cmake-*/*/bin/cmake) \
+--build build/wasm
