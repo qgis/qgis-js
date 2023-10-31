@@ -92,6 +92,8 @@ export class InstallAction extends CommandLineAction {
       const v = options.verbose;
 
       if (v) console.log(`- installing emsdk`);
+      // ensure git submodule is initialized
+      await $`git submodule init build/emsdk`;
       // read engine "emsdk" from package.json
       const emsdkVersion = JSON.parse(fs.readFileSync("package.json", "utf-8"))
         .engines.emsdk;
@@ -100,6 +102,9 @@ export class InstallAction extends CommandLineAction {
       await $`(cd build/emsdk && ./emsdk install ${emsdkVersion} && ./emsdk activate ${emsdkVersion})`;
 
       if (v) console.log(`\n- installing vcpkg`);
+      // ensure git submodule is initialized
+      await $`git submodule init build/vcpkg`;
+      // bootstrap vcpkg
       await $`./build/vcpkg/bootstrap-vcpkg.sh -disableMetrics`;
 
       if (v) console.log(`\n- running vcpkg install`);
