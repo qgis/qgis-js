@@ -1,11 +1,11 @@
 #!/bin/bash
 set -eo pipefail
 
-git submodule init build/emsdk
+git submodule update --init build/emsdk
 build/emsdk/emsdk install 3.1.29;
 build/emsdk/emsdk activate 3.1.29;
 
-git submodule init build/vcpkg
+git submodule update --init build/vcpkg
 ./build/vcpkg/bootstrap-vcpkg.sh -disableMetrics
 
 ./build/vcpkg/vcpkg install \
