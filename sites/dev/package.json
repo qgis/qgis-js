@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
+    "preview": "vite preview",
     "deploy": "npm run build && npm run deploy:upload",
     "deploy:upload": "rsync --recursive --delete-before dist/ tux@zrhwpk.asuscomm.com:/data/https-portal/vhosts/qgis-js.dev.schmuki.io"
   },

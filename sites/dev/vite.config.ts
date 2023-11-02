@@ -10,6 +10,7 @@ import { viteStaticCopy } from "vite-plugin-static-copy";
 import packageJson from "./package.json";
 
 export default defineConfig({
+  base: "/qgis-js/",
   define: {
     __QGIS_JS_VERSION: JSON.stringify(packageJson.version),
   },
