@@ -1,7 +1,8 @@
 #!/bin/bash
 set -eo pipefail
 
-$(echo ./build/vcpkg/downloads/tools/cmake-*/*/bin/cmake) \
+# if vcpkg has installed its own cmake, use that, otherwise use the system cmake
+$(find . -iwholename './build/vcpkg/downloads/tools/cmake-*/*/bin/cmake' | grep bin/cmake || echo cmake) \
 -S . \
 -B build/wasm \
 -G Ninja \

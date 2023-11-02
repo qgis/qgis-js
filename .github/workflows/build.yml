@@ -1,4 +1,5 @@
 name: Build
+
 on:
   workflow_dispatch
   # push:
@@ -7,15 +8,32 @@ on:
   # pull_request:
   #   branches:
   #     - main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
   build-qgis-js:
     env:
       qt: "6.5.2"
       qtModules: "qt5compat"
       pythonVersion: "3.12"
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
+      - name: Set Swap Space
+        uses: pierotofy/set-swap-space@master
+        with:
+          swap-size-gb: 8
       - name: Update apt cache
         run: >-
           sudo apt-get update
@@ -76,17 +94,34 @@ jobs:
         run: pnpm install
       - name: Compile qgis-js
         run: pnpm run compile:release
+      - name: Save logs on failure
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: vcpkg-buildtrees-logs
+          path: build/vcpkg/buildtrees/**/*.log
       - name: Build qgis-js packages
         run: pnpm run build
       - uses: actions/upload-artifact@v3
         with:
-          name: "qgis-js"
+          name: "package-qgis-js"
           path: |
             packages/qgis-js/package.json
             packages/qgis-js/dist/**/*
       - uses: actions/upload-artifact@v3
         with:
-          name: "@qgis-js/ol"
+          name: "package-qgis-js-ol"
           path: |
             packages/qgis-js-ol/package.json
             packages/qgis-js-ol/dist/**/*
+      - name: Build site
+        run: pnpm run dev:build
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: "./sites/dev/dist"
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
