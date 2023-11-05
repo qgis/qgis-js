@@ -16,7 +16,7 @@
   "devDependencies": {
     "ol": "^8",
     "coi-serviceworker": "0.1.7",
-    "typescript": "5.0.4",
+    "typescript": "5.2.2",
     "vite": "4.5.0",
     "vite-plugin-static-copy": "0.17.0"
   }

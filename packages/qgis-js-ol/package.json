@@ -16,9 +16,9 @@
     "ol": "^8"
   },
   "devDependencies": {
-    "typescript": "5.0.4",
+    "typescript": "5.2.2",
     "vite": "4.5.0",
-    "vite-plugin-dts": "3.6.2",
+    "vite-plugin-dts": "3.6.3",
     "@types/node": "^16.7.13"
   }
 }

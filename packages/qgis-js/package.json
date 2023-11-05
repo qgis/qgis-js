@@ -10,14 +10,14 @@
     "build": "vite build"
   },
   "dependencies": {
-    "browser-fs-access": "0.34.1",
-    "p-limit": "4.0.0",
-    "@types/emscripten": "1.39.7"
+    "browser-fs-access": "0.35.0",
+    "p-limit": "5.0.0",
+    "@types/emscripten": "1.39.9"
   },
   "devDependencies": {
-    "typescript": "5.0.4",
+    "typescript": "5.2.2",
     "vite": "4.5.0",
-    "vite-plugin-dts": "3.6.2",
+    "vite-plugin-dts": "3.6.3",
     "@types/node": "^16.7.13"
   },
   "keywords": [
