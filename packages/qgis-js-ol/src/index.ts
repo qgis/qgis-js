@@ -20,12 +20,13 @@ export type Mode = "xyz" | "canvas";
 export class QgisOpenLayers {
   QgisXYZDataSource(api: QgisApi, options?: QgisXYZDataSourceOptions) {
     return new QgisXYZDataSource(
-      (tileCoord: TileCoord, tileSize: number) => {
+      (tileCoord: TileCoord, tileSize: number, devicePixelRatio: number) => {
         return api.renderXYZTile(
           tileCoord[1],
           tileCoord[2],
           tileCoord[0],
           tileSize,
+          devicePixelRatio,
         );
       },
       {
@@ -43,12 +44,14 @@ export class QgisOpenLayers {
         yMax: number,
         width: number,
         height: number,
+        pixelRatio: number,
       ) => {
         return api.renderImage(
           srid,
           new api.Rectangle(xMin, yMin, xMax, yMax),
           width,
           height,
+          pixelRatio,
         );
       },
       {

@@ -9,6 +9,7 @@ import ImageTile from "ol/ImageTile";
 export type QgisXYZRenderFunction = (
   tileCoord: TileCoord,
   tileSize: number,
+  pixelRatio: number,
 ) => Promise<ImageData>;
 
 export interface QgisXYZDataSourceOptions extends Options {
@@ -38,11 +39,13 @@ export class QgisXYZDataSource extends XYZ {
           const imageTile = tile as ImageTile;
 
           const tileSize = parseInt(text);
+          const pixelRatio = Math.round(tileSize / 256);
 
           const context = createCanvasContext2D(tileSize, tileSize);
           const imageData = await this.renderFunction(
             tile.getTileCoord(),
             tileSize,
+            pixelRatio,
           );
           context.putImageData(imageData, 0, 0);
 

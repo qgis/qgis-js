@@ -56,12 +56,14 @@ void QgisApi_renderXYZTile(
   unsigned long y,
   unsigned int z,
   unsigned int tileSize,
+  float pixelRatio,
   emscripten::val callback) {
 
   QgsMapSettings mapSettings;
 
   mapSettings.setBackgroundColor(Qt::transparent);
   mapSettings.setOutputSize(QSize(tileSize, tileSize));
+  mapSettings.setOutputDpi(96.0 * pixelRatio);
 
   mapSettings.setLayers(QgisApi_visibleLayers());
 
@@ -88,12 +90,14 @@ void QgisApi_renderImage(
   const QgsRectangle &extent,
   unsigned int width,
   unsigned int height,
+  float pixelRatio,
   emscripten::val callback) {
 
   QgsMapSettings mapSettings;
 
   mapSettings.setBackgroundColor(Qt::transparent);
   mapSettings.setOutputSize(QSize(width, height));
+  mapSettings.setOutputDpi(96.0 * pixelRatio);
 
   mapSettings.setLayers(QgisApi_visibleLayers());
 

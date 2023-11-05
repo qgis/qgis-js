@@ -30,14 +30,22 @@ export class QgisApiAdapterImplementation implements QgisApiAdapter {
     extent: Rectangle,
     width: number,
     height: number,
+    pixelRatio: number = window?.devicePixelRatio || 1,
   ): Promise<ImageData> {
     return this.runLimited(() => {
       return new Promise((resolve) => {
-        this._api.renderImage(srid, extent, width, height, (tileData) => {
-          const data = new Uint8ClampedArray(tileData);
-          const imageData = new ImageData(data, width, height);
-          resolve(imageData);
-        });
+        this._api.renderImage(
+          srid,
+          extent,
+          width,
+          height,
+          pixelRatio,
+          (tileData) => {
+            const data = new Uint8ClampedArray(tileData);
+            const imageData = new ImageData(data, width, height);
+            resolve(imageData);
+          },
+        );
       });
     });
   }
@@ -46,10 +54,11 @@ export class QgisApiAdapterImplementation implements QgisApiAdapter {
     y: number,
     z: number,
     tileSize: number,
+    pixelRatio: number = window?.devicePixelRatio || 1,
   ): Promise<ImageData> {
     return this.runLimited(() => {
       return new Promise((resolve) => {
-        this._api.renderXYZTile(x, y, z, tileSize, (tileData) => {
+        this._api.renderXYZTile(x, y, z, tileSize, pixelRatio, (tileData) => {
           const data = new Uint8ClampedArray(tileData);
           const imageData = new ImageData(data, tileSize, tileSize);
           resolve(imageData);

@@ -12,6 +12,7 @@ export type QgisCanvasRenderFunction = (
   yMax: number,
   width: number,
   height: number,
+  pixelRatio: number,
 ) => Promise<ImageData>;
 
 export interface QgisCanvasDataSourceOptions extends Options {}
@@ -26,6 +27,7 @@ export class QgisCanvasDataSource extends ImageSource {
     super({
       loader: (extent, resolution, requestPixelRatio) => {
         return new Promise(async (resolve) => {
+          // note: requestPixelRatio is managed by ol and will not change on zoom
           const pixelRatio = requestPixelRatio || window?.devicePixelRatio || 1;
           const imageResolution = resolution / pixelRatio;
           const width = Math.round(getWidth(extent) / imageResolution);
@@ -39,6 +41,7 @@ export class QgisCanvasDataSource extends ImageSource {
             extent[3],
             width,
             height,
+            pixelRatio,
           );
 
           resolve(createImageBitmap(imageData));

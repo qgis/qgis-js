@@ -11,6 +11,18 @@ export function jsDemo(
 ): { update: () => void; render: () => void } {
   let lastExtent: Rectangle | null = null;
 
+  // ensure pixel perfect rendering
+  // see https://web.dev/articles/device-pixel-content-box
+  const observer = new ResizeObserver((entries) => {
+    const entry = entries.find((entry) => entry.target === canvas);
+    if (entry) {
+      canvas.width = entry.devicePixelContentBoxSize[0].inlineSize;
+      canvas.height = entry.devicePixelContentBoxSize[0].blockSize;
+    }
+    renderMap();
+  });
+  observer.observe(canvas, { box: "device-pixel-content-box" });
+
   async function renderMap() {
     var devicePixelRatio = window.devicePixelRatio || 1;
     var cssRect = canvas.getBoundingClientRect();
@@ -23,6 +35,7 @@ export function jsDemo(
         lastExtent!,
         imageWidth,
         imageHeight,
+        window.devicePixelRatio,
       );
 
       const context = canvas.getContext("2d");

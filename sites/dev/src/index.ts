@@ -126,7 +126,7 @@ async function initDemo() {
     // paint a first dummy frame
     onStatus("Rendering first frame...");
     if (timer) console.time("first frame");
-    await api.renderImage(api.srid(), api.fullExtent(), 42, 42);
+    await api.renderImage(api.srid(), api.fullExtent(), 42, 42, 1);
     if (timer) console.timeEnd("first frame");
 
     onReady();
