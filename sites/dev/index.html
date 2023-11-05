@@ -3,7 +3,7 @@
   <head>
     <title>qgis-js</title>
     <meta charset="UTF-8" />
-    <link rel="icon" href="data:," />
+    <link rel="icon" href="qgis-icon128.svg" />
     <link href="src/demo.css" rel="stylesheet" type="text/css" />
     <script>
       if (window["SharedArrayBuffer"] === undefined) {
@@ -32,10 +32,10 @@
         type="radio"
         name="tabset"
         id="tab1"
-        aria-controls="javascript"
+        aria-controls="openlayers_canvas"
         checked
       />
-      <label for="tab1">JavaScript</label>
+      <label for="tab1">ol: Canvas Tile</label>
       <input
         type="radio"
         name="tabset"
@@ -43,13 +43,8 @@
         aria-controls="openlayers_xyz"
       />
       <label for="tab2">ol: XYZ Tiles </label>
-      <input
-        type="radio"
-        name="tabset"
-        id="tab3"
-        aria-controls="openlayers_canvas"
-      />
-      <label for="tab3">ol: Canvas Tile</label>
+      <input type="radio" name="tabset" id="tab3" aria-controls="javascript" />
+      <label for="tab3">JavaScript</label>
 
       <div id="status">
         <div id="status-message">Initializing...</div>
@@ -75,20 +70,75 @@
       </div>
 
       <div class="tab-panels">
+        <section id="openlayers_canvas" class="tab-panel">
+          <h2>OpenLayers: Canvas Tile</h2>
+          <div id="ol-demo-canvas" class="demo"></div>
+          <p>
+            <a href="https://github.com/qgis/qgis-js" target="_blank"
+              >qgis-js</a
+            >
+            provides a custom &laquo;<strong>Canvas Tile</strong>&raquo;
+            <a href="https://openlayers.org/" target="_blank">OpenLayers</a>
+            source for rendering a single tile with the size and pixel ratio of
+            the ol map canvas. This is useful for rendering in the projection of
+            the QGIS project, both in the OpenLayers view and in the qgis-js
+            runtime.
+          </p>
+          <p>
+            See
+            <a
+              href="https://github.com/qgis/qgis-js/blob/main/packages/qgis-js-ol/src/QgisCanvasDataSource.ts"
+              target="_blank"
+              class="source"
+              >QgisCanvasDataSource.ts</a
+            >
+            for the implementation and the
+            <a
+              href="https://github.com/qgis/qgis-js/blob/main/sites/dev/src/ol.ts#L121"
+              target="_blank"
+              class="source"
+              >olDemoCanvas-function</a
+            >
+            for the demo setup used on this page.
+          </p>
+        </section>
+
+        <section id="openlayers_xyz" class="tab-panel">
+          <h2>OpenLayers: XYZ Tiles</h2>
+          <div id="ol-demo-xyz" class="demo"></div>
+          <p>
+            With the
+            <a href="https://github.com/qgis/qgis-js" target="_blank"
+              >qgis-js</a
+            >
+            custom <strong>XYZ Tiles</strong> source for
+            <a href="https://openlayers.org/" target="_blank">OpenLayers</a>,
+            the QGIS project is rendered in the common Web Mercator projection
+            (EPSG:3857) addressed with the xyz tile scheme. This makes it
+            convenient to mix the QGIS layer with other layer sources provided
+            by OpenLayers.
+          </p>
+          <p>
+            See
+            <a
+              href="https://github.com/qgis/qgis-js/blob/main/packages/qgis-js-ol/src/QgisXYZDataSource.ts"
+              target="_blank"
+              class="source"
+              >QgisXYZDataSource.ts</a
+            >
+            for the implementation and the
+            <a
+              href="https://github.com/qgis/qgis-js/blob/main/sites/dev/src/ol.ts#L26"
+              target="_blank"
+              class="source"
+              >olDemoXYZ-function</a
+            >
+            for the demo setup used on this page.
+          </p>
+        </section>
+
         <section id="javascript" class="tab-panel">
           <h2>JavaScript</h2>
-          <p>
-            <strong>Lorem ipsum dolor sit amet:</strong> Consetetur sadipscing
-            elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore
-            magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
-            justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
-            takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor
-            sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
-            invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-            At vero eos et accusam et justo duo dolores et ea rebum. Stet clita
-            kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
-            amet.
-          </p>
           <div id="js-demo" class="demo">
             <canvas id="js-demo-canvas"></canvas>
 
@@ -102,42 +152,60 @@
             </div>
           </div>
           <p>
-            At vero eos et accusam et justo duo dolores et ea rebum. Stet clita
-            kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
-            amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed
-            diam nonumy eirmod tempor invidunt ut labore et dolore magna
-            aliquyam erat, sed diam voluptua. At vero eos et accusam et justo
-            duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
-            sanctus est Lorem ipsum dolor sit amet.
+            <strong>qgis-js</strong> can be used with plain JavaScript and can
+            therefore be integrated into any web application. The library
+            provides also type information and integrates nicely with
+            TypeScript.
           </p>
-        </section>
-        <section id="openlayers_xyz" class="tab-panel">
-          <h2>OpenLayers: XYZ Tiles</h2>
           <p>
-            <strong>Lorem ipsum dolor sit amet:</strong> Consetetur sadipscing
-            elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore
-            magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
-            justo duo dolores et ea rebum.
+            The example above shows how to use qgis-js with a simple canvas
+            element and some rudimentary controls. The source code can be found
+            in
+            <a
+              href="https://github.com/qgis/qgis-js/blob/main/sites/dev/src/js.ts"
+              target="_blank"
+              class="source"
+              >sites/dev/src/js.ts</a
+            >
           </p>
-          <div id="ol-demo-xyz" class="demo"></div>
-          <p>At vero eos et accusam et justo duo dolores et ea rebum.</p>
-        </section>
+          <p>
+            The qgis-js API exposes also some QGIS core internals which can be
+            used to build web GIS applications:
+          </p>
 
-        <section id="openlayers_canvas" class="tab-panel">
-          <h2>OpenLayers: Canvas Tile</h2>
+          <div class="code">
+            <pre
+              style="margin: 0; line-height: 125%"
+            ><span style="color: #589632; font-weight: bold">const</span> rectangle <span style="color: #666666">=</span> <span style="color: #589632; font-weight: bold">new</span> api.Rectangle(<span style="color: #666666">100</span>, <span style="color: #666666">200</span>, <span style="color: #666666">150</span>, <span style="color: #666666">250</span>);
+console.dir(rectangle);
+
+rectangle.scale(<span style="color: #666666">5</span>);
+console.dir(rectangle);
+
+<span style="color: #589632; font-weight: bold">const</span> center <span style="color: #666666">=</span> rectangle.center();
+console.dir(center);
+</pre>
+          </div>
+
           <p>
-            <strong>Lorem ipsum dolor sit amet:</strong> Consetetur sadipscing
-            elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore
-            magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
-            justo duo dolores et ea rebum.
+            <i
+              >Please note that the API surface is fairly minimal at the moment
+              and will be extended in the future.</i
+            >
           </p>
-          <div id="ol-demo-canvas" class="demo"></div>
-          <p>At vero eos et accusam et justo duo dolores et ea rebum.</p>
         </section>
       </div>
     </div>
 
     <div id="layers-control"></div>
+
+    <a
+      class="github-fork-ribbon"
+      href="https://github.com/qgis/qgis-js"
+      data-ribbon="Fork me on GitHub"
+      title="Fork me on GitHub"
+      >Fork me on GitHub</a
+    >
 
     <script type="module" src="src/index.ts"></script>
   </body>
