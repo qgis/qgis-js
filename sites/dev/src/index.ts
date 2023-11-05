@@ -156,7 +156,6 @@ async function initDemo() {
       // ensure js demo gets refreshed when the section gets visible
       const jsButton = document.getElementById("tab1") as HTMLInputElement;
       jsButton.addEventListener("change", () => {
-        console.log(jsButton.checked);
         if (jsButton.checked) update();
       });
     }
