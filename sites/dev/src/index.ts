@@ -2,8 +2,8 @@ import { QGIS_JS_VERSION, qgis } from "qgis-js";
 
 import { QgisApi } from "qgis-js";
 
-import { Project } from "qgis-js/src/fs/Project";
-import { useProjects } from "./fs";
+import { useProjects } from "@qgis-js/utils";
+import type { Project } from "@qgis-js/utils";
 
 import { jsDemo } from "./js";
 
@@ -14,6 +14,38 @@ import { layersControl } from "./layers";
 const printVersion = true;
 const apiTest = false;
 const timer = false;
+
+function isDev() {
+  // @ts-ignore
+  return import.meta.env.MODE === "development";
+}
+
+const GITHUB_REPOS: Array<{
+  owner: string;
+  repo: string;
+  path?: string;
+  branch?: string;
+  prefix?: string;
+}> = [
+  {
+    owner: "boardend",
+    repo: "qgis-js-projects",
+    path: "/demo",
+    branch: "main",
+    prefix: "Demo: ",
+  },
+  ...(isDev()
+    ? [
+        {
+          owner: "boardend",
+          repo: "qgis-js-projects",
+          path: "/test",
+          branch: "main",
+          prefix: "Test: ",
+        },
+      ]
+    : []),
+];
 
 function testApi(api: QgisApi) {
   const p1 = new api.PointXY();
@@ -74,47 +106,71 @@ async function initDemo() {
     const updateCallbacks: Array<Function> = [];
     const renderCallbacks: Array<Function> = [];
 
-    const { openProject, loadLocalProject, loadRemoteProjects } = useProjects(
-      fs,
-      (project: string) => {
-        if (timer) console.time("project");
-        api.loadProject(project);
-        if (timer) console.timeEnd("project");
-        // update all demos
-        setTimeout(() => {
-          updateCallbacks.forEach((update) => update());
-        }, 0);
-      },
-    );
-    const projects = new Map<string, Project>();
+    const {
+      openProject,
+      loadLocalProject,
+      loadRemoteProjects,
+      loadGithubProjects,
+    } = useProjects(fs, (project: string) => {
+      if (timer) console.time("project");
+      api.loadProject(project);
+      if (timer) console.timeEnd("project");
+      // update all demos
+      setTimeout(() => {
+        updateCallbacks.forEach((update) => update());
+      }, 0);
+    });
+
+    const projects = new Map<string, () => Project | Promise<Project>>();
     const projectSelect = document.getElementById(
       "projects",
     )! as HTMLSelectElement;
     projectSelect.addEventListener("change", () => {
       const project = projects.get(projectSelect.value);
       if (project) {
-        openProject(project);
+        openProject(project());
       }
     });
-    const listProject = (project: Project) => {
-      projects.set(project.name, project);
+    const listProject = (
+      name: string,
+      projectLoadFunciton: () => Project | Promise<Project>,
+    ) => {
+      projects.set(name, projectLoadFunciton);
       const option = document.createElement("option");
-      option.value = project.name;
-      option.text = project.name;
+      option.value = name;
+      option.text = name;
       projectSelect.add(option, null);
     };
     document.getElementById("local-project")!.onclick = async function () {
       const localProject = await loadLocalProject();
       await openProject(localProject);
-      listProject(localProject);
+      listProject(localProject.name, () => localProject);
       projectSelect.value = localProject.name;
     };
 
     // load remote projects
     if (timer) console.time("remote projects");
+    // - remote projects
     const remoteProjects = await loadRemoteProjects();
-    remoteProjects.forEach((project) => listProject(project));
+    remoteProjects.forEach((project) =>
+      listProject(project.name, () => project),
+    );
     if (timer) console.timeEnd("remote projects");
+
+    // - github projects
+    if (timer) console.time("github projects");
+    for (const repo of GITHUB_REPOS) {
+      const githubProjects = await loadGithubProjects(
+        repo.owner,
+        repo.repo,
+        repo.path,
+        repo.branch,
+      );
+      Object.entries(githubProjects).forEach(([name, projectLoadPromise]) => {
+        listProject((repo.prefix || "") + name, projectLoadPromise);
+      });
+    }
+    if (timer) console.timeEnd("github projects");
 
     // open first project
     onStatus("Opening first project...");

@@ -1,4 +1,4 @@
-import { EmscriptenFS } from "../emscripten";
+import type { EmscriptenFS } from "qgis-js";
 
 import { Project, PROJECTS_UPLOAD_DIR } from "./Project";
 

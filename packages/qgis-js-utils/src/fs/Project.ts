@@ -1,6 +1,6 @@
-import { EmscriptenFS } from "../emscripten";
+import type { EmscriptenFS } from "qgis-js";
 
-export type ProjectType = "Remote" | "Local";
+export type ProjectType = "Remote" | "Local" | "Github";
 
 export const PROJECTS_UPLOAD_DIR = "/upload/projects";
 

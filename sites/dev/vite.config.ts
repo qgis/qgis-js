@@ -28,6 +28,13 @@ export default defineConfig({
           "../../packages/qgis-js-ol/src/index.ts",
         ),
       },
+      {
+        find: /^@qgis-js\/utils$/,
+        replacement: resolve(
+          __dirname,
+          "../../packages/qgis-js-utils/src/index.ts",
+        ),
+      },
     ],
   },
   plugins: [
