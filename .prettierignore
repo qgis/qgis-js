@@ -7,4 +7,5 @@ build/vcpkg
 build/vcpkg-ports
 build/vcpkg-toolchains
 build/vcpkg-triplets
-qt-patches
+build/qt-patches
+pnpm-lock.yaml
