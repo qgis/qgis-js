@@ -1,4 +1,4 @@
-import { EmscriptenFS } from "../emscripten";
+import type { EmscriptenFS } from "qgis-js";
 
 import { Project, PROJECTS_UPLOAD_DIR } from "./Project";
 
@@ -43,7 +43,7 @@ export class RemoteProject extends Project {
       this.getFiles().map((file) => {
         return [
           file,
-          new Promise<ArrayBuffer>((resolve, reject) => {
+          new Promise<ArrayBuffer>((resolve, _reject) => {
             fetch(REMOTE_PROJECTS_PUBLIC_DIR + "/" + file).then((response) =>
               response.arrayBuffer().then((buffer) => {
                 resolve(buffer);

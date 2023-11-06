@@ -13,6 +13,7 @@
   "type": "module",
   "scripts": {
     "postinstall": "./qgis-js.ts -v install",
+    "update": "pnpm update --ignore-scripts",
     "clean": "./qgis-js.ts -v clean",
     "compile": "pnpm run compile:dev",
     "compile:dev": "./qgis-js.ts compile",

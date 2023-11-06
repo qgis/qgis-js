@@ -10,7 +10,6 @@
     "build": "vite build"
   },
   "dependencies": {
-    "browser-fs-access": "0.35.0",
     "p-limit": "5.0.0",
     "@types/emscripten": "1.39.9"
   },
