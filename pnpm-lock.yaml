@@ -23,6 +23,9 @@ importers:
       pretty-quick:
         specifier: 3.1.3
         version: 3.1.3(prettier@3.1.1)
+      ts-markdown:
+        specifier: 1.0.0
+        version: 1.0.0
       vite:
         specifier: 5.0.9
         version: 5.0.9(@types/node@20.10.4)
@@ -36,8 +39,8 @@ importers:
   packages/qgis-js:
     dependencies:
       '@types/emscripten':
-        specifier: 1.39.9
-        version: 1.39.9
+        specifier: 1.39.10
+        version: 1.39.10
       p-limit:
         specifier: 5.0.0
         version: 5.0.0
@@ -52,8 +55,8 @@ importers:
         specifier: 5.0.9
         version: 5.0.9(@types/node@20.10.4)
       vite-plugin-dts:
-        specifier: 3.6.3
-        version: 3.6.3(@types/node@20.10.4)(typescript@5.0.4)(vite@5.0.9)
+        specifier: 3.6.4
+        version: 3.6.4(@types/node@20.10.4)(typescript@5.0.4)(vite@5.0.9)
 
   packages/qgis-js-ol:
     dependencies:
@@ -74,14 +77,14 @@ importers:
         specifier: 5.0.9
         version: 5.0.9(@types/node@20.10.4)
       vite-plugin-dts:
-        specifier: 3.6.3
-        version: 3.6.3(@types/node@20.10.4)(typescript@5.0.4)(vite@5.0.9)
+        specifier: 3.6.4
+        version: 3.6.4(@types/node@20.10.4)(typescript@5.0.4)(vite@5.0.9)
 
   packages/qgis-js-utils:
     dependencies:
       '@types/emscripten':
-        specifier: 1.39.9
-        version: 1.39.9
+        specifier: 1.39.10
+        version: 1.39.10
       browser-fs-access:
         specifier: 0.35.0
         version: 0.35.0
@@ -99,8 +102,8 @@ importers:
         specifier: 5.0.9
         version: 5.0.9(@types/node@20.10.4)
       vite-plugin-dts:
-        specifier: 3.6.3
-        version: 3.6.3(@types/node@20.10.4)(typescript@5.0.4)(vite@5.0.9)
+        specifier: 3.6.4
+        version: 3.6.4(@types/node@20.10.4)(typescript@5.0.4)(vite@5.0.9)
 
   sites/dev:
     dependencies:
@@ -127,8 +130,8 @@ importers:
         specifier: 5.0.9
         version: 5.0.9(@types/node@20.10.4)
       vite-plugin-static-copy:
-        specifier: 0.17.0
-        version: 0.17.0(vite@5.0.9)
+        specifier: 1.0.0
+        version: 1.0.0(vite@5.0.9)
 
 packages:
 
@@ -580,8 +583,8 @@ packages:
     resolution: {integrity: sha512-ebDJ9b0e702Yr7pWgB0jzm+CX4Srzz8RcXtLJDJB+BSccqMa36uyH/zUsSYao5+BD1ytv3k3rPYCq4mAE1hsXA==}
     dev: true
 
-  /@types/emscripten@1.39.9:
-    resolution: {integrity: sha512-ILdWj4XYtNOqxJaW22NEQx2gJsLfV5ncxYhhGX1a1H1lXl2Ta0gUz7QOnOoF1xQbJwWDjImi8gXN9mKdIf6n9g==}
+  /@types/emscripten@1.39.10:
+    resolution: {integrity: sha512-TB/6hBkYQJxsZHSqyeuO1Jt0AB/bW6G7rHt9g7lML7SOF6lbgcHvw/Lr+69iqN0qxgXLhWKScAon73JNnptuDw==}
     dev: false
 
   /@types/estree@1.0.5:
@@ -1704,6 +1707,10 @@ packages:
       is-number: 7.0.0
     dev: true
 
+  /ts-markdown@1.0.0:
+    resolution: {integrity: sha512-wDxE5TZwSewtf6R8zOJkcIREwPiUCkaY9HIAyxTjXP7GpDhsAEXAPXLeHACAjqVZaVbeRwJl4eR9eR9lPU/IXQ==}
+    dev: true
+
   /typescript@5.0.4:
     resolution: {integrity: sha512-cW9T5W9xY37cc+jfEnaUvX91foxtHkza3Nw3wkoF4sSlKn0MONdkdEndig/qPBWXNkmplh3NzayQzCiHM4/hqw==}
     engines: {node: '>=12.20'}
@@ -1756,8 +1763,8 @@ packages:
       - terser
     dev: true
 
-  /vite-plugin-dts@3.6.3(@types/node@20.10.4)(typescript@5.0.4)(vite@5.0.9):
-    resolution: {integrity: sha512-NyRvgobl15rYj65coi/gH7UAEH+CpSjh539DbGb40DfOTZSvDLNYTzc8CK4460W+LqXuMK7+U3JAxRB3ksrNPw==}
+  /vite-plugin-dts@3.6.4(@types/node@20.10.4)(typescript@5.0.4)(vite@5.0.9):
+    resolution: {integrity: sha512-yOVhUI/kQhtS6lCXRYYLv2UUf9bftcwQK9ROxCX2ul17poLQs02ctWX7+vXB8GPRzH8VCK3jebEFtPqqijXx6w==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       typescript: '*'
@@ -1780,11 +1787,11 @@ packages:
       - supports-color
     dev: true
 
-  /vite-plugin-static-copy@0.17.0(vite@5.0.9):
-    resolution: {integrity: sha512-2HpNbHfDt8SDy393AGXh9llHkc8FJMQkI8s3T5WsH3SWLMO+f5cFIyPErl4yGKU9Uh3Vaqsd4lHZYTf042fQ2A==}
-    engines: {node: ^14.18.0 || >=16.0.0}
+  /vite-plugin-static-copy@1.0.0(vite@5.0.9):
+    resolution: {integrity: sha512-kMlrB3WDtC5GzFedNIPkpjnOAr8M11PfWOiUaONrUZ3AqogTsOmIhTt6w7Fh311wl8pN81ld7sfuOEogFJ9N8A==}
+    engines: {node: ^18.0.0 || >=20.0.0}
     peerDependencies:
-      vite: ^3.0.0 || ^4.0.0
+      vite: ^5.0.0
     dependencies:
       chokidar: 3.5.3
       fast-glob: 3.3.2

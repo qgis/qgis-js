@@ -1,18 +1,35 @@
 # qgis-js
 
-QGIS core library made into a JavaScript package that can be run in web browsers!
+**QGIS core ported to WebAssembly to run it on the web platform**
+
+> ⚠️🧪 **Work in progress**! Currently this project is in public beta and only does very basic things like loading a QGIS project and rendering it to a canvas _(see [Limitations](#limitations))_
+
+> **Help wanted**! TODO
 
 ## About
 
-QGIS code and all its dependencies get compiled to WebAssembly using Emscripten, and there are JavaScript bindings on top of that to use QGIS core APIs.
-
-A modern web browser is needed (e.g. Chrome >= 95, Firefox >= 100) because the package needs some more recent WebAssembly features: threads and exception handling.
-
-⚠️ Work in progress! Currently this package only does basic things like loading a QGIS project and map rendering (to an image).
+This project proviedes recipies to compile [QGIS](https://qgis.org/) core and all its dependencies to [WebAssembly](https://webassembly.org/) using [Emscripten](https://emscripten.org/), and there are JavaScript bindings on top of that to use QGIS core APIs.
 
 Currently we are only focused on having QGIS core library working. It is out of scope to bring the full QGIS desktop app, GUI library or Python bindings.
 
-There is also code for integration with OpenLayers (see qgis-js-ol package).
+## Packages
+
+| Package                                                  | Description                                                           | npm                                                                                                                   |
+| -------------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **[qgis-js](./packages/qgis-js/README.md)**              | The qgis-js API (which also ships the `.wasm` binary)                 | [![qgis-js on npm](https://img.shields.io/npm/v/qgis-js)](https://www.npmjs.com/package/qgis-js)                      |
+| **[@qgis-js/ol](./packages/qgis-js-ol/README.md)**       | [OpenLayers](https://openlayers.org/) sources to display qgis-js maps | [![@qgis-js/ol on npm](https://img.shields.io/npm/v/@qgis-js/ol)](https://www.npmjs.com/package/@qgis-js/ol)          |
+| **[@qgis-js/utils](./packages/qgis-js-utils/README.md)** | Utilties to integrate qgis-js into web applications                   | [![@qgis-js/utils on npm](https://img.shields.io/npm/v/@qgis-js/utils)](https://www.npmjs.com/package/@qgis-js/utils) |
+
+## Getting started
+
+| Example                           | Source code                                                      | StackBlitz                                                                                                                                                                                        |
+| --------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Using the qgis-js API example** | [`docs/examples/qgis-js-example-api`](./docs/examples/qgis-js-example-api) | [![Open the "Using the qgis-js API" example in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/qgis/qgis-js/docs/examples/qgis-js-example-api) |
+| **Minimal OpenLayers example**    | [`docs/examples/qgis-js-example-ol`](./docs/examples/qgis-js-example-ol)   | [![Open the "Minimal OpenLayers" example in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/qgis/qgis-js/docs/examples/qgis-js-example-ol)     |
+
+## Compatibility
+
+A modern web browser is needed (e.g. Chrome >= 95, Firefox >= 100) because the package needs some more recent WebAssembly features: threads and exception handling.
 
 ## Limitations
 
@@ -21,7 +38,9 @@ Compared to the native build of QGIS, there are various limitations of running i
 - Network requests to other hosts (WMS, WMTS, raster/vector tiles, ...) may not work if not allowed by those hosts because of [CORS mechanism](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) in browsers
 - Some providers that need to do communication with a server using sockets will not work (e.g. PostgreSQL)
 
-## How to build
+## How to build qgis-js
+
+> 💡 NOTE: To just use qgis-js you don't need to build it yourself, you can install it from npm. See the provided [Packages](#packages).
 
 ### Install dependencies
 
@@ -62,17 +81,15 @@ npx pnpm install
 >
 > see also [`build/scripts/install.sh`](./build/scripts/install.sh) for manual installation
 
-### Compile qgis-js with Emscripten
+### Compile qgis-js (and it's dependencies) with Emscripten
 
 ```
 npm run compile
 ```
 
-> Can also be ivoked with `compile:debug` or `compile:release`, see [Build types](#Build-types)
-
-> Will take about 30 minutes on a modern machine to compile all the vcpkg ports during the first run... ☕
-
-> see also [`build/scripts/compile.sh`](./build/scripts/compile.sh) for manual compiltion
+> - Can also be ivoked with `compile:debug` or `compile:release`, see [Build types](#Build-types)
+> - Will take about 30 minutes on a modern machine to compile all the vcpkg ports during the first run... ☕
+> - see also [`build/scripts/compile.sh`](./build/scripts/compile.sh) for manual compiltion
 
 ### Build `qgis-js` packages
 
@@ -88,7 +105,7 @@ After successful compilation, you can build the packages with Vite:
 npm run build
 ```
 
-> see the [packages listed at the beginning of this README](#qgis-js)
+> see the [packages listed at the beginning of this README](#packages)
 
 ### Development
 

@@ -1,6 +1,12 @@
 {
-  "version": "0.0.1",
   "private": true,
+  "version": "0.0.1",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://qgis.github.io/qgis-js/",
+  "repository": "github:qgis/qgis-js",
+  "bugs": {
+    "url": "https://github.com/qgis/qgis-js/issues"
+  },
   "packageManager": "pnpm@8.12.1",
   "engines": {
     "node": "20.10.0",
@@ -36,6 +42,7 @@
     "vite-node": "1.0.4",
     "zx": "7.2.3",
     "@rushstack/ts-command-line": "4.17.1",
+    "ts-markdown": "1.0.0",
     "prettier": "3.1.1",
     "pretty-quick": "3.1.3",
     "clang-format": "1.8.0"

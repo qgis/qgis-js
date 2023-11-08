@@ -1,8 +1,17 @@
 {
   "name": "qgis-js",
   "version": "0.0.1",
-  "description": "QGIS ported to WebAssembly to run it on the web platform",
-  "license": "GPL-3.0-or-later",
+  "description": "QGIS core ported to WebAssembly to run it on the web platform",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://qgis.github.io/qgis-js/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qgis/qgis-js",
+    "directory": "packages/qgis-js"
+  },
+  "bugs": {
+    "url": "https://github.com/qgis/qgis-js/issues"
+  },
   "type": "module",
   "main": "dist/qgis.js",
   "types": "dist/qgis.d.ts",
@@ -10,14 +19,14 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@types/emscripten": "1.39.9",
+    "@types/emscripten": "1.39.10",
     "p-limit": "5.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.10.4",
     "typescript": "5.0.4",
     "vite": "5.0.9",
-    "vite-plugin-dts": "3.6.3"
+    "vite-plugin-dts": "3.6.4"
   },
   "keywords": [
     "qgis",

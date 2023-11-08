@@ -2,7 +2,16 @@
   "name": "@qgis-js/ol",
   "version": "0.0.1",
   "description": "OpenLayers sources for qgis-js",
-  "license": "GPL-3.0-or-later",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://qgis.github.io/qgis-js/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/qgis/qgis-js",
+    "directory": "packages/qgis-js-ol"
+  },
+  "bugs": {
+    "url": "https://github.com/qgis/qgis-js/issues"
+  },
   "type": "module",
   "main": "dist/qgis-js-ol.js",
   "types": "dist/qgis-js-ol.d.ts",
@@ -19,6 +28,6 @@
     "@types/node": "^20.10.4",
     "typescript": "5.0.4",
     "vite": "5.0.9",
-    "vite-plugin-dts": "3.6.3"
+    "vite-plugin-dts": "3.6.4"
   }
 }
