@@ -20,6 +20,6 @@
     "ol": "^8.2.0",
     "typescript": "5.0.4",
     "vite": "5.0.9",
-    "vite-plugin-static-copy": "0.17.0"
+    "vite-plugin-static-copy": "1.0.0"
   }
 }

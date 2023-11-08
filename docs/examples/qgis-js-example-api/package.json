@@ -1,0 +1,10 @@
+{
+  "name": "qgis-js-example-api",
+  "private": true,
+  "scripts": {
+    "start": "http-server --cors"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
