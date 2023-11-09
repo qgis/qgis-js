@@ -110,6 +110,12 @@ jobs:
             packages/qgis-js/dist/**/*
       - uses: actions/upload-artifact@v3
         with:
+          name: "package-qgis-js-utils"
+          path: |
+            packages/qgis-js-utils/package.json
+            packages/qgis-js-utils/dist/**/*
+      - uses: actions/upload-artifact@v3
+        with:
           name: "package-qgis-js-ol"
           path: |
             packages/qgis-js-ol/package.json
