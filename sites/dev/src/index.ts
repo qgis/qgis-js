@@ -7,7 +7,6 @@ import type { Project } from "@qgis-js/utils";
 
 import { jsDemo } from "./js";
 
-import { QgisOpenLayers } from "@qgis-js/ol";
 import { olDemoXYZ, olDemoCanvas } from "./ol";
 import { layersControl } from "./layers";
 
@@ -217,25 +216,22 @@ async function initDemo() {
     }
 
     // ol demo
-    const qgisOl = new QgisOpenLayers();
-    if (qgisOl) {
-      const olDemoXYZDiv = document.getElementById(
-        "ol-demo-xyz",
-      ) as HTMLDivElement | null;
-      if (olDemoXYZDiv) {
-        const { update, render } = olDemoXYZ(olDemoXYZDiv, api, qgisOl);
-        updateCallbacks.push(update);
-        renderCallbacks.push(render);
-      }
+    const olDemoXYZDiv = document.getElementById(
+      "ol-demo-xyz",
+    ) as HTMLDivElement | null;
+    if (olDemoXYZDiv) {
+      const { update, render } = olDemoXYZ(olDemoXYZDiv, api);
+      updateCallbacks.push(update);
+      renderCallbacks.push(render);
+    }
 
-      const olDemoCanvasDiv = document.getElementById(
-        "ol-demo-canvas",
-      ) as HTMLDivElement | null;
-      if (olDemoCanvasDiv) {
-        const { update, render } = olDemoCanvas(olDemoCanvasDiv, api, qgisOl);
-        updateCallbacks.push(update);
-        renderCallbacks.push(render);
-      }
+    const olDemoCanvasDiv = document.getElementById(
+      "ol-demo-canvas",
+    ) as HTMLDivElement | null;
+    if (olDemoCanvasDiv) {
+      const { update, render } = olDemoCanvas(olDemoCanvasDiv, api);
+      updateCallbacks.push(update);
+      renderCallbacks.push(render);
     }
   } catch (error) {
     onError(error);

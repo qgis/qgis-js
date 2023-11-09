@@ -19,13 +19,16 @@ export interface QgisApiAdapter {
     height: number,
     pixelRatio?: number,
   ): Promise<ImageData>;
+
   renderXYZTile(
     x: number,
     y: number,
     z: number,
     tileSize?: number,
     pixelRatio?: number,
+    extentBufferFactor?: number,
   ): Promise<ImageData>;
+
   mapLayers(): readonly MapLayer[];
 }
 
@@ -46,6 +49,7 @@ export interface InternalQgisApi extends CommonQgisApi {
     z: number,
     tileSize: number,
     pixelRatio: number,
+    extentBuffer: number,
     callback: (tileData: ArrayBufferLike) => void,
   ): number;
   mapLayers(): any;

@@ -57,6 +57,7 @@ void QgisApi_renderXYZTile(
   unsigned int z,
   unsigned int tileSize,
   float pixelRatio,
+  float extentBufferFactor,
   emscripten::val callback) {
 
   QgsMapSettings mapSettings;
@@ -70,7 +71,13 @@ void QgisApi_renderXYZTile(
   mapSettings.setDestinationCrs(QgsCoordinateReferenceSystem(QStringLiteral("EPSG:3857")));
 
   QgsTileMatrix mTileMatrix = QgsTileMatrix::fromWebMercator(z);
-  mapSettings.setExtent(mTileMatrix.tileExtent(QgsTileXYZ(x, y, z)));
+  auto extent = mTileMatrix.tileExtent(QgsTileXYZ(x, y, z));
+  mapSettings.setExtent(extent);
+
+  auto tileExtentBuffer = extent.width() * extentBufferFactor;
+  if (tileExtentBuffer > 0.0) {
+    mapSettings.setExtentBuffer(tileExtentBuffer);
+  }
 
   mapSettings.setFlag(Qgis::MapSettingsFlag::RenderMapTile, true);
 

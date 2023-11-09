@@ -1,8 +1,6 @@
 import { QgisApi } from "qgis-js";
 
-import { QgisOpenLayers } from "@qgis-js/ol";
-
-import type { QgisXYZDataSource, QgisCanvasDataSource } from "@qgis-js/ol";
+import { QgisXYZDataSource, QgisCanvasDataSource } from "@qgis-js/ol";
 
 import Map from "ol/Map.js";
 import View from "ol/View.js";
@@ -26,7 +24,6 @@ const useBaseMap = true;
 export function olDemoXYZ(
   target: HTMLDivElement,
   api: QgisApi,
-  ol: QgisOpenLayers,
 ): { init: () => void; update: () => void; render: () => void } {
   let view: View | undefined = undefined;
   let map: Map | undefined = undefined;
@@ -51,8 +48,14 @@ export function olDemoXYZ(
       zoom: 10,
     });
 
-    source = ol.QgisXYZDataSource(api, {
+    source = new QgisXYZDataSource(api, {
       debug: false,
+      extentBufferFactor: () => {
+        const input = document.getElementById(
+          "extentBufferFactor",
+        ) as HTMLInputElement;
+        return input.valueAsNumber;
+      },
     });
 
     (layer = new WebGLTileLayer({
@@ -64,26 +67,18 @@ export function olDemoXYZ(
         controls: defaultControls().extend([new ScaleLine()]),
         layers: [
           layer,
-          ...(useBaseMap
-            ? [
-                new WebGLTileLayer({
-                  opacity: 1,
-                  source: new XYZ({
-                    url: `https://tile.openstreetmap.org/{z}/{x}/{y}.png`,
-                  }),
-                  style: {
-                    //exposure: ["var", "exposure"],
-                    //contrast: ["var", "contrast"],
-                    saturation: ["var", "saturation"],
-                    variables: {
-                      //exposure: 0,
-                      //contrast: 0,
-                      saturation: -0.75,
-                    },
-                  },
-                }),
-              ]
-            : []),
+          new WebGLTileLayer({
+            visible: useBaseMap,
+            source: new XYZ({
+              url: `https://tile.openstreetmap.org/{z}/{x}/{y}.png`,
+            }),
+            style: {
+              saturation: ["var", "saturation"],
+              variables: {
+                saturation: -0.75,
+              },
+            },
+          }),
         ].reverse(),
       }));
 
@@ -109,6 +104,16 @@ export function olDemoXYZ(
     layer?.changed();
   };
 
+  const xyzBaseMapCheckbox = document.getElementById(
+    "xyzBaseMap",
+  ) as HTMLInputElement | null;
+  if (xyzBaseMapCheckbox) {
+    xyzBaseMapCheckbox.addEventListener("change", () => {
+      if (map)
+        map.getLayers().getArray()[0].setVisible(xyzBaseMapCheckbox.checked);
+    });
+  }
+
   init();
 
   return {
@@ -121,7 +126,6 @@ export function olDemoXYZ(
 export function olDemoCanvas(
   target: HTMLDivElement,
   api: QgisApi,
-  ol: QgisOpenLayers,
 ): { init: () => void; update: () => void; render: () => void } {
   let view: View | undefined = undefined;
   let srid: string | undefined = undefined;
@@ -151,7 +155,7 @@ export function olDemoCanvas(
       zoom: 10,
     });
 
-    source = ol.QgisCanvasDataSource(api, {
+    source = new QgisCanvasDataSource(api, {
       projection,
     });
 
@@ -182,7 +186,7 @@ export function olDemoCanvas(
   const render = () => {
     setTimeout(() => {
       // recreate the source to force reload the image in the layer
-      source = ol.QgisCanvasDataSource(api, {
+      source = new QgisCanvasDataSource(api, {
         projection: new Projection({
           code: srid!,
           units: "m",

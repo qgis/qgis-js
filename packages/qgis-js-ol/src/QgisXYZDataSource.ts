@@ -1,3 +1,5 @@
+import type { QgisApi } from "qgis-js";
+
 import XYZ, { Options } from "ol/source/XYZ";
 
 import { createCanvasContext2D } from "ol/dom";
@@ -6,26 +8,57 @@ import { toSize } from "ol/size";
 import type { TileCoord } from "ol/tilecoord";
 import ImageTile from "ol/ImageTile";
 
-export type QgisXYZRenderFunction = (
-  tileCoord: TileCoord,
-  tileSize: number,
-  pixelRatio: number,
-) => Promise<ImageData>;
-
 export interface QgisXYZDataSourceOptions extends Options {
+  extentBufferFactor?: number | (() => number);
+  renderFunction?: QgisXYZRenderFunction;
   debug?: boolean;
 }
 
-export class QgisXYZDataSource extends XYZ {
-  /**
-   * @internal
-   */
-  protected renderFunction: QgisXYZRenderFunction;
+export type QgisXYZRenderFunction = (
+  api: QgisApi,
+  tileCoord: TileCoord,
+  tileSize: number,
+  pixelRatio: number,
+  extentBufferFactor: number,
+) => Promise<ImageData>;
 
-  constructor(
-    renderFunction: QgisXYZRenderFunction,
-    options: QgisXYZDataSourceOptions = {},
-  ) {
+export class QgisXYZDataSource extends XYZ {
+  protected api: QgisApi;
+
+  protected static DEFAULT_RENDERFUNCTION: QgisXYZRenderFunction = (
+    api: QgisApi,
+    tileCoord: TileCoord,
+    tileSize: number,
+    devicePixelRatio: number,
+    extentBufferFactor: number,
+  ) => {
+    return api.renderXYZTile(
+      tileCoord[1],
+      tileCoord[2],
+      tileCoord[0],
+      tileSize,
+      devicePixelRatio,
+      extentBufferFactor,
+    );
+  };
+
+  protected renderFunction: QgisXYZRenderFunction | undefined;
+
+  protected getrenderFunction(): QgisXYZRenderFunction {
+    return this.renderFunction || QgisXYZDataSource.DEFAULT_RENDERFUNCTION;
+  }
+
+  protected static DEFAULT_EXTENTBUFFERFACTOR = 0;
+
+  protected extentBufferFactor: number | number | (() => number) | undefined;
+
+  protected getextentBufferFactor(): number {
+    return typeof this.extentBufferFactor === "function"
+      ? this.extentBufferFactor()
+      : this.extentBufferFactor || QgisXYZDataSource.DEFAULT_EXTENTBUFFERFACTOR;
+  }
+
+  constructor(api: QgisApi, options: QgisXYZDataSourceOptions = {}) {
     super({
       tileUrlFunction: (tileCoord, pixelRatio) => {
         const tileSize = (
@@ -34,7 +67,8 @@ export class QgisXYZDataSource extends XYZ {
         return `${tileSize * (pixelRatio || 1)}`;
       },
       tileLoadFunction: async (tile, text) => {
-        if (this.tileGrid && this.renderFunction) {
+        const renderFunction = this.getrenderFunction();
+        if (this.tileGrid && renderFunction) {
           console.assert(tile instanceof ImageTile);
           const imageTile = tile as ImageTile;
 
@@ -42,10 +76,13 @@ export class QgisXYZDataSource extends XYZ {
           const pixelRatio = Math.round(tileSize / 256);
 
           const context = createCanvasContext2D(tileSize, tileSize);
-          const imageData = await this.renderFunction(
+
+          const imageData = await renderFunction(
+            this.api,
             tile.getTileCoord(),
             tileSize,
             pixelRatio,
+            this.getextentBufferFactor(),
           );
           context.putImageData(imageData, 0, 0);
 
@@ -69,6 +106,8 @@ export class QgisXYZDataSource extends XYZ {
       ...options,
     });
 
-    this.renderFunction = renderFunction;
+    this.api = api;
+    this.renderFunction = options.renderFunction;
+    this.extentBufferFactor = options.extentBufferFactor;
   }
 }

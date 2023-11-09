@@ -1,10 +1,14 @@
+import type { QgisApi } from "qgis-js";
+
 import ImageSource, { Options } from "ol/source/Image";
 import { getWidth, getHeight } from "ol/extent";
 
-/**
- * @internal
- */
+export interface QgisCanvasDataSourceOptions extends Options {
+  renderFunction?: QgisCanvasRenderFunction;
+}
+
 export type QgisCanvasRenderFunction = (
+  api: QgisApi,
   srid: string,
   xMin: number,
   yMin: number,
@@ -15,15 +19,36 @@ export type QgisCanvasRenderFunction = (
   pixelRatio: number,
 ) => Promise<ImageData>;
 
-export interface QgisCanvasDataSourceOptions extends Options {}
-
 export class QgisCanvasDataSource extends ImageSource {
-  protected renderFunction: QgisCanvasRenderFunction;
+  protected api: QgisApi;
 
-  constructor(
-    renderFunction: QgisCanvasRenderFunction,
-    options: QgisCanvasDataSourceOptions = {},
-  ) {
+  protected static DEFAULT_RENDERFUNCTION: QgisCanvasRenderFunction = (
+    api: QgisApi,
+    srid: string,
+    xMin: number,
+    yMin: number,
+    xMax: number,
+    yMax: number,
+    width: number,
+    height: number,
+    pixelRatio: number,
+  ) => {
+    return api.renderImage(
+      srid,
+      new api.Rectangle(xMin, yMin, xMax, yMax),
+      width,
+      height,
+      pixelRatio,
+    );
+  };
+
+  protected renderFunction: QgisCanvasRenderFunction | undefined;
+
+  protected getrenderFunction(): QgisCanvasRenderFunction {
+    return this.renderFunction || QgisCanvasDataSource.DEFAULT_RENDERFUNCTION;
+  }
+
+  constructor(api: QgisApi, options: QgisCanvasDataSourceOptions = {}) {
     super({
       loader: (extent, resolution, requestPixelRatio) => {
         return new Promise(async (resolve) => {
@@ -33,7 +58,9 @@ export class QgisCanvasDataSource extends ImageSource {
           const width = Math.round(getWidth(extent) / imageResolution);
           const height = Math.round(getHeight(extent) / imageResolution);
 
-          const imageData = await this.renderFunction(
+          const renderFunction = this.getrenderFunction();
+          const imageData = await renderFunction(
+            this.api,
             this.getProjection()?.getCode() || "EPSG:3857",
             extent[0],
             extent[1],
@@ -50,6 +77,7 @@ export class QgisCanvasDataSource extends ImageSource {
       ...options,
     });
 
-    this.renderFunction = renderFunction;
+    this.api = api;
+    this.renderFunction = options.renderFunction;
   }
 }

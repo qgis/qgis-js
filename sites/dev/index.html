@@ -106,6 +106,35 @@
         <section id="openlayers_xyz" class="tab-panel">
           <h2>OpenLayers: XYZ Tiles</h2>
           <div id="ol-demo-xyz" class="demo"></div>
+          <div class="canvas-options">
+            <label
+              title="Factor will be multiploed with the tiles width in map units."
+              for="extentBufferFactor"
+              >Extent Buffer Factor:</label
+            >
+            <input
+              title="Factor will be multiploed with the tiles width in map units."
+              type="range"
+              min="0"
+              max="2"
+              step="0.01"
+              value="0.5"
+              name="extentBufferFactor"
+              id="extentBufferFactor"
+              oninput="this.nextElementSibling.value = (Math.round(this.value * 100) / 100).toFixed(2)"
+            />
+            <output>0.50</output>
+
+            <div class="seperator">&nbsp;</div>
+
+            <label for="xyzBaseMap">OSM Basemap:</label>
+            <input
+              type="checkbox"
+              checked="checked"
+              name="xyzBaseMap"
+              id="xyzBaseMap"
+            />
+          </div>
           <p>
             With the
             <a href="https://github.com/qgis/qgis-js" target="_blank"

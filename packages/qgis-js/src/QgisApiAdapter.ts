@@ -53,16 +53,25 @@ export class QgisApiAdapterImplementation implements QgisApiAdapter {
     x: number,
     y: number,
     z: number,
-    tileSize: number,
+    tileSize: number = 256,
     pixelRatio: number = window?.devicePixelRatio || 1,
+    extentBuffer: number = 0,
   ): Promise<ImageData> {
     return this.runLimited(() => {
       return new Promise((resolve) => {
-        this._api.renderXYZTile(x, y, z, tileSize, pixelRatio, (tileData) => {
-          const data = new Uint8ClampedArray(tileData);
-          const imageData = new ImageData(data, tileSize, tileSize);
-          resolve(imageData);
-        });
+        this._api.renderXYZTile(
+          x,
+          y,
+          z,
+          tileSize,
+          pixelRatio,
+          extentBuffer,
+          (tileData) => {
+            const data = new Uint8ClampedArray(tileData);
+            const imageData = new ImageData(data, tileSize, tileSize);
+            resolve(imageData);
+          },
+        );
       });
     });
   }
