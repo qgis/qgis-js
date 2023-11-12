@@ -1,18 +1,69 @@
 # qgis-js
 
-> QGIS core ported to WebAssembly to run it on the web platform
+**QGIS core ported to WebAssembly to run it on the web platform**
+
+Version: `0.0.1` (based on QGIS 3.32.1)
+
+[qgis-js Repository](https://github.com/qgis/qgis-js) | [qgis-js Website](https://qgis.github.io/qgis-js) | ["`qgis-js`" package source](https://github.com/qgis/qgis-js/tree/main/packages/qgis-js)
+
+[![qgis-js on npm](https://img.shields.io/npm/v/qgis-js)](https://www.npmjs.com/package/qgis-js)
+
+> ⚠️🧪 **Work in progress**! Currently this project is in public beta
 
 ## Description
 
-This is a JavaScript library for interacting with QGIS. It provides a simple and intuitive API for accessing QGIS features and functionality.
+QGIS core compiled to WebAssembly to run it on the web platform. This package provides the WebAssembly module and JavaScript/TypeScript API to load the runtime and interact with QGIS core.
+
+See the [qgis-js repository](https://github.com/qgis/qgis-js) for more information about the project.
 
 ## Installation
 
 ```bash
-npm install qgis-js
+npm install -S qgis-js
 ```
 
-## Libraries
+## Usage
+
+```js
+import { qgis } from "qgis-js";
+
+const { api } = await qgis();
+
+const rect = new api.Rectangle(1, 2, 3, 4);
+rect.scale(5);
+const center = rect.center();
+console.log(center.x, center.y);
+```
+
+> 💡 Have a look at the [Integration packages](#integration-packages) to load QGIS projects and display them on a map
+
+> ⚠️ It must be ensured that...
+>
+> - the clients meets the [compatibility requirements](https://github.com/qgis/qgis-js/blob/main/docs/compatibility.md)
+> - that the webserver is configured to [allow cross-origin requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
+> - that if you are using a bundler, it is [configured to load the qgis-js assets](https://github.com/qgis/qgis-js/blob/main/docs/bundling.md)
+
+## Integration packages
+
+| Package                                                  | Description                                                           | npm                                                                                                                   |
+| -------------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| **[@qgis-js/ol](./packages/qgis-js-ol/README.md)**       | [OpenLayers](https://openlayers.org/) sources to display qgis-js maps | [![@qgis-js/ol on npm](https://img.shields.io/npm/v/@qgis-js/ol)](https://www.npmjs.com/package/@qgis-js/ol)          |
+| **[@qgis-js/utils](./packages/qgis-js-utils/README.md)** | Utilities to integrate qgis-js into web applications                  | [![@qgis-js/utils on npm](https://img.shields.io/npm/v/@qgis-js/utils)](https://www.npmjs.com/package/@qgis-js/utils) |
+
+## WebAssembly module
+
+### Size
+
+The size of the packge is **56.6 MB (uncompressed)** and ?? MB Brotli compressed / ?? MB Gzip compressed.
+
+It consists of the following files:
+
+| File name | Size (uncompressed) | Size (Brotli compressed) | Size (Gzip compressed) |
+| --------- | ------------------- | ------------------------ | ---------------------- |
+| qgis.js   | ?? MB               | ?? MB                    | ?? MB                  |
+| qgis.wasm | ?? MB               | ?? MB                    | ?? MB                  |
+
+### Libraries
 
 <!--NOTE: this can be generated with "./qgis-js.ts libs -o markdown"-->
 
@@ -40,3 +91,11 @@ npm install qgis-js
 | **sqlite3** (3.43.1)<br /><div style="max-width:30em">_SQLite is a software library that implements a self-contained, serverless, zero-configuration, transactional SQL database engine._                                                                   | blessing         | [Website](https://sqlite.org/)                                                                                            |
 | **tiff** (4.6.0)<br /><div style="max-width:30em">_A library that supports the manipulation of TIFF image files_                                                                                                                                            | libtiff          | [Website](https://libtiff.gitlab.io/libtiff/) - [Source code](https://gitlab.com/libtiff/libtiff)                         |
 | **zlib** (1.3)<br /><div style="max-width:30em">_A compression library_                                                                                                                                                                                     | Zlib             | [Website](https://www.zlib.net/) - [Source code](https://github.com/madler/zlib)                                          |
+
+## Versioning
+
+This package uses [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/qgis/qgis-js/tags).
+
+## License
+
+[GNU General Public License v2.0](https://github.com/qgis/qgis-js/blob/main/LICENSE)

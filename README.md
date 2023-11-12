@@ -2,15 +2,23 @@
 
 **QGIS core ported to WebAssembly to run it on the web platform**
 
-> ⚠️🧪 **Work in progress**! Currently this project is in public beta and only does very basic things like loading a QGIS project and rendering it to a canvas _(see [Limitations](#limitations))_
+Version: `0.0.1` (based on QGIS 3.32.1)
 
-> **Help wanted**! TODO
+[qgis-js Repository](https://github.com/qgis/qgis-js) | [qgis-js Website](https://qgis.github.io/qgis-js)
+
+> ⚠️🧪 **Work in progress**! Currently this project is in public beta and only does very basic things like loading a QGIS project and rendering it to a canvas _(see [Features](#features) and [Limitations](#limitations))_
+
+> 🌱👋 **Help wanted**! Please try out your QGIS projects and report [issues](https://github.com/qgis/qgis-js/issues) and [ideas](https://github.com/qgis/qgis-js/discussions/categories/ideas) on GitHub. We are also warmly welcoming contributions to this project _(see [Contributing](#contributing))_
 
 ## About
 
 This project proviedes recipies to compile [QGIS](https://qgis.org/) core and all its dependencies to [WebAssembly](https://webassembly.org/) using [Emscripten](https://emscripten.org/), and there are JavaScript bindings on top of that to use QGIS core APIs.
 
-Currently we are only focused on having QGIS core library working. It is out of scope to bring the full QGIS desktop app, GUI library or Python bindings.
+<!-- FIXME -->
+
+Currently we are only focused on having QGIS core library working. It is out of scope to bring the full QGIS desktop app, GUI library or Python bindings _(see [Features](#features) and [Limitations](#limitations))_
+
+> 📚 See the [qgis-js Website](https://qgis.github.io/qgis-js) or [`./docs`](https://github.com/qgis/qgis-js/tree/main/docs) for more detailed information
 
 ## Packages
 
@@ -18,18 +26,24 @@ Currently we are only focused on having QGIS core library working. It is out of 
 | -------------------------------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | **[qgis-js](./packages/qgis-js/README.md)**              | The qgis-js API (which also ships the `.wasm` binary)                 | [![qgis-js on npm](https://img.shields.io/npm/v/qgis-js)](https://www.npmjs.com/package/qgis-js)                      |
 | **[@qgis-js/ol](./packages/qgis-js-ol/README.md)**       | [OpenLayers](https://openlayers.org/) sources to display qgis-js maps | [![@qgis-js/ol on npm](https://img.shields.io/npm/v/@qgis-js/ol)](https://www.npmjs.com/package/@qgis-js/ol)          |
-| **[@qgis-js/utils](./packages/qgis-js-utils/README.md)** | Utilties to integrate qgis-js into web applications                   | [![@qgis-js/utils on npm](https://img.shields.io/npm/v/@qgis-js/utils)](https://www.npmjs.com/package/@qgis-js/utils) |
+| **[@qgis-js/utils](./packages/qgis-js-utils/README.md)** | Utilities to integrate qgis-js into web applications                  | [![@qgis-js/utils on npm](https://img.shields.io/npm/v/@qgis-js/utils)](https://www.npmjs.com/package/@qgis-js/utils) |
 
 ## Getting started
 
 | Example                           | Source code                                                      | StackBlitz                                                                                                                                                                                        |
 | --------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Using the qgis-js API example** | [`docs/examples/qgis-js-example-api`](./docs/examples/qgis-js-example-api) | [![Open the "Using the qgis-js API" example in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/qgis/qgis-js/docs/examples/qgis-js-example-api) |
-| **Minimal OpenLayers example**    | [`docs/examples/qgis-js-example-ol`](./docs/examples/qgis-js-example-ol)   | [![Open the "Minimal OpenLayers" example in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/qgis/qgis-js/docs/examples/qgis-js-example-ol)     |
+| 📐 **Using the qgis-js API example** | [`docs/examples/qgis-js-example-api`](./docs/examples/qgis-js-example-api) | [![Open the "Using the qgis-js API" example in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/qgis/qgis-js/docs/examples/qgis-js-example-api) |
+| 🗺️ **Minimal OpenLayers example**    | [`docs/examples/qgis-js-example-ol`](./docs/examples/qgis-js-example-ol)   | [![Open the "Minimal OpenLayers" example in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/qgis/qgis-js/docs/examples/qgis-js-example-ol)     |
 
 ## Compatibility
 
-A modern web browser is needed (e.g. Chrome >= 95, Firefox >= 100) because the package needs some more recent WebAssembly features: threads and exception handling.
+A modern desktop browser is needed. At the moment we only support/test **Chromium based browsers (>= 95)** and **Firefox (>= 100)**
+
+> 📚 See [docs/compatibility.md](docs/compatibility.md) for more details
+
+## Features
+
+- QGIS core () compiled to WebAssembly
 
 ## Limitations
 
