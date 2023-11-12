@@ -1,5 +1,13 @@
 #!/usr/bin/env -S node_modules/.bin/vite-node --script
 
+/*
+ * qgis-js CLI
+ *
+ * Will help you to build qgis-js.
+ *
+ * Run "qgis-js --help" for more information.
+ */
+
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { homedir } from "os";

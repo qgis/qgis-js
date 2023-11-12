@@ -1,4 +1,4 @@
-# Contributing to QGIS-JS
+# Contributing to qgis-js
 
 Thank you for considering contributing to qgis-js! We welcome all contributions, big or small.
 
@@ -7,7 +7,7 @@ Thank you for considering contributing to qgis-js! We welcome all contributions,
 To get started with contributing, please follow these steps:
 
 1. Fork the repository and clone it to your local machine.
-2. Install the necessary dependencies and compile the stack, see [README.md](README.md) for more information
+2. See the [README](../README.md) for instructions on how to build the project.
 3. Make your changes and test them locally.
 4. Submit a pull request with your changes.
 
@@ -21,4 +21,10 @@ If you find a bug, please open an issue on the [issue tracker](https://github.co
 
 ## Contact
 
-If you have any questions or concerns, please reach out to us on the [QGIS-Developer mailing list](https://lists.osgeo.org/mailman/listinfo/qgis-developer)
+If you have any questions or concerns, please reach out to us via GitHub:
+
+- [qgis-js issues](https://github.com/qgis/qgis-js/issues)
+- [qgis-js discussions](https://github.com/qgis/qgis-js/discussions)
+- or reach out in the [QGIS mailing list](https://lists.osgeo.org/mailman/listinfo/qgis-user)
+
+> For general questions about QGIS, have a look at the [Get Involved in the QGIS Community](https://qgis.org/en/site/getinvolved/index.html) site

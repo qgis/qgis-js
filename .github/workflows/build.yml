@@ -111,18 +111,21 @@ jobs:
           name: "package-qgis-js"
           path: |
             packages/qgis-js/package.json
+            packages/qgis-js/README.md
             packages/qgis-js/dist/**/*
       - uses: actions/upload-artifact@v3
         with:
           name: "package-qgis-js-utils"
           path: |
             packages/qgis-js-utils/package.json
+            packages/qgis-js-utils/README.md
             packages/qgis-js-utils/dist/**/*
       - uses: actions/upload-artifact@v3
         with:
           name: "package-qgis-js-ol"
           path: |
             packages/qgis-js-ol/package.json
+            packages/qgis-js-ol/README.md
             packages/qgis-js-ol/dist/**/*
       - name: Build site
         run: pnpm run dev:build
