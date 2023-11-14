@@ -17,6 +17,7 @@
   "search.exclude": {
     "build/emsdk": true,
     "build/vcpkg": true,
+    "docs/api": true,
     "*/*/node_modules": true,
     "*/*/dist": true,
     "*/*/temp": true,
