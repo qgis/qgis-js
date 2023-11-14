@@ -3,7 +3,7 @@
 /*
  * qgis-js CLI
  *
- * Will help you to build qgis-js.
+ * Will help you to build qgis-js and generate its documentation.
  *
  * Run "qgis-js --help" for more information.
  */

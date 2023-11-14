@@ -1,9 +1,31 @@
 import { getQgisApiProxy } from "./QgisApiAdapter";
 
-import { QgisRuntime, QgisRuntimeConfig, QtRuntimeFactory } from "./runtime";
-import { EmscriptenRuntimeModule } from "./emscripten";
+import type {
+  QgisRuntime,
+  QgisRuntimeConfig,
+  QgisRuntimeModule,
+} from "./runtime";
+import type { EmscriptenRuntimeModule } from "./emscripten";
 
-export function loadModule(prefix: string = "/"): Promise<QtRuntimeFactory> {
+/**
+ * Emscripten module configuration
+ */
+interface QtAppConfig {}
+
+/**
+ * Interface for a Emscripten module that creates a Qt app instance.
+ */
+interface QtRuntimeFactory {
+  createQtAppInstance(config: QtAppConfig): Promise<QgisRuntimeModule>;
+}
+
+/**
+ * Loads the QtRuntimeFactory Emscripten module with the given prefix.
+ *
+ * @param prefix - The prefix to use for the module path.
+ * @returns A promise that resolves with the QtRuntimeFactory module.
+ */
+function loadModule(prefix: string = "/"): Promise<QtRuntimeFactory> {
   return new Promise(async (resolve, reject) => {
     try {
       const mainScriptPath = prefix + "/" + "qgis-js" + ".js";
@@ -20,6 +42,12 @@ export function loadModule(prefix: string = "/"): Promise<QtRuntimeFactory> {
   });
 }
 
+/**
+ * Load and initialize a new qgis-js runtime.
+ *
+ * @param config The {@link QgisRuntimeConfig} that will be taken into account during loading and initialization.
+ * @returns A promise that resolves to a {@link QgisRuntime}.
+ */
 export async function qgis(config: QgisRuntimeConfig): Promise<QgisRuntime> {
   return new Promise(async (resolve) => {
     const { createQtAppInstance } = await loadModule(config.prefix);

@@ -1,5 +1,9 @@
-//@ts-ignore (will be defined by vite)
-export const QGIS_JS_VERSION: string = __QGIS_JS_VERSION;
+/**
+ * The version of qgis-js.
+ */
+export const QGIS_JS_VERSION: string =
+  //@ts-ignore (will be defined by vite)
+  __QGIS_JS_VERSION;
 
 export type {
   QgisApi,

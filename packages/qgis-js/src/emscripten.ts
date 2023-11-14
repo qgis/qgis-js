@@ -10,6 +10,6 @@ export interface EmscriptenRuntimeModule extends EmscriptenModule {
 /**
  * Emscripten file system
  *
- * @link https://emscripten.org/docs/api_reference/Filesystem-API.html
+ * {@link https://emscripten.org/docs/api_reference/Filesystem-API.html}
  */
 export type EmscriptenFS = typeof FS;

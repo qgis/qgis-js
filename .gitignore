@@ -4,4 +4,6 @@ build/wasm
 node_modules
 dist
 packages/*/dist
+packages/*/etc
 bin/act
+docs/api

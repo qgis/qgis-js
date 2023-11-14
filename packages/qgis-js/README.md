@@ -54,6 +54,8 @@ console.log(center.x, center.y);
 
 ### Size
 
+<!-- FIXME: Generate this -->
+
 The size of the packge is **56.6 MB (uncompressed)** and ?? MB Brotli compressed / ?? MB Gzip compressed.
 
 It consists of the following files:
