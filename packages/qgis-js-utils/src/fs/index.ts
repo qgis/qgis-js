@@ -69,56 +69,65 @@ export function useProjects(
     branch: string = "main",
   ) =>
     new Promise<{ [key: string]: () => Promise<GithubProject> }>(
-      async (resolve) => {
-        const projects = await fetchGithubDirectory(owner, repo, path, branch);
-        // check if the response got an error message
-        if (!(projects instanceof Array)) {
-          console.warn(projects);
-          resolve({});
-          return;
-        } else {
-          resolve(
-            Object.fromEntries(
-              projects
-                .filter((entry) => entry.type === "dir")
-                .map((entry) => {
-                  return [
-                    entry.name,
-                    () => {
-                      return new Promise<GithubProject>(async (resolve) => {
-                        const projectContent = await fetchGithubDirectory(
-                          owner,
-                          repo,
-                          "/" + entry.path,
-                          branch,
-                        );
-
-                        resolve(
-                          new GithubProject(
-                            fs,
-                            {
-                              name: entry.name,
-                              path: entry.path,
-                              type: "Folder",
-                              entries: projectContent
-                                .filter((entry) => entry.type === "file")
-                                .map((entry) => ({
-                                  name: entry.name,
-                                  path: entry.path,
-                                  type: "File",
-                                })),
-                            } as Folder,
+      async (resolve, reject) => {
+        try {
+          const projects = await fetchGithubDirectory(
+            owner,
+            repo,
+            path,
+            branch,
+          );
+          // check if the response got an error message
+          if (!(projects instanceof Array)) {
+            console.warn(projects);
+            resolve({});
+            return;
+          } else {
+            resolve(
+              Object.fromEntries(
+                projects
+                  .filter((entry) => entry.type === "dir")
+                  .map((entry) => {
+                    return [
+                      entry.name,
+                      () => {
+                        return new Promise<GithubProject>(async (resolve) => {
+                          const projectContent = await fetchGithubDirectory(
                             owner,
                             repo,
+                            "/" + entry.path,
                             branch,
-                          ),
-                        );
-                      });
-                    },
-                  ];
-                }),
-            ),
-          );
+                          );
+
+                          resolve(
+                            new GithubProject(
+                              fs,
+                              {
+                                name: entry.name,
+                                path: entry.path,
+                                type: "Folder",
+                                entries: projectContent
+                                  .filter((entry) => entry.type === "file")
+                                  .map((entry) => ({
+                                    name: entry.name,
+                                    path: entry.path,
+                                    type: "File",
+                                  })),
+                              } as Folder,
+                              owner,
+                              repo,
+                              branch,
+                            ),
+                          );
+                        });
+                      },
+                    ];
+                  }),
+              ),
+            );
+          }
+        } catch (error) {
+          reject(error);
         }
       },
     );

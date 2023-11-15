@@ -159,15 +159,22 @@ async function initDemo() {
     // - github projects
     if (timer) console.time("github projects");
     for (const repo of GITHUB_REPOS) {
-      const githubProjects = await loadGithubProjects(
-        repo.owner,
-        repo.repo,
-        repo.path,
-        repo.branch,
-      );
-      Object.entries(githubProjects).forEach(([name, projectLoadPromise]) => {
-        listProject((repo.prefix || "") + name, projectLoadPromise);
-      });
+      try {
+        const githubProjects = await loadGithubProjects(
+          repo.owner,
+          repo.repo,
+          repo.path,
+          repo.branch,
+        );
+        Object.entries(githubProjects).forEach(([name, projectLoadPromise]) => {
+          listProject((repo.prefix || "") + name, projectLoadPromise);
+        });
+      } catch (error) {
+        console.warn(
+          `Unable to load GitHub project "${repo.owner}/${repo.repo}"`,
+          error,
+        );
+      }
     }
     if (timer) console.timeEnd("github projects");
 
