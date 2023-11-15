@@ -12,7 +12,11 @@ import XYZ from "ol/source/XYZ.js";
 
 import Projection from "ol/proj/Projection.js";
 
-import { ScaleLine, defaults as defaultControls } from "ol/control.js";
+import {
+  ScaleLine,
+  FullScreen,
+  defaults as defaultControls,
+} from "ol/control.js";
 
 // @ts-ignore
 import("ol/ol.css");
@@ -64,7 +68,7 @@ export function olDemoXYZ(
       (map = new Map({
         target,
         view,
-        controls: defaultControls().extend([new ScaleLine()]),
+        controls: defaultControls().extend([new ScaleLine(), new FullScreen()]),
         layers: [
           layer,
           new WebGLTileLayer({
@@ -166,7 +170,7 @@ export function olDemoCanvas(
     map = new Map({
       target,
       view,
-      controls: defaultControls().extend([new ScaleLine()]),
+      controls: defaultControls().extend([new ScaleLine(), new FullScreen()]),
       layers: [layer],
     });
 
