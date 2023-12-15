@@ -10,15 +10,15 @@
     "build": "vite build"
   },
   "dependencies": {
-    "qgis-js": "0.0.1"
+    "qgis-js": "workspace:*"
   },
   "peerDependencies": {
     "ol": "^8"
   },
   "devDependencies": {
+    "@types/node": "^20.10.4",
     "typescript": "5.0.4",
-    "vite": "4.5.0",
-    "vite-plugin-dts": "3.6.3",
-    "@types/node": "^16.7.13"
+    "vite": "5.0.9",
+    "vite-plugin-dts": "3.6.3"
   }
 }

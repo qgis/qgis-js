@@ -2,7 +2,6 @@ import { resolve } from "path";
 import { defineConfig } from "vite";
 
 import QgisRuntimePlugin from "../../build/vite/QgisRuntimePlugin";
-import CrossOriginIsolationPlugin from "../../build/vite/CrossOriginIsolationPlugin";
 import DirectoryListingPlugin from "../../build/vite/DirectoryListingPlugin";
 
 import { viteStaticCopy } from "vite-plugin-static-copy";
@@ -43,7 +42,6 @@ export default defineConfig({
       outputDir: "build/wasm",
     }),
     DirectoryListingPlugin(["public/projects"]),
-    CrossOriginIsolationPlugin(),
     viteStaticCopy({
       targets: [
         {

@@ -89,6 +89,10 @@ jobs:
       - name: Set QGIS_JS_QT
         run: |
           echo "QGIS_JS_QT=${{ github.workspace }}/build/Qt/${{env.qt}}" >> "$GITHUB_ENV"
+      - name: Setup node from package.json
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: "package.json"
       - uses: pnpm/action-setup@v2
       - name: Install dependencies
         run: pnpm install

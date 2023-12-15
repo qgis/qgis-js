@@ -1,10 +1,10 @@
 {
   "version": "0.0.1",
   "private": true,
-  "packageManager": "pnpm@8.10.2",
+  "packageManager": "pnpm@8.12.1",
   "engines": {
-    "node": ">=16.0.0",
-    "pnpm": "8.10.2",
+    "node": "20.10.0",
+    "pnpm": "8.12.1",
     "emsdk": "3.1.29",
     "vcpkg": "2023.10.19",
     "qt": "6.5.2",
@@ -31,12 +31,12 @@
     "lint:clang-format": "clang-format -i \"--glob=src/**/*.{cpp,hpp}\""
   },
   "devDependencies": {
-    "pnpm": "8.10.2",
-    "vite": "4.5.0",
-    "vite-node": "0.34.6",
+    "pnpm": "8.12.1",
+    "vite": "5.0.9",
+    "vite-node": "1.0.4",
     "zx": "7.2.3",
     "@rushstack/ts-command-line": "4.17.1",
-    "prettier": "3.0.3",
+    "prettier": "3.1.1",
     "pretty-quick": "3.1.3",
     "clang-format": "1.8.0"
   }

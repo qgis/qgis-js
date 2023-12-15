@@ -1,4 +1,4 @@
-import { join, resolve } from "path";
+import { join, resolve, basename } from "path";
 import { existsSync, readFileSync } from "fs";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
@@ -71,45 +71,49 @@ export default function QgisRuntimePlugin(_runtime: Runtime | null): Plugin {
       config = _config;
     },
     configureServer(server) {
-      return () => {
-        const filesRuntimeDir = runtimeDir();
-        filesRuntime.forEach((id) => {
-          server.middlewares.use(
-            `/${filesRuntimeDir ? filesRuntimeDir + "/" : ""}` + id,
-            (_, res) => {
-              const filePath = join(repoRoot, runtime.outputDir, id);
-              if (existsSync(filePath)) {
-                const raw = readFileSync(filePath);
-                res.statusCode = 200;
-                if (
-                  filePath.endsWith("." + RUNTIME_WASM) ||
-                  filePath.endsWith("." + RUNTIME_DATA)
-                ) {
-                  if (filePath.endsWith("." + RUNTIME_WASM)) {
-                    res.setHeader("Content-Type", "application/wasm");
-                  }
-                  res.end(raw);
-                } else if (
-                  filePath.endsWith("." + RUNTIME_JS) ||
-                  filePath.endsWith("." + RUNTIME_WORKER)
-                ) {
-                  const content = raw.toString();
-                  res.setHeader("Content-Type", "application/javascript");
-                  res.end(patchEmccJs(content));
-                } else if (filePath.endsWith("." + RUNTIME_WASM_MAP)) {
-                  const content = raw.toString();
-                  res.setHeader("Content-Type", "application/json");
-                  res.end(content);
-                }
-              } else {
-                console.log("404", filePath);
-                res.statusCode = 404;
-                res.end();
+      const filesRuntimeDir = runtimeDir();
+      const runtimeFiles = filesRuntime.map(
+        (id) =>
+          `${config.base}${filesRuntimeDir ? filesRuntimeDir + "/" : ""}${id}`,
+      );
+      server.middlewares.use((req, res, next) => {
+        if (
+          req.url &&
+          runtimeFiles.some((runtimefile) => runtimefile === req.url)
+        ) {
+          const filePath = join(repoRoot, runtime.outputDir, basename(req.url));
+          if (existsSync(filePath)) {
+            const raw = readFileSync(filePath);
+            res.statusCode = 200;
+            if (
+              filePath.endsWith("." + RUNTIME_WASM) ||
+              filePath.endsWith("." + RUNTIME_DATA)
+            ) {
+              if (filePath.endsWith("." + RUNTIME_WASM)) {
+                res.setHeader("Content-Type", "application/wasm");
               }
-            },
-          );
-        });
-      };
+              res.end(raw);
+            } else if (
+              filePath.endsWith("." + RUNTIME_JS) ||
+              filePath.endsWith("." + RUNTIME_WORKER)
+            ) {
+              const content = raw.toString();
+              res.setHeader("Content-Type", "application/javascript");
+              res.end(patchEmccJs(content));
+            } else if (filePath.endsWith("." + RUNTIME_WASM_MAP)) {
+              const content = raw.toString();
+              res.setHeader("Content-Type", "application/json");
+              res.end(content);
+            }
+          } else {
+            console.log("404", filePath);
+            res.statusCode = 404;
+            res.end();
+          }
+        } else {
+          next();
+        }
+      });
     },
     generateBundle() {
       filesRuntime.forEach((id) => {

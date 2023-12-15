@@ -216,7 +216,8 @@ export class CompileAction extends CommandLineAction {
       }
 
       // if vcpkg has installed its own cmake, use that, otherwise use the system cmake
-      const cmake = await $`find . -iwholename './build/vcpkg/downloads/tools/cmake-*/*/bin/cmake' | grep bin/cmake || echo cmake`;
+      const cmake =
+        await $`find . -iwholename './build/vcpkg/downloads/tools/cmake-*/*/bin/cmake' | grep bin/cmake || echo cmake`;
 
       // configure and build vcpgk dependencies
       await $`${cmake} \
