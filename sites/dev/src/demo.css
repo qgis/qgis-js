@@ -27,6 +27,7 @@ a.source {
   height: 30em;
   margin: 2em 0;
   border: 1px solid #ccc;
+  background-color: #ffffff;
   resize: both;
 }
 
