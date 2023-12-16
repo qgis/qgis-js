@@ -1,0 +1,12 @@
+@import "node_modules/ol/ol.css";
+
+body {
+  font-family: sans-serif;
+  margin: 1em;
+  padding: 1em;
+}
+#map {
+  width: 800px;
+  height: 600px;
+  border: 1px solid grey;
+}
