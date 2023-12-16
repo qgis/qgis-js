@@ -1,6 +1,6 @@
 # @qgis-js/ol
 
-**OpenLayers sources for qgis-js**
+**OpenLayers sources for [qgis-js](https://github.com/qgis/qgis-js)**
 
 [qgis-js Repository](https://github.com/qgis/qgis-js) | [qgis-js Website](https://qgis.github.io/qgis-js) | ["`@qgis-js/ol`" package source](https://github.com/qgis/qgis-js/tree/main/packages/qgis-js-ol)
 
@@ -10,9 +10,11 @@
 
 ## Prerequisites
 
-This packages requires **[OpenLayers](https://openlayers.org) >=8** to be installed as a peer dependency.
+- This package requires **[OpenLayers](https://openlayers.org) `>=8`** to be installed as a peer dependency
 
-The [qgis-js](https://www.npmjs.com/package/@qgis-js/ol) package is also required as a dependency. An instance of the qgis-js runtime has to be loaded at runtime and its API must be passed to the OpenLayers source constructor.
+- The [qgis-js](https://www.npmjs.com/package/@qgis-js/ol) package is also required as a direct dependency of this package
+
+  - An instance of the qgis-js runtime has to be created at runtime and its API must be passed to the OpenLayers source constructor
 
 ## Installation
 
