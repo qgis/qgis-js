@@ -1,6 +1,6 @@
 # @qgis-js/utils
 
-**Utilities to integrate qgis-js into web applications**
+**Utilities to integrate [qgis-js](https://github.com/qgis/qgis-js) into web applications**
 
 [qgis-js Repository](https://github.com/qgis/qgis-js) | [qgis-js Website](https://qgis.github.io/qgis-js) | ["`@qgis-js/utils`" package source](https://github.com/qgis/qgis-js/tree/main/packages/qgis-js-ol)
 
@@ -39,7 +39,7 @@ The following project sources are supported:
 
 #### LocalProject
 
-Loads QGIS projects from the users file system with the [File System API](https://developer.mozilla.org/en-US/docs/Web/API/File_System_API)
+Loads QGIS projects from the user's file system with the [File System API](https://developer.mozilla.org/en-US/docs/Web/API/File_System_API)
 
 ```js
 await openProject(await loadLocalProject());
@@ -55,7 +55,7 @@ Fetches QGIS projects from a remote server with the [Fetch API](https://develope
 
 The remote server must provide a JSON file with the following structure:
 
-<!-- FIXME: Make this work form any web server (no hardcoded paths)-->
+<!-- FIXME: Make this work from any web server (no hardcoded paths)-->
 
 ```json
 {
@@ -86,7 +86,7 @@ The remote server must provide a JSON file with the following structure:
 
 <!-- FIXME: Provide a JSON schema -->
 <!--
-> see the JSON schema for the [RemoteProject](FIXME) structure
+> See the JSON schema for the [RemoteProject](FIXME) structure
 -->
 
 ## Versioning
