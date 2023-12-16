@@ -30,10 +30,10 @@ Please note that our focus is currently on making the QGIS core usable. The proj
 
 ## Getting started
 
-| Example                              | Source code                                                                | StackBlitz                                                                                                                                                                                             |
-| ------------------------------------ | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 📐 **Using the qgis-js API example** | [`docs/examples/qgis-js-example-api`](./docs/examples/qgis-js-example-api) | [![Open the "Using the qgis-js API" example in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/qgis/qgis-js/docs/examples/qgis-js-example-api) |
-| 🗺️ **Minimal OpenLayers example**    | [`docs/examples/qgis-js-example-ol`](./docs/examples/qgis-js-example-ol)   | [![Open the "Minimal OpenLayers" example in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/qgis/qgis-js/docs/examples/qgis-js-example-ol)     |
+| Example                              | Source code                                                                | StackBlitz                                                                                                                                                                                                                                              |
+| ------------------------------------ | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 📐 **Using the qgis-js API example** | [`docs/examples/qgis-js-example-api`](./docs/examples/qgis-js-example-api) | [![Open the "Using the qgis-js API" example in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/qgis/qgis-js/tree/main/docs/examples/qgis-js-example-api?file=main.js&title=qgis-js-example-api) |
+| 🗺️ **Minimal OpenLayers example**    | [`docs/examples/qgis-js-example-ol`](./docs/examples/qgis-js-example-ol)   | [![Open the "Minimal OpenLayers" example in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/qgis/qgis-js/tree/main/docs/examples/qgis-js-example-ol?file=main.js&title=qgis-js-example-ol)      |
 
 ## Compatibility
 
