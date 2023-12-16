@@ -1,10 +1,19 @@
 {
   "name": "qgis-js-example-api",
   "private": true,
+  "type": "module",
   "scripts": {
-    "start": "http-server --cors"
+    "start": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "ol": "^8.2.0",
+    "@qgis-js/ol": "0.0.1",
+    "qgis-js": "0.0.1"
   },
   "devDependencies": {
-    "http-server": "^14.1.1"
+    "vite": "^5.0.10",
+    "vite-plugin-static-copy": "^1.0.0"
   }
 }
