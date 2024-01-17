@@ -62,6 +62,7 @@ void QgisApi_renderXYZTile(
 
   QgsMapSettings mapSettings;
 
+  mapSettings.setOutputImageFormat(QImage::Format_ARGB32);
   mapSettings.setBackgroundColor(Qt::transparent);
   mapSettings.setOutputSize(QSize(tileSize, tileSize));
   mapSettings.setOutputDpi(96.0 * pixelRatio);
@@ -102,6 +103,7 @@ void QgisApi_renderImage(
 
   QgsMapSettings mapSettings;
 
+  mapSettings.setOutputImageFormat(QImage::Format_ARGB32);
   mapSettings.setBackgroundColor(Qt::transparent);
   mapSettings.setOutputSize(QSize(width, height));
   mapSettings.setOutputDpi(96.0 * pixelRatio);
