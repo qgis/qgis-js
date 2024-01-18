@@ -52,6 +52,9 @@ qt_add_executable(qgis-js MANUAL_FINALIZATION ${QGISJS_SOURCES})
 target_compile_options(qgis-js PRIVATE "-fwasm-exceptions")
 set_target_properties(qgis-js PROPERTIES LINK_FLAGS "-fwasm-exceptions")
 
+target_compile_options(qgis-js PRIVATE "-msimd128")
+set_target_properties(qgis-js PROPERTIES LINK_FLAGS "-msimd128")
+
 set_target_properties(qgis-js PROPERTIES LINK_FLAGS "--bind")
 set_target_properties(qgis-js PROPERTIES LINK_FLAGS "--preload-file ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/share/proj@/proj --preload-file ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/share/qgis/resources/srs.db@/qgis/resources/srs.db")
 
