@@ -52,6 +52,9 @@ qt_add_executable(qgis-js MANUAL_FINALIZATION ${QGISJS_SOURCES})
 target_compile_options(qgis-js PRIVATE "-fwasm-exceptions")
 set_target_properties(qgis-js PROPERTIES LINK_FLAGS "-fwasm-exceptions")
 
+target_compile_options(qgis-js PRIVATE "-msimd128")
+set_target_properties(qgis-js PROPERTIES LINK_FLAGS "-msimd128")
+
 target_include_directories(qgis-js PRIVATE ${QGIS_INCLUDE_DIR})
 target_link_libraries(qgis-js PRIVATE ${QGIS_LIBRARY})
 
