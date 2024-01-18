@@ -37,6 +37,8 @@ int main(int argc, char *argv[]) {
   setenv("PROJ_LIB", "/proj", 1);
 #endif
 
+  sqlite3_vfs_register(sqlite3_vfs_find("unix-none"), 1);
+
   // needed?
   QCoreApplication::setOrganizationName("QGIS");
   QCoreApplication::setOrganizationDomain("qgis.org");
@@ -52,6 +54,7 @@ int main(int argc, char *argv[]) {
   QgsApplication::init(temp.path());
   QgsApplication::setPkgDataPath("/qgis"); // as set in CMakeLists.txt
 
+  QgsApplication::setMaxThreads(8);
   QgsSettingsRegistryCore::settingsLayerParallelLoading->setValue(false);
 
   if (testLibraries) {

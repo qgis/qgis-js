@@ -1,7 +1,9 @@
 #include <string>
 
+#include "qgsmaprenderercache.h"
 #include <qgslayertree.h>
 #include <qgsmaprenderercustompainterjob.h>
+#include <qgsmaprendererparalleljob.h>
 #include <qgsmaprenderersequentialjob.h>
 #include <qgsmapsettings.h>
 #include <qgsproject.h>
@@ -15,6 +17,8 @@
 #include "../model/Rectangle.hpp"
 
 #include <emscripten/bind.h>
+
+static QgsMapRendererCache CACHE = QgsMapRendererCache();
 
 QList<QgsMapLayer *> QgisApi_allLayers() {
   return QgsProject::instance()->layerTreeRoot()->layerOrder();
@@ -34,7 +38,12 @@ QList<QgsMapLayer *> QgisApi_visibleLayers() {
 }
 
 bool QgisApi_loadProject(std::string filename) {
-  bool res = QgsProject::instance()->read(QString::fromStdString(filename));
+  CACHE.clear();
+
+  Qgis::ProjectReadFlags readFlags = Qgis::ProjectReadFlag::ForceReadOnlyLayers |
+    Qgis::ProjectReadFlag::TrustLayerMetadata; // | Qgis::ProjectReadFlag::DontResolveLayers;
+
+  bool res = QgsProject::instance()->read(QString::fromStdString(filename), readFlags);
   if (!res) return false;
 
   return true;
@@ -114,7 +123,21 @@ void QgisApi_renderImage(
 
   mapSettings.setExtent(extent);
 
-  QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob(mapSettings);
+  // optimizations:
+  QgsVectorSimplifyMethod simplify;
+  simplify.setSimplifyHints(QgsVectorSimplifyMethod::FullSimplification);
+  mapSettings.setSimplifyMethod(simplify);
+
+  mapSettings.setFlag(Qgis::MapSettingsFlag::UseRenderingOptimization, true);
+  mapSettings.setFlag(Qgis::MapSettingsFlag::ForceRasterMasks, true);
+  mapSettings.setFlag(Qgis::MapSettingsFlag::RenderPreviewJob, true);
+
+  mapSettings.setRendererUsage(Qgis::RendererUsage::View);
+
+  QgsMapRendererParallelJob *job = new QgsMapRendererParallelJob(mapSettings);
+
+  job->setCache(&CACHE);
+
   QObject::connect(job, &QgsMapRendererSequentialJob::finished, [job, callback] {
     auto image = job->renderedImage();
     image.rgbSwap(); // for html canvas
