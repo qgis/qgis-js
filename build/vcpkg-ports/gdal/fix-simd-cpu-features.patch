@@ -1,0 +1,78 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 7fe1a41b81..17bfb87517 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -93,22 +93,22 @@ if ("${CMAKE_SYSTEM_PROCESSOR}" MATCHES "(x86|AMD64)")
+     endif ()
+   endif ()
+ 
+-  check_compiler_machine_option(flag AVX)
+-  if (NOT ${flag} STREQUAL "")
+-    set(HAVE_AVX_AT_COMPILE_TIME 1)
+-    add_definitions(-DHAVE_AVX_AT_COMPILE_TIME)
+-    if (NOT ${flag} STREQUAL " ")
+-      set(GDAL_AVX_FLAG ${flag})
+-    endif ()
+-  endif ()
++  #check_compiler_machine_option(flag AVX)
++  #if (NOT ${flag} STREQUAL "")
++  #  set(HAVE_AVX_AT_COMPILE_TIME 1)
++  #  add_definitions(-DHAVE_AVX_AT_COMPILE_TIME)
++  #  if (NOT ${flag} STREQUAL " ")
++  #    set(GDAL_AVX_FLAG ${flag})
++  #  endif ()
++  #endif ()
+ 
+-  check_compiler_machine_option(flag AVX2)
+-  if (NOT ${flag} STREQUAL "")
+-    set(HAVE_AVX2_AT_COMPILE_TIME 1)
+-    if (NOT ${flag} STREQUAL " ")
+-      set(GDAL_AVX2_FLAG ${flag})
+-    endif ()
+-  endif ()
++  #check_compiler_machine_option(flag AVX2)
++  #if (NOT ${flag} STREQUAL "")
++  #  set(HAVE_AVX2_AT_COMPILE_TIME 1)
++  #  if (NOT ${flag} STREQUAL " ")
++  #    set(GDAL_AVX2_FLAG ${flag})
++  #  endif ()
++  #endif ()
+ 
+ endif ()
+ #
+diff --git a/port/cpl_cpu_features.h b/port/cpl_cpu_features.h
+index 4e83411147..53ad5b8fac 100644
+--- a/port/cpl_cpu_features.h
++++ b/port/cpl_cpu_features.h
+@@ -35,7 +35,7 @@
+ //! @cond Doxygen_Suppress
+ 
+ #ifdef HAVE_SSE_AT_COMPILE_TIME
+-#if (defined(_M_X64) || defined(__x86_64))
++#if (defined(EMSCRIPTEN))
+ #define HAVE_INLINE_SSE
+ static bool inline CPLHaveRuntimeSSE()
+ {
+@@ -47,7 +47,7 @@ bool CPLHaveRuntimeSSE();
+ #endif
+ 
+ #ifdef HAVE_SSSE3_AT_COMPILE_TIME
+-#if __SSSE3__
++#if (defined(EMSCRIPTEN))
+ #define HAVE_INLINE_SSSE3
+ static bool inline CPLHaveRuntimeSSSE3()
+ {
+@@ -71,11 +71,11 @@ bool CPLHaveRuntimeSSSE3();
+ #endif
+ 
+ #ifdef HAVE_AVX_AT_COMPILE_TIME
+-#if __AVX__
++#if (defined(EMSCRIPTEN))
+ #define HAVE_INLINE_AVX
+ static bool inline CPLHaveRuntimeAVX()
+ {
+-    return true;
++    return false;
+ }
+ #elif defined(__GNUC__)
+ extern bool bCPLHasAVX;

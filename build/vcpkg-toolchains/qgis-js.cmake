@@ -42,7 +42,7 @@ else()
 endif()
 
 # flags that have to be set across all ports and qgis-js itself
-set(QGIS_JS_FLAGS "-pthread -fwasm-exceptions")
+set(QGIS_JS_FLAGS "-pthread -fwasm-exceptions -msimd128")
 
 set(CMAKE_C_FLAGS_INIT   "${CMAKE_C_FLAGS_INIT} ${QGIS_JS_FLAGS}")
 set(CMAKE_CXX_FLAGS_INIT "${CMAKE_CXX_FLAGS_INIT} ${QGIS_JS_FLAGS}")
