@@ -1,4 +1,5 @@
 
+#include "cpl_conv.h"
 #include <expat.h>
 #include <gdal.h>
 #include <geos_c.h>
@@ -36,6 +37,17 @@ int main(int argc, char *argv[]) {
   // as set in CMakeLists.txt
   setenv("PROJ_LIB", "/proj", 1);
 #endif
+
+  sqlite3_vfs_register(sqlite3_vfs_find("unix-none"), 1);
+
+  //CPLSetConfigOption("OGR_SKIP", "SQLite,GPKG");
+
+  CPLSetConfigOption("DO_NOT_ENABLE_WAL", "YES");
+  CPLSetConfigOption("OGR_SQLITE_JOURNAL", "OFF");
+  CPLSetConfigOption("OGR_SQLITE_CACHE", "128");
+  CPLSetConfigOption("OGR_SQLITE_SYNCHRONOUS", "OFF");
+  CPLSetConfigOption("NOLOCK", "YES");
+  CPLSetConfigOption("IMMUTABLE", "YES");
 
   // needed?
   QCoreApplication::setOrganizationName("QGIS");
