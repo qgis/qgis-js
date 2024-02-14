@@ -3,6 +3,8 @@ import { existsSync, readFileSync } from "fs";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 
+import { CrossOriginIsolationResponseHeaders } from "./CrossOriginIsolationPlugin";
+
 import type { Plugin, ResolvedConfig } from "vite";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -85,6 +87,11 @@ export default function QgisRuntimePlugin(_runtime: Runtime | null): Plugin {
           if (existsSync(filePath)) {
             const raw = readFileSync(filePath);
             res.statusCode = 200;
+            Object.entries(CrossOriginIsolationResponseHeaders).forEach(
+              ([key, value]) => {
+                res.setHeader(key, value);
+              },
+            );
             if (
               filePath.endsWith("." + RUNTIME_WASM) ||
               filePath.endsWith("." + RUNTIME_DATA)

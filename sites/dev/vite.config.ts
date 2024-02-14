@@ -3,6 +3,9 @@ import { defineConfig } from "vite";
 
 import QgisRuntimePlugin from "../../build/vite/QgisRuntimePlugin";
 import DirectoryListingPlugin from "../../build/vite/DirectoryListingPlugin";
+import CrossOriginIsolationPlugin, {
+  CrossOriginIsolationResponseHeaders,
+} from "../../build/vite/CrossOriginIsolationPlugin";
 
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
@@ -36,11 +39,17 @@ export default defineConfig({
       },
     ],
   },
+  preview: {
+    headers: {
+      ...CrossOriginIsolationResponseHeaders,
+    },
+  },
   plugins: [
     QgisRuntimePlugin({
       name: "qgis-js",
       outputDir: "build/wasm",
     }),
+    CrossOriginIsolationPlugin(),
     DirectoryListingPlugin(["public/projects"]),
     viteStaticCopy({
       targets: [
