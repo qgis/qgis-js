@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>qgis-js-performance</title>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="data:;base64,=" />
+  </head>
+  <body>
+    <h1>qgis-js Performance Measurement Tool</h1>
+    <table>
+      <tr>
+        <td class="row-measure">
+          <input id="boot-measure" type="number" disabled />
+        </td>
+        <td><button id="boot">⚙️ Boot runtime</button></td>
+        <td class="row-label">
+          <label for="boot-input">Runtime</label>
+        </td>
+        <td class="row-input">
+          <select id="boot-input"></select>
+        </td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><input id="project-measure" type="number" disabled /></td>
+        <td><button id="project" disabled>Load project</button></td>
+        <td>
+          <label for="project-input">Project</label>
+        </td>
+        <td>
+          <select id="project-input">
+            <option disabled selected value></option>
+            <option value="aos">aos</option>
+          </select>
+        </td>
+        <td><button>Add local project</button></td>
+      </tr>
+      <tr>
+        <td><input id="frame-measure" type="number" disabled /></td>
+        <td><button id="frame" disabled>🖼️ Render first frame</button></td>
+        <td>
+          <label for="frame-input">Resolution</label>
+        </td>
+        <td>
+          <input
+            id="frame-input"
+            value="[42,42]"
+            title="resplution"
+            placeholder="resplution"
+          />
+        </td>
+        <td></td>
+      </tr>
+      <tr>
+        <td rowspan="4"></td>
+        <td><button id="start">🏁 Start performance test</button></td>
+        <td><label for="start-extent-input">Extents</label></td>
+        <td>
+          <input
+            id="start-extent-input"
+            title="extent"
+            placeholder="extent"
+            value='[{"name":"Europe","srid":4326,"extent":[[-11.25,35.25],[33.75,71.25]]},{"name":"Switzerland","srid":2056,"extent":[[2485071.58,1074261.72],[2837119.8,1299941.79]]},{"name":"Zurich","srid":2056,"extent":[[2668987.22976105,1223521.89852693],[2717254.80509207,1283848.12907045]]}]'
+          />
+        </td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td rowspan="3"></td>
+        <td><label for="start-resolution-input">Resolutions</label></td>
+        <td>
+          <input
+            id="start-resolution-input"
+            title="resolution"
+            placeholder="resolution"
+            value="[[800,600],[1920,1080],[3840,2160]]"
+          />
+        </td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td><label for="start-amount-input">Amount</label></td>
+        <td>
+          <input
+            id="start-amount-input"
+            type="number"
+            min="0"
+            step="1"
+            value="3"
+            title="amount"
+            placeholder="amount"
+          />
+        </td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td><label>Options</label></td>
+        <td>
+          <input type="checkbox" id="option-show-results" />
+          <label for="option-show-results" class="label-left"
+            >Show rendered images</label
+          >
+        </td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td></td>
+        <td colspan="2"></td>
+      </tr>
+    </table>
+
+    <div id="results"></div>
+
+    <script type="module" src="src/index.ts"></script>
+
+    <style>
+      body {
+        margin: 1em;
+        font-family: sans-serif;
+      }
+
+      button {
+        width: 15em;
+        text-align: left;
+      }
+
+      table {
+        border-spacing: 0.5em;
+      }
+      table td {
+        vertical-align: baseline;
+        border: 1px solid lightgrey;
+      }
+      table td.row-measure {
+        min-width: 12em;
+      }
+      table td.row-label {
+        min-width: 12em;
+      }
+      table td.row-input {
+        min-width: 20em;
+      }
+
+      label,
+      input,
+      select,
+      option {
+        box-sizing: border-box;
+        font-family: monospace;
+      }
+      select,
+      input:not([type="checkbox"]) {
+        width: 100%;
+      }
+      label {
+        float: right;
+      }
+      label.label-left {
+        float: initial;
+      }
+
+      input::placeholder {
+        font-weight: bold;
+        opacity: 0.5;
+        color: red;
+      }
+
+      #results table {
+        margin-top: 2em;
+        margin-left: 2em;
+        border-collapse: collapse;
+      }
+      #results table td {
+        padding: 0.5em;
+        border: 1px solid lightgrey;
+        line-height: 2em;
+      }
+      #results span {
+        font-size: xx-small;
+      }
+
+      #results input {
+        vertical-align: bottom;
+        background-color: lightgreen;
+      }
+      #results input:not([value]) {
+        background-color: lightcoral;
+      }
+      #results input:not([value]).active {
+        background-color: lightseagreen;
+      }
+
+      #results img {
+        margin-left: 1em;
+        vertical-align: bottom;
+        width: 1.2em;
+        height: 1.2em;
+        object-fit: cover;
+        cursor: pointer;
+        border: 1px solid lightgrey;
+      }
+
+      #loading {
+        float: right;
+        width: 1em;
+        height: 1em;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: darkgrey;
+        animation: spin 1s ease-in-out infinite;
+        -webkit-animation: spin 1s ease-in-out infinite;
+      }
+
+      @keyframes spin {
+        to {
+          -webkit-transform: rotate(360deg);
+        }
+      }
+      @-webkit-keyframes spin {
+        to {
+          -webkit-transform: rotate(360deg);
+        }
+      }
+    </style>
+  </body>
+</html>
