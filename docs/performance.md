@@ -99,7 +99,7 @@ More information
 
 ## TODOs
 
-- [ ] Create the performance measurement tool
+- [x] Create the performance measurement tool
 - [ ] Write a [profiling guide](./profiling.md)
 - [ ] Write the [final conclusion](#conclusion)
 
