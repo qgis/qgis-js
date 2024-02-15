@@ -142,6 +142,40 @@ const std::vector<MapLayer *> QgisApi_mapLayers() {
   return result;
 }
 
+const std::vector<std::string> QgisApi_mapThemes() {
+  std::vector<std::string> result = {};
+  for (const QString &theme : QgsProject::instance()->mapThemeCollection()->mapThemes()) {
+    result.push_back(theme.toStdString());
+  }
+  return result;
+}
+
+const std::string QgisApi_getMapTheme() {
+  QgsLayerTree *layerTreeRoot = QgsProject::instance()->layerTreeRoot();
+  QgsMapThemeCollection *collection = QgsProject::instance()->mapThemeCollection();
+  QgsLayerTreeModel model(layerTreeRoot);
+  auto currentState = QgsMapThemeCollection::createThemeFromCurrentState(layerTreeRoot, &model);
+  for (const QString &theme : QgsProject::instance()->mapThemeCollection()->mapThemes()) {
+    if (currentState == QgsProject::instance()->mapThemeCollection()->mapThemeState(theme)) {
+      return theme.toStdString();
+    }
+  }
+  return "";
+}
+
+const bool QgisApi_setMapTheme(std::string themeName) {
+  QString qThemeName = QString::fromStdString(themeName);
+  if (!QgsProject::instance()->mapThemeCollection()->hasMapTheme(qThemeName)) {
+    return false;
+  } else {
+    QgsLayerTree *layerTreeRoot = QgsProject::instance()->layerTreeRoot();
+    QgsMapThemeCollection *collection = QgsProject::instance()->mapThemeCollection();
+    QgsLayerTreeModel model(layerTreeRoot);
+    collection->applyTheme(qThemeName, layerTreeRoot, &model);
+    return true;
+  }
+}
+
 EMSCRIPTEN_BINDINGS(QgisApi) {
   emscripten::function("loadProject", &QgisApi_loadProject);
   emscripten::function("fullExtent", &QgisApi_fullExtent);
@@ -151,4 +185,8 @@ EMSCRIPTEN_BINDINGS(QgisApi) {
   emscripten::function("transformRectangle", &QgisApi_transformRectangle);
   emscripten::function("mapLayers", &QgisApi_mapLayers, emscripten::allow_raw_pointers());
   emscripten::register_vector<MapLayer *>("vector<MapLayer *>");
+  emscripten::function("mapThemes", &QgisApi_mapThemes, emscripten::allow_raw_pointers());
+  emscripten::function("getMapTheme", &QgisApi_getMapTheme);
+  emscripten::function("setMapTheme", &QgisApi_setMapTheme);
+  emscripten::register_vector<std::string>("vector<std::string>");
 }

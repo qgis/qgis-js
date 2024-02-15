@@ -84,6 +84,15 @@ export class QgisApiAdapterImplementation implements QgisApiAdapter {
     }
     return result;
   }
+
+  mapThemes(): readonly string[] {
+    const mapLayersRaw = this._api.mapThemes();
+    const result = new Array<string>(mapLayersRaw.size());
+    for (let i = 0; i < mapLayersRaw.size(); i++) {
+      result[i] = mapLayersRaw.get(i);
+    }
+    return result;
+  }
 }
 
 export function getQgisApiProxy(api: InternalQgisApi): QgisApi {

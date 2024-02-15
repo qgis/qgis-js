@@ -114,6 +114,7 @@ async function initDemo() {
       if (timer) console.time("project");
       api.loadProject(project);
       if (timer) console.timeEnd("project");
+
       // update all demos
       setTimeout(() => {
         updateCallbacks.forEach((update) => update());
