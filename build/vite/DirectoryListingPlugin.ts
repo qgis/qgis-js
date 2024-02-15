@@ -1,19 +1,15 @@
-import { File, Folder } from "../fs/FileSystem";
+import { File, Folder } from "../../packages/qgis-js-utils";
 
-import type { Plugin } from "vite";
+import type { Plugin, ResolvedConfig } from "vite";
 
 import { basename, resolve, join } from "path";
 import { readdir } from "fs/promises";
 import { Dirent } from "fs";
 
 const FILTER_LIST = [".DS_Store", ".git", ".gitignore", ".env"];
+const DIRECTORY_LISTING_FILENAME = "directory-listing.json";
 
-export async function readDirectoryListing(
-  directoryModule: any,
-): Promise<Folder> {
-  const directoryRaw = await directoryModule.default;
-  return directoryRaw as Folder;
-}
+let config: ResolvedConfig;
 
 export default function DirectoryListingPlugin(
   directories: string | string[],
@@ -27,25 +23,46 @@ export default function DirectoryListingPlugin(
       );
     }
   }
-
   return {
     name: "DirectoryListingPlugin",
-    enforce: "pre",
-    resolveId(id: string) {
-      if (directoriesToList.includes(id)) {
-        return id;
-      }
+    configResolved(_config) {
+      config = _config;
     },
-    async load(id: string) {
-      if (directoriesToList.includes(id)) {
+    configureServer(server) {
+      const dirs = directoriesToList.map((directory) => config.base + directory.replace(/^public\//, "") + `/${DIRECTORY_LISTING_FILENAME}`);
+      server.middlewares.use(async (req, res, next) => {
+        if(req.url && dirs.includes(req.url)) {
+          let dir = req.url;
+          // remove potential base from start of the url
+          if (dir.startsWith(config.base)) {
+            dir = dir.slice(config.base.length);
+          }
+          // remove filename from url at the end
+          dir = dir.slice(0, -`/${DIRECTORY_LISTING_FILENAME}`.length);
+          const drectoryListing = await createDirectoryListing(
+            join(process.cwd(), "public"),
+            dir,
+            ".",
+          );
+          res.setHeader("Content-Type", "application/json");
+          res.end(JSON.stringify(drectoryListing, null, 2));
+        } else {
+          next();
+        }
+      })
+    },
+    async generateBundle() {
+      for(const dir of directoriesToList.map((directory) => directory.replace(/^public\//, ""))) {
         const drectoryListing = await createDirectoryListing(
           join(process.cwd(), "public"),
-          id.replace("public/", ""),
+          dir,
           ".",
         );
-        return (
-          `export default ${JSON.stringify(drectoryListing, null, 2)}` + "\n"
-        );
+        this.emitFile({
+          type: "asset",
+          fileName: dir + `/${DIRECTORY_LISTING_FILENAME}`,
+          source: JSON.stringify(drectoryListing, null, 2),
+        });
       }
     },
   };

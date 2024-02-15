@@ -53,9 +53,7 @@ Loads QGIS projects from a GitHub repository with the [GitHub API](https://docs.
 
 Fetches QGIS projects from a remote server with the [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)
 
-The remote server must provide a JSON file with the following structure:
-
-<!-- FIXME: Make this work from any web server (no hardcoded paths)-->
+- If `loadRemoteProjects` is invoked with a string as, it is assumed to be the URL of a JSON file with the following structure:
 
 ```json
 {
@@ -84,10 +82,7 @@ The remote server must provide a JSON file with the following structure:
 }
 ```
 
-<!-- FIXME: Provide a JSON schema -->
-<!--
-> See the JSON schema for the [RemoteProject](FIXME) structure
--->
+- Otherwise a `Folder` object can also be passed directly to `loadRemoteProjects`, see [FileSystem.ts](./src/fs/FileSystem.ts)
 
 ## Versioning
 

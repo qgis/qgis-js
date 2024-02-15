@@ -50,16 +50,24 @@ export function useProjects(
       resolve(localProject);
     });
 
-  const loadRemoteProjects = () =>
-    new Promise<RemoteProject[]>((resolve) => {
-      // @ts-ignore (provided by the DirectoryListingPlugin (see vite.config.ts))
-      import(/* @vite-ignore */ `public/projects`).then((folder) => {
-        resolve(
-          (folder.default as Folder).entries
-            .filter((entry) => entry.type === "Folder")
-            .map((entry) => new RemoteProject(fs, entry as Folder)),
-        );
-      });
+  const loadRemoteProjects = (remoteProjects: string | Folder = "./projects/directory-listing.json") =>
+    new Promise<RemoteProject[]>(async (resolve, reject) => {
+      // if remoteProjects is a string, try to fetch it
+      if(typeof remoteProjects === "string") {
+        try {
+          const remoteProjectsResponse = await fetch(remoteProjects);
+          const remoteProjectsResponseJson = await remoteProjectsResponse.json();
+          remoteProjects = remoteProjectsResponseJson as Folder;
+        } catch (error) {
+          reject(error);
+        }
+      }
+      // validate the remoteProjects
+      resolve(
+        (remoteProjects as Folder).entries
+          .filter((entry) => entry.type === "Folder")
+          .map((entry) => new RemoteProject(fs, entry as Folder)),
+      );
     });
 
   const loadGithubProjects = (
