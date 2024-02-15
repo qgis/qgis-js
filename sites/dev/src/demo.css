@@ -58,17 +58,29 @@ a.source {
   right: 2em;
 }
 
-#layers-control .layers {
+#layers-control .layers,
+.themes {
   width: 25em;
   padding: 1em 0.5em;
   border: 1px solid #ccc;
+  border-bottom: none;
   background-color: #ffffff;
 }
 
-#layers-control .layers::before {
+#layers-control .layers::before,
+.themes::before {
   margin: 1em 0.5em;
   font-weight: bold;
   content: "Layers:";
+}
+
+#layers-control .themes::before {
+  content: "Map Theme:";
+}
+
+#layers-control .themes select {
+  float: right;
+  width: 18em;
 }
 
 #layers-control .layers :first-child {

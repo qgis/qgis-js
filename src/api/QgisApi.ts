@@ -39,6 +39,21 @@ export interface CommonQgisApi extends QgisModelConstructors {
     inputSrid: string,
     outputSrid: string,
   ): Rectangle;
+
+  /**
+   * Gets the current map theme of the current project.
+   *
+   * @returns The name of the current map theme. An empty string if no map theme is set.
+   */
+  setMapTheme(mapTheme: string): boolean;
+
+  /**
+   * Sets a map theme of the current project.
+   *
+   * @param
+   * @returns true if the map theme was loaded successfully, false otherwise.
+   */
+  setMapTheme(mapTheme: string): boolean;
 }
 
 /**
@@ -89,6 +104,13 @@ export interface QgisApiAdapter {
    * @returns The map layers of the loaded project.
    */
   mapLayers(): readonly MapLayer[];
+
+  /**
+   * Returns the map themes of the loaded project.
+   *
+   * @returns The map themes of the loaded project.
+   */
+  mapThemes(): readonly string[];
 }
 
 /**
@@ -120,4 +142,5 @@ export interface InternalQgisApi extends CommonQgisApi {
     callback: (tileData: ArrayBufferLike) => void,
   ): number;
   mapLayers(): any;
+  mapThemes(): any;
 }

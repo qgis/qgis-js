@@ -8,9 +8,9 @@ export function layersControl(
   const update = () => {
     target.innerHTML = "";
 
-    const container = document.createElement("div");
-    container.className = "layers";
-    target.appendChild(container);
+    const layerContainer = document.createElement("div");
+    layerContainer.className = "layers";
+    target.appendChild(layerContainer);
 
     const layers = api.mapLayers();
     for (const layer of layers) {
@@ -26,6 +26,7 @@ export function layersControl(
       checkbox.addEventListener("change", () => {
         layer.visible = checkbox.checked;
         redraw();
+        update();
       });
       node.appendChild(checkbox);
 
@@ -49,7 +50,43 @@ export function layersControl(
       });
 
       node.appendChild(slider);
-      container.appendChild(node);
+      layerContainer.appendChild(node);
+    }
+
+    if (api.mapThemes().length > 0) {
+      const themeContainer = document.createElement("div");
+      themeContainer.className = "themes";
+      target.appendChild(themeContainer);
+
+      const select = document.createElement("select");
+      select.addEventListener("change", () => {
+        if (select.value) {
+          api.setMapTheme(select.value);
+          redraw();
+          update();
+        }
+      });
+      themeContainer.appendChild(select);
+
+      const currentTheme = api.getMapTheme();
+
+      const option = document.createElement("option");
+      option.value = "";
+      option.text = "";
+      if (!currentTheme) {
+        option.selected = true;
+      }
+      select.appendChild(option);
+
+      for (const theme of api.mapThemes()) {
+        const option = document.createElement("option");
+        option.value = theme;
+        option.text = theme;
+        if (theme === currentTheme) {
+          option.selected = true;
+        }
+        select.appendChild(option);
+      }
     }
   };
 
