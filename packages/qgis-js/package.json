@@ -1,6 +1,6 @@
 {
   "name": "qgis-js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "QGIS core ported to WebAssembly to run it on the web platform",
   "license": "GPL-2.0-or-later",
   "homepage": "https://qgis.github.io/qgis-js/",

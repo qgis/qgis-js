@@ -2,7 +2,7 @@
 
 **QGIS core ported to WebAssembly to run it on the web platform**
 
-Version: `0.0.1` (based on QGIS 3.32.1)
+Version: `0.0.2` (based on QGIS 3.32.1)
 
 [qgis-js Repository](https://github.com/qgis/qgis-js) | [qgis-js Website](https://qgis.github.io/qgis-js) | ["`qgis-js`" package source](https://github.com/qgis/qgis-js/tree/main/packages/qgis-js)
 
