@@ -45,7 +45,7 @@ export interface CommonQgisApi extends QgisModelConstructors {
    *
    * @returns The name of the current map theme. An empty string if no map theme is set.
    */
-  setMapTheme(mapTheme: string): boolean;
+  getMapTheme(): string;
 
   /**
    * Sets a map theme of the current project.
