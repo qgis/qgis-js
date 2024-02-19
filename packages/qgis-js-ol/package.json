@@ -15,6 +15,9 @@
   "type": "module",
   "main": "dist/qgis-js-ol.js",
   "types": "dist/qgis-js-ol.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
   "scripts": {
     "build": "vite build"
   },
