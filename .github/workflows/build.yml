@@ -21,7 +21,7 @@ concurrency:
 jobs:
   build-qgis-js:
     env:
-      qt: "6.5.2"
+      qt: "6.6.2"
       qtModules: "qt5compat"
       pythonVersion: "3.12"
     environment:

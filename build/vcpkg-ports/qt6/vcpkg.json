@@ -1,6 +1,6 @@
 {
   "name": "qt6",
-  "version-string": "6.5.2",
+  "version-string": "6.6.2",
   "description": "Qt6 Application Framework Base Module. Includes Core, GUI, Widgets, Networking, SQL, Concurrent and other essential qt components.",
   "homepage": "https://www.qt.io/"
 }
