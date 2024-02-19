@@ -79,7 +79,7 @@ sudo apt-get install pkg-config ninja-build flex bison
 
   - You need a free Qt account to use the installer
 
-- **Install** at least the following **6.5.2** packages:
+- **Install** at least the following **6.6.2** packages:
 
   - WebAssembly (multi-threaded)
     - Qt 5 Compatibility Module
@@ -88,7 +88,7 @@ sudo apt-get install pkg-config ninja-build flex bison
 
 - **Patch** Qt installation
   - Run `build/scripts/qt-patches.sh` to patch the Qt installation
-    - Set `QGIS_JS_QT` env var if you're not using `~/Qt/6.5.2`
+    - Set `QGIS_JS_QT` env var if you're not using `~/Qt/6.6.2`
 
 #### Install dependencies with pnpm:
 

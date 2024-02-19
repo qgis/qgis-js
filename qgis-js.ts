@@ -209,7 +209,7 @@ export class CompileAction extends CommandLineAction {
       process.env.QGIS_JS_EMSDK = `${repo}/build/emsdk`;
 
       if (!process.env.QGIS_JS_QT) {
-        process.env.QGIS_JS_QT = `${home}/Qt/6.5.2`;
+        process.env.QGIS_JS_QT = `${home}/Qt/6.6.2`;
       }
       //check if QGIS_JS_QT exists
       if (!fs.existsSync(process.env.QGIS_JS_QT)) {
