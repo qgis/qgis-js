@@ -2,7 +2,7 @@
 set -eo pipefail
 
 QGIS_JS_DIR=$(pwd)
-QGIS_JS_QT="${QGIS_JS_QT:-${HOME}/Qt/6.5.2}"
+QGIS_JS_QT="${QGIS_JS_QT:-${HOME}/Qt/6.6.2}"
 
 if [ ! -d "$QGIS_JS_QT/" ]; then
   echo "Directory $QGIS_JS_QT does not exist."
