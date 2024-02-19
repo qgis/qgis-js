@@ -50,13 +50,16 @@ export function useProjects(
       resolve(localProject);
     });
 
-  const loadRemoteProjects = (remoteProjects: string | Folder = "./projects/directory-listing.json") =>
+  const loadRemoteProjects = (
+    remoteProjects: string | Folder = "./projects/directory-listing.json",
+  ) =>
     new Promise<RemoteProject[]>(async (resolve, reject) => {
       // if remoteProjects is a string, try to fetch it
-      if(typeof remoteProjects === "string") {
+      if (typeof remoteProjects === "string") {
         try {
           const remoteProjectsResponse = await fetch(remoteProjects);
-          const remoteProjectsResponseJson = await remoteProjectsResponse.json();
+          const remoteProjectsResponseJson =
+            await remoteProjectsResponse.json();
           remoteProjects = remoteProjectsResponseJson as Folder;
         } catch (error) {
           reject(error);

@@ -29,9 +29,14 @@ export default function DirectoryListingPlugin(
       config = _config;
     },
     configureServer(server) {
-      const dirs = directoriesToList.map((directory) => config.base + directory.replace(/^public\//, "") + `/${DIRECTORY_LISTING_FILENAME}`);
+      const dirs = directoriesToList.map(
+        (directory) =>
+          config.base +
+          directory.replace(/^public\//, "") +
+          `/${DIRECTORY_LISTING_FILENAME}`,
+      );
       server.middlewares.use(async (req, res, next) => {
-        if(req.url && dirs.includes(req.url)) {
+        if (req.url && dirs.includes(req.url)) {
           let dir = req.url;
           // remove potential base from start of the url
           if (dir.startsWith(config.base)) {
@@ -49,10 +54,12 @@ export default function DirectoryListingPlugin(
         } else {
           next();
         }
-      })
+      });
     },
     async generateBundle() {
-      for(const dir of directoriesToList.map((directory) => directory.replace(/^public\//, ""))) {
+      for (const dir of directoriesToList.map((directory) =>
+        directory.replace(/^public\//, ""),
+      )) {
         const drectoryListing = await createDirectoryListing(
           join(process.cwd(), "public"),
           dir,
