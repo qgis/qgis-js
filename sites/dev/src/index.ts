@@ -19,6 +19,14 @@ function isDev() {
   return import.meta.env.MODE === "development";
 }
 
+const qgisJsDemoProjects = (path: string) => ({
+  owner: "boardend",
+  repo: "qgis-js-projects",
+  path: "/" + path,
+  branch: "main",
+  prefix: `${path[0].toUpperCase()}${path.slice(1)}: `,
+});
+
 const GITHUB_REPOS: Array<{
   owner: string;
   repo: string;
@@ -26,23 +34,9 @@ const GITHUB_REPOS: Array<{
   branch?: string;
   prefix?: string;
 }> = [
-  {
-    owner: "boardend",
-    repo: "qgis-js-projects",
-    path: "/demo",
-    branch: "main",
-    prefix: "Demo: ",
-  },
+  qgisJsDemoProjects("demo"),
   ...(isDev()
-    ? [
-        {
-          owner: "boardend",
-          repo: "qgis-js-projects",
-          path: "/test",
-          branch: "main",
-          prefix: "Test: ",
-        },
-      ]
+    ? ["test", "performance"].map((path) => qgisJsDemoProjects(path))
     : []),
 ];
 
