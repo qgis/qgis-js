@@ -73,7 +73,6 @@ set(QGIS_PROVIDERS_LIST
   provider_arcgisfeatureserver
   provider_arcgismapserver
   provider_delimitedtext
-  provider_wcs
   provider_wms
 )
 
