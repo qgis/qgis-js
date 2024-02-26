@@ -25,7 +25,24 @@
       "default-features": false
     },
     "protobuf",
-    "qt6",
+    {
+      "name": "qt5compat",
+      "default-features": false,
+      "features": ["textcodec"]
+    },
+    {
+      "name": "qtbase",
+      "default-features": false,
+      "features": [
+        "concurrent",
+        "gui",
+        "jpeg",
+        "network",
+        "openssl",
+        "png",
+        "widgets"
+      ]
+    },
     "qtkeychain-qt6",
     "qca-qt6",
     "qgis-qt6"
