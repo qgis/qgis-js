@@ -1,0 +1,35 @@
+diff --git a/src/core/providers/qgsproviderregistry.cpp b/src/core/providers/qgsproviderregistry.cpp
+index 1713af97baa..e7c3bb4ef45 100644
+--- a/src/core/providers/qgsproviderregistry.cpp
++++ b/src/core/providers/qgsproviderregistry.cpp
+@@ -52,7 +52,7 @@
+ 
+ #ifdef HAVE_STATIC_PROVIDERS
+ #include "qgswmsprovider.h"
+-#include "qgswcsprovider.h"
++// #include "qgswcsprovider.h"
+ #include "qgsdelimitedtextprovider.h"
+ #include "qgsafsprovider.h"
+ #include "qgsamsprovider.h"
+@@ -228,7 +228,7 @@ void QgsProviderRegistry::init()
+ 
+ #ifdef HAVE_STATIC_PROVIDERS
+   mProviders[ QgsWmsProvider::providerKey() ] = new QgsWmsProviderMetadata();
+-  mProviders[ QgsWcsProvider::providerKey() ] = new QgsWcsProviderMetadata();
++  // mProviders[ QgsWcsProvider::providerKey() ] = new QgsWcsProviderMetadata();
+   mProviders[ QgsDelimitedTextProvider::providerKey() ] = new QgsDelimitedTextProviderMetadata();
+   mProviders[ QgsAfsProvider::providerKey() ] = new QgsAfsProviderMetadata();
+   mProviders[ QgsAmsProvider::providerKey() ] = new QgsAmsProviderMetadata();
+diff --git a/src/providers/CMakeLists.txt b/src/providers/CMakeLists.txt
+index 2fbe41cd4e5..1e3ed189c31 100644
+--- a/src/providers/CMakeLists.txt
++++ b/src/providers/CMakeLists.txt
+@@ -4,7 +4,7 @@ set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_PLUGIN_SUBDI
+ 
+ # providers with implemented both static and dynamic building
+ add_subdirectory(wms)
+-add_subdirectory(wcs)
++#add_subdirectory(wcs)
+ add_subdirectory(delimitedtext)
+ add_subdirectory(arcgisrest)
+ 
