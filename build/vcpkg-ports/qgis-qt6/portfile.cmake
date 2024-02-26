@@ -29,6 +29,7 @@ vcpkg_from_github(
         09-fix-QgsExpression-Functions.patch
         10-exclude-qgscoordinatereferencesystem_legacy.patch
         11-disable-openedFileLimit.patch
+        12-disable-wcs-provider.patch
 )
 
 file(REMOVE ${SOURCE_PATH}/cmake/FindQtKeychain.cmake)
