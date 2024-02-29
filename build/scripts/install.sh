@@ -2,8 +2,8 @@
 set -eo pipefail
 
 git submodule update --init build/emsdk
-build/emsdk/emsdk install 3.1.37;
-build/emsdk/emsdk activate 3.1.37;
+build/emsdk/emsdk install 3.1.54;
+build/emsdk/emsdk activate 3.1.54;
 
 git submodule update --init build/vcpkg
 ./build/vcpkg/bootstrap-vcpkg.sh -disableMetrics
