@@ -26,25 +26,50 @@
     },
     "protobuf",
     {
-      "name": "qt5compat",
+      "name": "freetype",
       "default-features": false,
-      "features": ["textcodec"]
+      "features": ["zlib"]
+    },
+    {
+      "name": "freetype",
+      "default-features": false,
+      "host": true
     },
     {
       "name": "qtbase",
       "default-features": false,
       "features": [
+        "opengl",
+        "gles3",
         "concurrent",
         "gui",
         "jpeg",
         "network",
-        "openssl",
-        "png",
-        "widgets"
+        "widgets",
+        "sql",
+        "sql-sqlite",
+        "testlib"
       ]
     },
+    {
+      "name": "qtbase",
+      "host": true,
+      "default-features": false
+    },
+    {
+      "name": "qt5compat",
+      "default-features": false,
+      "features": ["textcodec"]
+    },
+    {
+      "name": "qtsvg",
+      "default-features": false
+    },
+    {
+      "name": "qca",
+      "default-features": false
+    },
     "qtkeychain-qt6",
-    "qca-qt6",
     "qgis-qt6"
   ]
 }
