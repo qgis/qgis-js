@@ -296,6 +296,11 @@ set(TOOL_NAMES
         tracepointgen
     )
 
+if(VCPKG_TARGET_IS_EMSCRIPTEN)
+    list(APPEND FEATURE_OPTIONS -DFEATURE_relocatable:BOOL=OFF)
+    list(APPEND FEATURE_OPTIONS -DFEATURE_wasm_exceptions:BOOL=ON)
+endif()
+
 qt_install_submodule(PATCHES    ${${PORT}_PATCHES}
                      TOOL_NAMES ${TOOL_NAMES}
                      CONFIGURE_OPTIONS
@@ -314,7 +319,6 @@ qt_install_submodule(PATCHES    ${${PORT}_PATCHES}
                         -DQT_USE_BUNDLED_BundledPcre2:BOOL=FALSE
                         -DINPUT_bundled_xcb_xinput:STRING=no
                         -DFEATURE_force_debug_info:BOOL=ON
-                        -DFEATURE_relocatable:BOOL=ON
                      CONFIGURE_OPTIONS_RELEASE
                      CONFIGURE_OPTIONS_DEBUG
                         -DFEATURE_debug:BOOL=ON
