@@ -6,7 +6,7 @@ set(VCPKG_LIBRARY_LINKAGE static)
 set(VCPKG_CMAKE_SYSTEM_NAME Emscripten)
 
 # to avoid building both debug and release of all libs
-# set(VCPKG_BUILD_TYPE "release")
+set(VCPKG_BUILD_TYPE "release")
 
 set(VCPKG_ENV_PASSTHROUGH_UNTRACKED EMSDK EMSCRIPTEN EMSCRIPTEN_ROOT PATH)
 
