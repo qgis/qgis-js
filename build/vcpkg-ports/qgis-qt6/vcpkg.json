@@ -23,8 +23,46 @@
             "name": "gdal",
             "default-features": false
         },
-      "qt6",
-      "qca-qt6",
+
+        {
+          "name": "qtbase",
+          "default-features": false,
+          "features": [
+            "concurrent",
+            "gui",
+            "jpeg",
+            "network",
+            "png",
+            "widgets",
+            "sql",
+            "sql-sqlite"
+          ]
+        },
+        {
+          "name": "qtsvg",
+          "default-features": false
+        },
+
+        {
+          "name": "qttools",
+          "default-features": false,
+          "features": [
+            "linguist"
+          ]
+        },
+        {
+          "name": "qttools",
+          "host": true,
+          "default-features": false,
+          "features": [
+            "linguist"
+          ]
+        },
+
+      {
+          "name": "qca",
+          "default-features": false
+      },
       "qtkeychain-qt6",
       {
         "name": "vcpkg-cmake",
