@@ -52,9 +52,6 @@ qt_add_executable(qgis-js MANUAL_FINALIZATION ${QGISJS_SOURCES})
 target_compile_options(qgis-js PRIVATE "-fwasm-exceptions")
 set_target_properties(qgis-js PROPERTIES LINK_FLAGS "-fwasm-exceptions")
 
-set_target_properties(qgis-js PROPERTIES LINK_FLAGS "--bind")
-set_target_properties(qgis-js PROPERTIES LINK_FLAGS "--preload-file ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/share/proj@/proj --preload-file ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/share/qgis/resources/srs.db@/qgis/resources/srs.db")
-
 target_include_directories(qgis-js PRIVATE ${QGIS_INCLUDE_DIR})
 target_link_libraries(qgis-js PRIVATE ${QGIS_LIBRARY})
 
@@ -139,6 +136,11 @@ target_link_options(qgis-js PRIVATE "SHELL: \
 -s PTHREAD_POOL_SIZE=\"Math.min(Math.max(((navigator&&navigator.hardwareConcurrency)||${MINIMAL_THREAD_POOL_SIZE}),${MINIMAL_THREAD_POOL_SIZE}),${MAXIMAL_THREAD_POOL_SIZE})\" \
 -s PTHREAD_POOL_SIZE_STRICT=2 \
 -s PTHREAD_POOL_DELAY_LOAD=1"
+)
+
+target_link_options(qgis-js PRIVATE "SHELL: \
+--preload-file ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/share/proj@/proj \
+--preload-file ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/share/qgis/resources/srs.db@/qgis/resources/srs.db"
 )
 
 # DWARF debug info (see https://developer.chrome.com/blog/faster-wasm-debugging/)
