@@ -9,7 +9,7 @@
   "dependencies": [
     {
       "name": "libb2",
-      "platform": "!windows"
+      "platform": "!windows & !wasm32 & !linux"
     },
     "pcre2",
     {
