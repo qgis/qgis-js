@@ -1,0 +1,12 @@
+diff --git a/i18n/CMakeLists.txt b/i18n/CMakeLists.txt
+index 752a951d41b..3c2673c209d 100644
+--- a/i18n/CMakeLists.txt
++++ b/i18n/CMakeLists.txt
+@@ -1,5 +1,5 @@
+-find_package(${QT_VERSION_BASE} COMPONENTS LinguistTools REQUIRED)
+-set(QT_LRELEASE_EXECUTABLE ${QT_VERSION_BASE}::lrelease)
++find_package(${QT_VERSION_BASE} COMPONENTS LinguistTools)
++option(QT_LRELEASE_EXECUTABLE "QT_LRELEASE_EXECUTABLE" ${QT_VERSION_BASE}::lrelease)
+ 
+ macro(ADD_TRANSLATION_FILES _sources )
+     foreach (_current_FILE ${ARGN})
