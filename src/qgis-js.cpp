@@ -32,10 +32,9 @@ static QGuiApplication *app;
 static const bool testLibraries = false;
 
 int main(int argc, char *argv[]) {
-#if defined(EMSCRIPTEN)
-  // as set in CMakeLists.txt
-  setenv("PROJ_LIB", "/proj", 1);
-#endif
+  // set PROJ search paths
+  const char *path = "/proj";
+  proj_context_set_search_paths(nullptr, 1, &path);
 
   // needed?
   QCoreApplication::setOrganizationName("QGIS");
