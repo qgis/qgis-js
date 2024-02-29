@@ -22,17 +22,22 @@ if(NOT EXISTS ${EMSCRIPTEN_TOOLCHAIN_FILE})
    message(FATAL_ERROR "Emscripten.cmake toolchain file not found")
 endif()
 
+# determine QT_TOOLCHAIN_FILE path
+get_filename_component(VCPKG_ROOT_DIR ${CMAKE_TOOLCHAIN_FILE} DIRECTORY)
+get_filename_component(VCPKG_ROOT_DIR ${VCPKG_ROOT_DIR} DIRECTORY)
+get_filename_component(VCPKG_BUILDTREE_PATH "${VCPKG_ROOT_DIR}/../buildtrees" ABSOLUTE)
+# TODO: is it ok to assume -rel?
+set("QT_TOOLCHAIN_FILE" ${VCPKG_BUILDTREE_PATH}/qtbase/${VCPKG_TARGET_TRIPLET}-rel/lib/cmake/Qt6/qt.toolchain.cmake )
+
 # setup vcpkg chainload toolchain file
-if(EXISTS "$ENV{Qt6_DIR}/lib/cmake/Qt6/qt.toolchain.cmake")
+if(EXISTS ${QT_TOOLCHAIN_FILE})
   # during "compile" the qt.toolchain.cmake is used, and the EMSCRIPTEN_TOOLCHAIN_FILE is chainloaded by it
   set(QT_CHAINLOAD_TOOLCHAIN_FILE ${EMSCRIPTEN_TOOLCHAIN_FILE})
-  include("$ENV{Qt6_DIR}/lib/cmake/Qt6/qt.toolchain.cmake")
-
+  include(${QT_TOOLCHAIN_FILE})
   message(STATUS "CMake toolchains: vcpkg.cmake -> qgis-js.cmake -> qt.toolchain.cmake -> Emscripten.cmake")
 else()
   # during "install" Qt6_DIR has not to be set, EMSCRIPTEN_TOOLCHAIN_FILE will used directly by vcpkg
   set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE ${EMSCRIPTEN_TOOLCHAIN_FILE})
-
   message(STATUS "CMake toolchains: vcpkg.cmake -> qgis-js.cmake -> Emscripten.cmake")
 endif()
 
