@@ -208,19 +208,7 @@ export class CompileAction extends CommandLineAction {
       process.env.QGIS_JS_VCPKG = `${repo}/build/vcpkg`;
       process.env.QGIS_JS_EMSDK = `${repo}/build/emsdk`;
 
-      if (!process.env.QGIS_JS_QT) {
-        process.env.QGIS_JS_QT = `${home}/Qt/6.6.2`;
-      }
-      //check if QGIS_JS_QT exists
-      if (!fs.existsSync(process.env.QGIS_JS_QT)) {
-        throw new Error(
-          `Qt installation not found at ${process.env.QGIS_JS_QT}`,
-        );
-      }
-
       // set environment variables for CMake
-      process.env.QT_HOST_PATH = `${process.env.QGIS_JS_QT}/gcc_64`;
-      process.env.Qt6_DIR = `${process.env.QGIS_JS_QT}/wasm_multithread`;
       process.env.VCPKG_BINARY_SOURCES = "clear";
       if (debug) {
         process.env.VERBOSE = "1";

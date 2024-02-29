@@ -73,23 +73,6 @@ Compared to the native build of QGIS, there are various limitations:
 sudo apt-get install pkg-config ninja-build flex bison
 ```
 
-#### Install **Qt6**:
-
-- **Download** the [Qt Online Installer](https://www.qt.io/download-qt-installer-oss)
-
-  - You need a free Qt account to use the installer
-
-- **Install** at least the following **6.6.2** packages:
-
-  - WebAssembly (multi-threaded)
-    - Qt 5 Compatibility Module
-
-> Alternativly you can use [Another Qt installer (aqt)](https://github.com/miurahr/aqtinstall) with Python
-
-- **Patch** Qt installation
-  - Run `build/scripts/qt-patches.sh` to patch the Qt installation
-    - Set `QGIS_JS_QT` env var if you're not using `~/Qt/6.6.2`
-
 #### Install dependencies with pnpm:
 
 ```
