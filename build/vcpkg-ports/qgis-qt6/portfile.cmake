@@ -30,6 +30,7 @@ vcpkg_from_github(
         10-exclude-qgscoordinatereferencesystem_legacy.patch
         11-disable-openedFileLimit.patch
         12-disable-wcs-provider.patch
+        13-no-LinguistTools-dep.patch
 )
 
 file(REMOVE ${SOURCE_PATH}/cmake/FindQtKeychain.cmake)
@@ -78,6 +79,7 @@ list(APPEND QGIS_OPTIONS -DWITH_POSTGRESQL:BOOL=FALSE)
 list(APPEND QGIS_OPTIONS -DWITH_SPATIALITE:BOOL=FALSE)
 list(APPEND QGIS_OPTIONS -DWITH_AUTH:BOOL=FALSE)
 
+list(APPEND QGIS_OPTIONS -DQT_LRELEASE_EXECUTABLE=${CURRENT_HOST_INSTALLED_DIR}/tools/Qt6/bin/lrelease)
 
 # QGIS likes to install auth and providers to different locations on each platform
 # let's keep things clean and tidy and put them at a predictable location
