@@ -10,7 +10,7 @@ import type { Plugin, ResolvedConfig } from "vite";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const RUNTIME_JS = "js";
-const RUNTIME_WORKER = "worker.js";
+const RUNTIME_WORKER = "worker.mjs";
 const RUNTIME_WASM = "wasm";
 const RUNTIME_WASM_MAP = "wasm.map";
 const RUNTIME_WASM_DEBUG = "wasm.debug.wasm";
