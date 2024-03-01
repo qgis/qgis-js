@@ -98,6 +98,8 @@ target_link_libraries(qgis-js PRIVATE qca)
 
 qt_finalize_executable(qgis-js)
 
+set_target_properties(qgis-js PROPERTIES OUTPUT_NAME "qgis-js.js")
+
 #
 # emcc settings (see https://emsettings.surma.technology/)
 #
