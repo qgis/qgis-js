@@ -147,10 +147,10 @@ const QgsRectangle QgisApi_transformRectangle(
   return transform.transformBoundingBox(inputRectangle);
 }
 
-const std::vector<MapLayer *> QgisApi_mapLayers() {
-  std::vector<MapLayer *> result = {};
+const std::vector<MapLayer> QgisApi_mapLayers() {
+  std::vector<MapLayer> result = {};
   for (QgsMapLayer *layer : QgisApi_allLayers()) {
-    result.push_back(new MapLayer(layer));
+    result.push_back(MapLayer(layer));
   }
   return result;
 }
@@ -196,9 +196,9 @@ EMSCRIPTEN_BINDINGS(QgisApi) {
   emscripten::function("renderImage", &QgisApi_renderImage);
   emscripten::function("renderXYZTile", &QgisApi_renderXYZTile);
   emscripten::function("transformRectangle", &QgisApi_transformRectangle);
-  emscripten::function("mapLayers", &QgisApi_mapLayers, emscripten::allow_raw_pointers());
-  emscripten::register_vector<MapLayer *>("vector<MapLayer *>");
-  emscripten::function("mapThemes", &QgisApi_mapThemes, emscripten::allow_raw_pointers());
+  emscripten::function("mapLayers", &QgisApi_mapLayers);
+  emscripten::register_vector<MapLayer>("vector<MapLayer>");
+  emscripten::function("mapThemes", &QgisApi_mapThemes);
   emscripten::function("getMapTheme", &QgisApi_getMapTheme);
   emscripten::function("setMapTheme", &QgisApi_setMapTheme);
   emscripten::register_vector<std::string>("vector<std::string>");
