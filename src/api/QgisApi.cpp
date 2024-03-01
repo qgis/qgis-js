@@ -3,6 +3,7 @@
 #include <qgsexpressioncontextutils.h>
 #include <qgslayertree.h>
 #include <qgsmaprenderercustompainterjob.h>
+#include <qgsmaprendererparalleljob.h>
 #include <qgsmaprenderersequentialjob.h>
 #include <qgsmapsettings.h>
 #include <qgsproject.h>
@@ -35,7 +36,10 @@ QList<QgsMapLayer *> QgisApi_visibleLayers() {
 }
 
 bool QgisApi_loadProject(std::string filename) {
-  bool res = QgsProject::instance()->read(QString::fromStdString(filename));
+  Qgis::ProjectReadFlags readFlags =
+    Qgis::ProjectReadFlag::ForceReadOnlyLayers | Qgis::ProjectReadFlag::TrustLayerMetadata;
+
+  bool res = QgsProject::instance()->read(QString::fromStdString(filename), readFlags);
   if (!res) return false;
 
   return true;
@@ -127,7 +131,20 @@ void QgisApi_renderImage(
 
   mapSettings.setPathResolver(QgsProject::instance()->pathResolver());
 
-  QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob(mapSettings);
+  // START optimizations
+  QgsVectorSimplifyMethod simplify;
+  simplify.setSimplifyHints(QgsVectorSimplifyMethod::FullSimplification);
+  mapSettings.setSimplifyMethod(simplify);
+
+  mapSettings.setFlag(Qgis::MapSettingsFlag::UseRenderingOptimization, true);
+  mapSettings.setFlag(Qgis::MapSettingsFlag::ForceRasterMasks, true);
+  mapSettings.setFlag(Qgis::MapSettingsFlag::RenderPreviewJob, true);
+
+  mapSettings.setRendererUsage(Qgis::RendererUsage::View);
+  // END optimizations
+
+  QgsMapRendererParallelJob *job = new QgsMapRendererParallelJob(mapSettings);
+
   QObject::connect(job, &QgsMapRendererSequentialJob::finished, [job, callback] {
     auto image = job->renderedImage();
     image.rgbSwap(); // for html canvas
