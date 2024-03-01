@@ -442,7 +442,7 @@ export class SizeAction extends CommandLineAction {
       const files = [
         "qgis.js",
         "assets/wasm/qgis-js.js",
-        "assets/wasm/qgis-js.worker.js",
+        "assets/wasm/qgis-js.worker.mjs",
         "assets/wasm/qgis-js.data",
         "assets/wasm/qgis-js.wasm",
       ];
