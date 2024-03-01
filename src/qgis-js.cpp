@@ -1,4 +1,5 @@
 
+#include "cpl_conv.h"
 #include <expat.h>
 #include <gdal.h>
 #include <geos_c.h>
@@ -35,6 +36,17 @@ int main(int argc, char *argv[]) {
   // set PROJ search paths
   const char *path = "/proj";
   proj_context_set_search_paths(nullptr, 1, &path);
+
+  // START optimizations
+  sqlite3_vfs_register(sqlite3_vfs_find("unix-none"), 1);
+
+  CPLSetConfigOption("DO_NOT_ENABLE_WAL", "YES");
+  CPLSetConfigOption("OGR_SQLITE_JOURNAL", "OFF");
+  CPLSetConfigOption("OGR_SQLITE_CACHE", "128");
+  CPLSetConfigOption("OGR_SQLITE_SYNCHRONOUS", "OFF");
+  CPLSetConfigOption("NOLOCK", "YES");
+  CPLSetConfigOption("IMMUTABLE", "YES");
+  // END optimizations
 
   // needed?
   QCoreApplication::setOrganizationName("QGIS");
