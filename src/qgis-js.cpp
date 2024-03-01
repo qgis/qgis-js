@@ -51,6 +51,7 @@ int main(int argc, char *argv[]) {
   QgsApplication::init(temp.path());
   QgsApplication::setPkgDataPath("/qgis"); // as set in CMakeLists.txt
 
+  QgsApplication::setMaxThreads(8);
   QgsSettingsRegistryCore::settingsLayerParallelLoading->setValue(false);
 
   if (testLibraries) {
