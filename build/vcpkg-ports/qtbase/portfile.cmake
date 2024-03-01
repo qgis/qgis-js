@@ -299,6 +299,7 @@ set(TOOL_NAMES
 if(VCPKG_TARGET_IS_EMSCRIPTEN)
     list(APPEND FEATURE_OPTIONS -DFEATURE_relocatable:BOOL=OFF)
     list(APPEND FEATURE_OPTIONS -DFEATURE_wasm_exceptions:BOOL=ON)
+    list(APPEND FEATURE_OPTIONS -DFEATURE_wasm_simd128:BOOL=ON)
 endif()
 
 qt_install_submodule(PATCHES    ${${PORT}_PATCHES}

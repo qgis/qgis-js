@@ -11,6 +11,8 @@ vcpkg_from_github(
         # our patch to make it possible to read COGs in wasm builds
         vsicurl-fetch-api.diff
         avoid-getrlimit-warnings.patch
+        # fix SIMD detection
+        fix-simd-cpu-features.patch
 )
 # `vcpkg clean` stumbles over one subdir
 file(REMOVE_RECURSE "${SOURCE_PATH}/autotest")
@@ -90,6 +92,8 @@ vcpkg_cmake_configure(
         -DGDAL_BUILD_OPTIONAL_DRIVERS=ON
         -DOGR_BUILD_OPTIONAL_DRIVERS=ON
         -DHAVE_JPEGTURBO_DUAL_MODE_8_12=0
+        -DHAVE_AVX_AT_COMPILE_TIME=0
+        -DHAVE_AVX2_AT_COMPILE_TIME=0
         -DGDAL_CHECK_PACKAGE_MySQL_NAMES=unofficial-libmariadb
         -DGDAL_CHECK_PACKAGE_MySQL_TARGETS=unofficial::libmariadb
         -DMYSQL_LIBRARIES=unofficial::libmariadb
