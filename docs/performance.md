@@ -33,13 +33,13 @@ More information
 
 ### Toolchain/Dependencies
 
-- [ ] 🟢 Update to latest emscripten version
+- [x] 🟢 Update to latest emscripten version
   - currently `3.1.29` is used (more than a year old)
   - by anecdotal evidence, binaries compiled with the latest version are faster (latest LLVM)
-- [ ] 🟢 Update to latest Qt version
+- [x] 🟢 Update to latest Qt version
   - see [wasm improvements since `6.5.2`](https://github.com/qt/qtreleasenotes/tree/dev/qt)
   - building of Qt is needed anyway, in order to pass custom build flags (see below)
-- [ ] 🟡 Update to latest vcpkg version (and update the packages with it)
+- [x] 🟡 Update to latest vcpkg version (and update the packages with it)
 - [ ] 🔴 Update to latest QGIS version
   - Currently `3.32.1` is used
   - Latest would be `3.34.3`
