@@ -76,6 +76,8 @@ export interface QgisApiAdapter {
     width: number,
     height: number,
     pixelRatio?: number,
+    previewCallback?: (preview: ImageData) => void,
+    cancelTokenFactory?: (cancelToken: () => void) => void,
   ): Promise<ImageData>;
 
   /**
@@ -131,7 +133,8 @@ export interface InternalQgisApi extends CommonQgisApi {
     height: number,
     pixelRatio: number,
     callback: (tileData: ArrayBufferLike) => void,
-  ): void;
+    previewCallback?: (tileData: ArrayBufferLike) => void,
+  ): { cancle: () => void };
   renderXYZTile(
     x: number,
     y: number,

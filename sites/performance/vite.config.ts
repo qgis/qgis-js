@@ -13,7 +13,7 @@ export default defineConfig({
     __QGIS_JS_VERSION: JSON.stringify(packageJson.version),
   },
   server: {
-    port: 3000,
+    port: 3001,
   },
   preview: {
     headers: {

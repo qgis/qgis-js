@@ -30,22 +30,45 @@ export class QgisApiAdapterImplementation implements QgisApiAdapter {
     extent: Rectangle,
     width: number,
     height: number,
-    pixelRatio: number = window?.devicePixelRatio || 1,
+    pixelRatio: number = 1, // window?.devicePixelRatio || 1,
+    previewCallback?: (preview: ImageData) => void,
+    cancelTokenFactory?: (cancelToken: () => void) => void,
   ): Promise<ImageData> {
     return this.runLimited(() => {
       return new Promise((resolve) => {
-        this._api.renderImage(
+        console.time(`render`);
+        let cancelTokenFunction: (() => void) | undefined;
+        const cancelToken = this._api.renderImage(
           srid,
           extent,
           width,
           height,
           pixelRatio,
           (tileData) => {
+            cancelTokenFunction = undefined;
+            console.timeEnd(`render`);
+            console.time(`copy`);
             const data = new Uint8ClampedArray(tileData);
             const imageData = new ImageData(data, width, height);
+            console.timeEnd(`copy`);
             resolve(imageData);
           },
+          previewCallback
+            ? (tileData) => {
+                const data = new Uint8ClampedArray(tileData);
+                const imageData = new ImageData(data, width, height);
+                previewCallback(imageData);
+              }
+            : undefined,
         );
+        cancelTokenFunction = cancelToken.cancle;
+        if (cancelTokenFactory) {
+          cancelTokenFactory(() => {
+            if (cancelTokenFunction) {
+              cancelTokenFunction();
+            }
+          });
+        }
       });
     });
   }

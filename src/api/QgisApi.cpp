@@ -97,13 +97,33 @@ void QgisApi_renderXYZTile(
   job->start();
 }
 
-void QgisApi_renderImage(
+class RendererJobCancelToken {
+public:
+  RendererJobCancelToken(QPointer<QgsMapRendererJob> job) : job(job) {}
+
+  void cancel() {
+    if (job) {
+      job->cancel();
+    }
+  }
+
+private:
+  QPointer<QgsMapRendererJob> job;
+};
+
+EMSCRIPTEN_BINDINGS(RendererJobCancelToken) {
+  emscripten::class_<RendererJobCancelToken>("RendererJobCancelToken")
+    .function("cancel", &RendererJobCancelToken::cancel);
+}
+
+RendererJobCancelToken QgisApi_renderImage(
   std::string srid,
   const QgsRectangle &extent,
   unsigned int width,
   unsigned int height,
   float pixelRatio,
-  emscripten::val callback) {
+  emscripten::val callback,
+  std::optional<emscripten::val> previewCallback) {
 
   QgsMapSettings mapSettings;
 
@@ -126,20 +146,81 @@ void QgisApi_renderImage(
   mapSettings.setFlag(Qgis::MapSettingsFlag::UseRenderingOptimization, true);
   mapSettings.setFlag(Qgis::MapSettingsFlag::ForceRasterMasks, true);
   mapSettings.setFlag(Qgis::MapSettingsFlag::RenderPreviewJob, true);
+  mapSettings.setFlag(Qgis::MapSettingsFlag::RenderPartialOutput, true);
 
   mapSettings.setRendererUsage(Qgis::RendererUsage::View);
   // END optimizations
 
   QgsMapRendererParallelJob *job = new QgsMapRendererParallelJob(mapSettings);
+  std::atomic<bool> jobValid(false);
+  QTimer *timer = nullptr;
 
-  QObject::connect(job, &QgsMapRendererSequentialJob::finished, [job, callback] {
+  if (previewCallback.has_value()) {
+    timer = new QTimer();
+    timer->setInterval(250);
+
+    QObject::connect(timer, &QTimer::timeout, [job, &jobValid, previewCallback] {
+      if (jobValid.load()) {
+        if (job->isActive()) {
+          auto image = job->renderedImage();
+          image.rgbSwap(); // for html canvas
+          previewCallback.value()(emscripten::val(emscripten::typed_memory_view(
+            image.width() * image.height() * 4, (const unsigned char *)image.constBits())));
+        } else {
+          std::cout << "job is not active anymore" << std::endl;
+        }
+      } else {
+        std::cout << "job is not valid anymore" << std::endl;
+      }
+    });
+
+    timer->start();
+  }
+
+  QObject::connect(job, &QgsMapRendererParallelJob::cancel, [job, &jobValid, timer] {
+    std::cout << "job canceled" << std::endl;
+
+    jobValid.store(false);
+
+    if (timer != nullptr) {
+      timer->stop();
+      timer->deleteLater();
+    }
+
+    delete timer;
+  });
+
+  QObject::connect(job, &QgsMapRendererParallelJob::finished, [job, &jobValid, timer, callback] {
+    std::cout << "job finisehd" << std::endl;
+
+    jobValid.store(false);
+
+    if (timer != nullptr) {
+      timer->stop();
+      timer->deleteLater();
+    }
+
+    //print the job errors
+    if (job->errors().size() > 0) {
+      for (const auto &error : job->errors()) {
+        std::cout << error.message.toStdString() << std::endl;
+      }
+    } else {
+      std::cout << "no errors" << std::endl;
+    }
+
     auto image = job->renderedImage();
     image.rgbSwap(); // for html canvas
     callback(emscripten::val(emscripten::typed_memory_view(
       image.width() * image.height() * 4, (const unsigned char *)image.constBits())));
     job->deleteLater();
+
+    delete timer;
   });
   job->start();
+  jobValid.store(true);
+
+  return RendererJobCancelToken(job);
 }
 
 const QgsRectangle QgisApi_transformRectangle(
@@ -198,6 +279,7 @@ EMSCRIPTEN_BINDINGS(QgisApi) {
   emscripten::function("fullExtent", &QgisApi_fullExtent);
   emscripten::function("srid", &QgisApi_srid);
   emscripten::function("renderImage", &QgisApi_renderImage);
+  emscripten::register_optional<emscripten::val>();
   emscripten::function("renderXYZTile", &QgisApi_renderXYZTile);
   emscripten::function("transformRectangle", &QgisApi_transformRectangle);
   emscripten::function("mapLayers", &QgisApi_mapLayers);

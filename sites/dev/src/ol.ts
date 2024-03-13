@@ -1,6 +1,12 @@
 import { QgisApi } from "qgis-js";
 
-import { QgisXYZDataSource, QgisCanvasDataSource } from "@qgis-js/ol";
+import {
+  QgisPreviewDataSource,
+  QgisCanvasDataSource,
+  QgisXYZDataSource,
+} from "@qgis-js/ol";
+
+import { QgisPreviewLayer } from "@qgis-js/ol/src/QgisPreviewLayer";
 
 import Map from "ol/Map.js";
 import View from "ol/View.js";
@@ -199,6 +205,170 @@ export function olDemoCanvas(
       layer?.setSource(source);
     }, 0);
   };
+
+  init();
+
+  return {
+    init,
+    update,
+    render,
+  };
+}
+
+export function olPreviewBackup(
+  target: HTMLDivElement,
+  api: QgisApi,
+): { init: () => void; update: () => void; render: () => void } {
+  let view: View | undefined = undefined;
+  let srid: string | undefined = undefined;
+  let map: Map | undefined = undefined;
+  let layer: ImageLayer<QgisPreviewDataSource> | undefined = undefined;
+  let source: QgisPreviewDataSource | undefined = undefined;
+
+  const init = () => {
+    target.innerHTML = "";
+
+    srid = api.srid();
+
+    const projection = new Projection({
+      code: srid,
+      // TODO map unit of QgsCoordinateReferenceSystem to ol unit
+      // https://api.qgis.org/api/classQgsCoordinateReferenceSystem.html#ad57c8a9222c27173c7234ca270306128
+      // https://openlayers.org/en/latest/apidoc/module-ol_proj_Units.html
+      units: "m",
+    });
+
+    const bbox = api.fullExtent();
+    const center = bbox.center();
+
+    view = new View({
+      projection,
+      center: [center.x, center.y],
+      zoom: 10,
+    });
+
+    source = new QgisPreviewDataSource(api, {
+      projection,
+    });
+
+    layer = new ImageLayer({
+      source,
+    });
+
+    map = new Map({
+      target,
+      view,
+      controls: defaultControls().extend([new ScaleLine(), new FullScreen()]),
+      layers: [layer],
+    });
+
+    map.once("precompose", function (_event) {
+      const bbox = api.fullExtent();
+      view!.fit([bbox.xMinimum, bbox.yMinimum, bbox.xMaximum, bbox.yMaximum], {
+        duration: animationDuration,
+      });
+    });
+  };
+
+  // recreate the entire map on each update to get new projections working
+  const update = () => {
+    init();
+  };
+
+  const render = () => {
+    setTimeout(() => {
+      // recreate the source to force reload the image in the layer
+      source = new QgisPreviewDataSource(api, {
+        projection: new Projection({
+          code: srid!,
+          units: "m",
+        }),
+      });
+      layer?.setSource(source);
+    }, 0);
+  };
+
+  init();
+
+  return {
+    init,
+    update,
+    render,
+  };
+}
+
+export function olPreview(
+  target: HTMLDivElement,
+  api: QgisApi,
+): { init: () => void; update: () => void; render: () => void } {
+  let view: View | undefined = undefined;
+  let srid: string | undefined = undefined;
+  let map: Map | undefined = undefined;
+  let previewLayer: QgisPreviewLayer | undefined = undefined;
+  let layer: ImageLayer<QgisPreviewDataSource> | undefined = undefined;
+  let source: QgisPreviewDataSource | undefined = undefined;
+
+  const init = () => {
+    target.innerHTML = "";
+
+    srid = api.srid();
+
+    const projection = new Projection({
+      code: srid,
+      // TODO map unit of QgsCoordinateReferenceSystem to ol unit
+      // https://api.qgis.org/api/classQgsCoordinateReferenceSystem.html#ad57c8a9222c27173c7234ca270306128
+      // https://openlayers.org/en/latest/apidoc/module-ol_proj_Units.html
+      units: "m",
+    });
+
+    const bbox = api.fullExtent();
+    const center = bbox.center();
+
+    view = new View({
+      projection,
+      center: [center.x, center.y],
+      zoom: 10,
+    });
+
+    previewLayer = new QgisPreviewLayer(
+      {
+        pixelRatio: 1,
+      },
+      api,
+    );
+
+    source = new QgisPreviewDataSource(api, previewLayer.getPreviewCallback(), {
+      pixelRatio: 1,
+      projection,
+    });
+
+    layer = new ImageLayer({
+      pixelRatio: 1,
+      source,
+    });
+
+    map = new Map({
+      devicePixelRatio: 1,
+      target,
+      view,
+      controls: defaultControls().extend([new ScaleLine(), new FullScreen()]),
+      layers: [layer, previewLayer],
+    });
+
+    map.once("precompose", function (_event) {
+      const bbox = api.fullExtent();
+      view!.fit([bbox.xMinimum, bbox.yMinimum, bbox.xMaximum, bbox.yMaximum], {
+        duration: animationDuration,
+      });
+    });
+  };
+
+  // recreate the entire map on each update to get new projections working
+  const update = () => {
+    init();
+  };
+
+  const render = () => {};
 
   init();
 

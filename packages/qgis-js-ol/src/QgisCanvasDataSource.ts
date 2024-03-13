@@ -53,7 +53,7 @@ export class QgisCanvasDataSource extends ImageSource {
       loader: (extent, resolution, requestPixelRatio) => {
         return new Promise(async (resolve) => {
           // note: requestPixelRatio is managed by ol and will not change on zoom
-          const pixelRatio = requestPixelRatio || window?.devicePixelRatio || 1;
+          const pixelRatio = 1; //requestPixelRatio || window?.devicePixelRatio || 1;
           const imageResolution = resolution / pixelRatio;
           const width = Math.round(getWidth(extent) / imageResolution);
           const height = Math.round(getHeight(extent) / imageResolution);

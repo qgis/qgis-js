@@ -1,0 +1,1 @@
+class InspectorSource extends ImageCanvasSource {}

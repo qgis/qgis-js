@@ -31,9 +31,16 @@
       <input
         type="radio"
         name="tabset"
+        id="tab0"
+        aria-controls="openlayers_preview"
+        checked
+      />
+      <label for="tab0">ol: Preview</label>
+      <input
+        type="radio"
+        name="tabset"
         id="tab1"
         aria-controls="openlayers_canvas"
-        checked
       />
       <label for="tab1">ol: Canvas Tile</label>
       <input
@@ -70,6 +77,11 @@
       </div>
 
       <div class="tab-panels">
+        <section id="openlayers_preview" class="tab-panel">
+          <h2>OpenLayers: Preview</h2>
+          <div id="ol-demo-preview" class="demo"></div>
+        </section>
+
         <section id="openlayers_canvas" class="tab-panel">
           <h2>OpenLayers: Canvas Tile</h2>
           <div id="ol-demo-canvas" class="demo"></div>
