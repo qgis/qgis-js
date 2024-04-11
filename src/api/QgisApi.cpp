@@ -1,5 +1,6 @@
 #include <string>
 
+#include <qgsexpressioncontextutils.h>
 #include <qgslayertree.h>
 #include <qgsmaprenderercustompainterjob.h>
 #include <qgsmaprenderersequentialjob.h>
@@ -82,6 +83,10 @@ void QgisApi_renderXYZTile(
 
   mapSettings.setFlag(Qgis::MapSettingsFlag::RenderMapTile, true);
 
+  QgsExpressionContext context = QgsProject::instance()->createExpressionContext();
+  context << QgsExpressionContextUtils::mapSettingsScope(mapSettings);
+  mapSettings.setExpressionContext(context);
+
   QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob(mapSettings);
   QObject::connect(job, &QgsMapRendererSequentialJob::finished, [job, callback] {
     auto image = job->renderedImage();
@@ -113,6 +118,10 @@ void QgisApi_renderImage(
   mapSettings.setDestinationCrs(QgsCoordinateReferenceSystem(QString::fromStdString(srid)));
 
   mapSettings.setExtent(extent);
+
+  QgsExpressionContext context = QgsProject::instance()->createExpressionContext();
+  context << QgsExpressionContextUtils::mapSettingsScope(mapSettings);
+  mapSettings.setExpressionContext(context);
 
   QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob(mapSettings);
   QObject::connect(job, &QgsMapRendererSequentialJob::finished, [job, callback] {
