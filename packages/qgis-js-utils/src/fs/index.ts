@@ -5,7 +5,12 @@ import { Folder } from "./FileSystem";
 import { PROJECTS_UPLOAD_DIR, Project } from "./Project";
 import { LocalEntries, LocalProject, openLocalDirectory } from "./LocalProject";
 import { RemoteProject } from "./RemoteProject";
-import { GithubProject, fetchGithubDirectory } from "./GithubProject";
+import {
+  GithubProject,
+  fetchGithubDirectory,
+  fetchGithubTreeFiles,
+  mapFilesToFolder,
+} from "./GithubProject";
 
 export function useProjects(
   fs: EmscriptenFS,
@@ -107,28 +112,15 @@ export function useProjects(
                       entry.name,
                       () => {
                         return new Promise<GithubProject>(async (resolve) => {
-                          const projectContent = await fetchGithubDirectory(
+                          const files = await fetchGithubTreeFiles(
                             owner,
                             repo,
-                            "/" + entry.path,
-                            branch,
+                            entry.sha,
                           );
-
                           resolve(
                             new GithubProject(
                               fs,
-                              {
-                                name: entry.name,
-                                path: entry.path,
-                                type: "Folder",
-                                entries: projectContent
-                                  .filter((entry) => entry.type === "file")
-                                  .map((entry) => ({
-                                    name: entry.name,
-                                    path: entry.path,
-                                    type: "File",
-                                  })),
-                              } as Folder,
+                              mapFilesToFolder(entry.name, entry.path, files),
                               owner,
                               repo,
                               branch,

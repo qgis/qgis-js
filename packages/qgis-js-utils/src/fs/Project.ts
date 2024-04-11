@@ -37,6 +37,31 @@ export abstract class Project {
     }
   }
 
+  getDirectoriesToCreate(): string[] {
+    const directories = new Set<string>();
+    for (const directory of this.getDirectories()) {
+      let direcotryDirs = directory.split("/");
+      for (let i = 0; i < direcotryDirs.length; i++) {
+        const dirToCreate = direcotryDirs.slice(0, i + 1).join("/");
+        directories.add(dirToCreate);
+      }
+    }
+    return Array.from(directories).sort();
+  }
+
+  ensureDirectories() {
+    // create directories in the runtime FS (if not already existing)
+    for (const directory of this.getDirectoriesToCreate()) {
+      const dirToCreate = PROJECTS_UPLOAD_DIR + "/" + directory;
+      // @ts-ignore (FS by @types/emscripten is missing the analyzePath method...)
+      const node = this.FS.analyzePath(dirToCreate, false);
+      // @ts-ignore
+      if (!node || !node.exists) {
+        this.FS.mkdir(dirToCreate);
+      }
+    }
+  }
+
   isProjectUploaded() {
     return this.FS.readdir(PROJECTS_UPLOAD_DIR).includes(this.name);
   }

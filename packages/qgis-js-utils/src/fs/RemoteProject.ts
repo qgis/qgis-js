@@ -2,7 +2,7 @@ import type { EmscriptenFS } from "qgis-js";
 
 import { Project, PROJECTS_UPLOAD_DIR } from "./Project";
 
-import { Folder } from "./FileSystem";
+import { Folder, flatFolders, flatFiles } from "./FileSystem";
 
 export const REMOTE_PROJECTS_PUBLIC_DIR = "projects";
 
@@ -23,18 +23,11 @@ export class RemoteProject extends Project {
   }
 
   getDirectories(): string[] {
-    return [
-      this.path,
-      ...this.folder.entries
-        .filter((e) => e.type === "Folder")
-        .map((e) => this.path + "/" + e.name),
-    ];
+    return [this.path, ...flatFolders(this.folder.entries, this.path)];
   }
 
   getFiles(): string[] {
-    return this.folder.entries
-      .filter((e) => e.type === "File")
-      .map((e) => this.path + "/" + e.name);
+    return flatFiles(this.folder.entries, this.path);
   }
 
   async uploadProject() {
@@ -55,10 +48,8 @@ export class RemoteProject extends Project {
     );
     // wait for all responses
     await Promise.all([Object.values(downloads)]);
-    // create directories in the runtime FS
-    for (const directory of this.getDirectories()) {
-      this.FS.mkdir(PROJECTS_UPLOAD_DIR + "/" + directory);
-    }
+    // ensure directories exist
+    this.ensureDirectories();
     // write files to the runtime FS
     for (const file of this.getFiles()) {
       const data = new Uint8Array(await downloads[file]);
