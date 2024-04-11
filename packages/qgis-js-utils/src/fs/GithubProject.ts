@@ -2,7 +2,7 @@ import type { EmscriptenFS } from "qgis-js";
 
 import { Project, PROJECTS_UPLOAD_DIR } from "./Project";
 
-import { Folder } from "./FileSystem";
+import { Folder, flatFolders, flatFiles } from "./FileSystem";
 
 export const GIT_DEFAULT_BRANCH = "main";
 
@@ -29,8 +29,37 @@ export async function fetchGithubDirectory(
     type: "file" | "dir";
     name: string;
     path: string;
+    sha: string;
   }>;
   return content;
+}
+
+/**
+ * Fetches a list of relative file paths in a GitHub repository tree via the GitHub REST API.
+ *
+ * Be aware of the GitHub API rate limits: https://docs.github.com/en/rest/overview/rate-limits-for-the-rest-api
+ *
+ * @param owner The owner of the repository.
+ * @param repo The name of the repository.
+ * @param sha The SHA of the tree to fetch the files from.
+ * @returns A Promise that resolves to an array of relative file paths in the specified tree.
+ */
+export async function fetchGithubTreeFiles(
+  owner: string,
+  repo: string,
+  sha: string,
+) {
+  const url = `https://api.github.com/repos/${owner}/${repo}/git/trees/${sha}?recursive=1`;
+  const response = await fetch(url);
+  const content = (await response.json()) as {
+    tree: {
+      type: "tree" | "blob";
+      path: string;
+    }[];
+  };
+  return content.tree
+    .filter((entry) => entry.type === "blob")
+    .map((entry) => entry.path);
 }
 
 /**
@@ -68,6 +97,48 @@ export async function fetchGithubFileContent(
   }
 }
 
+/**
+ * Maps an array of file paths to a "Folder" structure.
+ *
+ * @param name - The name of the root folder.
+ * @param path - The path of the root folder.
+ * @param files - An array of relative file paths.
+ * @returns The root folder with the mapped "Folder" structure.
+ */
+export function mapFilesToFolder(
+  name: string,
+  path: string,
+  files: string[],
+): Folder {
+  const root: File | Folder = { name, path, type: "Folder", entries: [] };
+  files.sort().forEach((path) => {
+    const parts = path.split("/");
+    let current = root;
+    for (let i = 0; i < parts.length - 1; i++) {
+      const part = parts[i];
+      const entry = current.entries.find((entry) => entry.name === part);
+      if (entry) {
+        current = entry as Folder;
+      } else {
+        const folder: Folder = {
+          name: part,
+          path: current.path + "/" + part,
+          type: "Folder",
+          entries: [],
+        };
+        current.entries.push(folder);
+        current = folder;
+      }
+    }
+    current.entries.push({
+      name: parts[parts.length - 1],
+      path,
+      type: "File",
+    });
+  });
+  return root;
+}
+
 export class GithubProject extends Project {
   protected folder: Folder;
   protected path: string;
@@ -96,18 +167,11 @@ export class GithubProject extends Project {
   }
 
   getDirectories(): string[] {
-    return [
-      this.path,
-      ...this.folder.entries
-        .filter((e) => e.type === "Folder")
-        .map((e) => this.path + "/" + e.name),
-    ];
+    return [this.path, ...flatFolders(this.folder.entries, this.path)];
   }
 
   getFiles(): string[] {
-    return this.folder.entries
-      .filter((e) => e.type === "File")
-      .map((e) => this.path + "/" + e.name);
+    return flatFiles(this.folder.entries, this.path);
   }
 
   async uploadProject() {
@@ -128,21 +192,8 @@ export class GithubProject extends Project {
     );
     // wait for all the responses
     await Promise.all([Object.values(downloads)]);
-
-    // create directories in the runtime FS
-    for (const directory of this.getDirectories()) {
-      let direcotryDirs = (PROJECTS_UPLOAD_DIR + "/" + directory).split("/");
-      for (let i = 1; i < direcotryDirs.length; i++) {
-        const dirToCreate = direcotryDirs.slice(0, i + 1).join("/");
-        // @ts-ignore (FS by @types/emscripten is missing the analyzePath method...)
-        const node = this.FS.analyzePath(dirToCreate, false);
-        // @ts-ignore
-        if (!node || !node.exists) {
-          this.FS.mkdir(dirToCreate);
-        }
-      }
-    }
-
+    // ensure directories exist
+    this.ensureDirectories();
     // write files to the runtime FS
     for (const file of this.getFiles()) {
       const data = new Uint8Array(await downloads[file]);

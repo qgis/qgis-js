@@ -32,18 +32,13 @@ export class LocalProject extends Project {
   }
 
   getDirectories(): string[] {
-    const subFoldersToCreate: string[] = [this.name];
+    const subFoldersToCreate = new Set<string>();
+    subFoldersToCreate.add(this.name);
     for (const entry of this.entries) {
       const path = (entry as FileWithDirectoryAndFileHandle).webkitRelativePath;
-      const parts = path.split("/");
-      for (let i = 1; i < parts.length - 1; i++) {
-        const folder = parts.slice(0, i + 1).join("/");
-        if (!subFoldersToCreate.includes(folder)) {
-          subFoldersToCreate.push(folder);
-        }
-      }
+      subFoldersToCreate.add(path.substring(0, path.lastIndexOf("/")));
     }
-    return subFoldersToCreate;
+    return Array.from(subFoldersToCreate);
   }
 
   getFiles(): string[] {
@@ -51,10 +46,8 @@ export class LocalProject extends Project {
   }
 
   async uploadProject(): Promise<void> {
-    // create directories in the runtime FS
-    for (const directory of this.getDirectories()) {
-      this.FS.mkdir(PROJECTS_UPLOAD_DIR + "/" + directory);
-    }
+    // ensure directories exist
+    this.ensureDirectories();
     // write files to the runtime FS
     for (const file of this.entries) {
       this.FS.writeFile(
