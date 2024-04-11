@@ -41,13 +41,17 @@ export function useProjects(
   };
 
   const loadLocalProject = () =>
-    new Promise<LocalProject>(async (resolve) => {
-      const entries: LocalEntries = (await openLocalDirectory({
-        recursive: true,
-        mode: "read",
-      })) as LocalEntries; //TODO: This cast is probably not working when "fs-browser-fs-access" is using the fallback implementation
-      const localProject = new LocalProject(fs, entries);
-      resolve(localProject);
+    new Promise<LocalProject>(async (resolve, reject) => {
+      try {
+        const entries: LocalEntries = (await openLocalDirectory({
+          recursive: true,
+          mode: "read",
+        })) as LocalEntries; //TODO: This cast is probably not working when "fs-browser-fs-access" is using the fallback implementation
+        const localProject = new LocalProject(fs, entries);
+        resolve(localProject);
+      } catch (error) {
+        reject(error);
+      }
     });
 
   const loadRemoteProjects = (
