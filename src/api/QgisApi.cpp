@@ -87,6 +87,8 @@ void QgisApi_renderXYZTile(
   context << QgsExpressionContextUtils::mapSettingsScope(mapSettings);
   mapSettings.setExpressionContext(context);
 
+  mapSettings.setPathResolver(QgsProject::instance()->pathResolver());
+
   QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob(mapSettings);
   QObject::connect(job, &QgsMapRendererSequentialJob::finished, [job, callback] {
     auto image = job->renderedImage();
@@ -122,6 +124,8 @@ void QgisApi_renderImage(
   QgsExpressionContext context = QgsProject::instance()->createExpressionContext();
   context << QgsExpressionContextUtils::mapSettingsScope(mapSettings);
   mapSettings.setExpressionContext(context);
+
+  mapSettings.setPathResolver(QgsProject::instance()->pathResolver());
 
   QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob(mapSettings);
   QObject::connect(job, &QgsMapRendererSequentialJob::finished, [job, callback] {
