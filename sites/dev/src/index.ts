@@ -87,10 +87,9 @@ async function initDemo() {
     // boot the runtime
     if (timer) console.time("boot");
     const { api, fs } = await qgis({
-      prefix: "/qgis-js/assets/wasm",
-      onStatus: (status: string) => {
-        onStatus(status);
-      },
+      // use assets form QgisRuntimePlugin
+      prefix: new URL("assets/wasm", window.location.href).pathname,
+      onStatus: (status: string) => onStatus(status),
     });
     if (timer) console.timeEnd("boot");
 

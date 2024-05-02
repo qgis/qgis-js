@@ -22,13 +22,12 @@ interface QtRuntimeFactory {
 /**
  * Loads the QtRuntimeFactory Emscripten module with the given prefix.
  *
- * @param prefix - The prefix to use for the module path.
+ * @param mainScriptPath - The import path of the main script
  * @returns A promise that resolves with the QtRuntimeFactory module.
  */
-function loadModule(prefix: string = "/"): Promise<QtRuntimeFactory> {
+function loadModule(mainScriptPath: string): Promise<QtRuntimeFactory> {
   return new Promise(async (resolve, reject) => {
     try {
-      const mainScriptPath = prefix + "/" + "qgis-js" + ".js";
       // hack to import es module without vite knowing about it
       const createQtAppInstance = (
         await new Function(`return import("${mainScriptPath}")`)()
@@ -48,14 +47,57 @@ function loadModule(prefix: string = "/"): Promise<QtRuntimeFactory> {
  * @param config The {@link QgisRuntimeConfig} that will be taken into account during loading and initialization.
  * @returns A promise that resolves to a {@link QgisRuntime}.
  */
-export async function qgis(config: QgisRuntimeConfig): Promise<QgisRuntime> {
-  return new Promise(async (resolve) => {
-    const { createQtAppInstance } = await loadModule(config.prefix);
+export async function qgis(
+  config: QgisRuntimeConfig = {},
+): Promise<QgisRuntime> {
+  return new Promise(async (resolve, reject) => {
+    let prefix: string | undefined = undefined;
+    if (config.prefix) {
+      prefix = config.prefix;
+    } else {
+      const url = import.meta.url;
+      if (/.*\/src\/loader\.[ts|js]\?*[^/]*$/.test(url)) {
+        console.warn(
+          [
+            `qgis-js loader is running in development mode and no "prefix" seems to be configured.`,
+            ` - Consider adding the QgisRuntimePlugin when bundling with Vite.`,
+            ` - For more information see: https://github.com/qgis/qgis-js/blob/main/docs/bundling.md`,
+          ].join("\n"),
+        );
+        if (typeof window !== "undefined") {
+          prefix = new URL("assets/wasm", window.location.href).pathname;
+        }
+      } else {
+        prefix = new URL("assets/wasm", import.meta.url).href;
+      }
+    }
 
-    const canvas = document.querySelector("#screen") as HTMLDivElement | null;
+    if (!prefix) {
+      prefix = "assets/wasm";
+    } else {
+      prefix = prefix.replace(/\/$/, ""); // ensure no trailing slash
+    }
+
+    let qtRuntimeFactory: QtRuntimeFactory | undefined = undefined;
+    try {
+      const mainScriptPath = `${prefix}/qgis-js.js`;
+      qtRuntimeFactory = await loadModule(mainScriptPath);
+    } catch (error) {
+      reject(
+        new Error(`Unable to load the qgis-js.js script`, { cause: error }),
+      );
+      return;
+    }
+
+    const { createQtAppInstance } = qtRuntimeFactory!;
+
+    let canvas: HTMLDivElement | undefined = undefined;
+    if (typeof document !== "undefined") {
+      canvas = document?.querySelector("#screen") as HTMLDivElement;
+    }
 
     const runtimePromise = createQtAppInstance({
-      locateFile: (path: string) => `${config.prefix}/` + path,
+      locateFile: (path: string) => `${prefix}/` + path,
       preRun: [
         function (module: any) {
           module.qtContainerElements = canvas ? [canvas] : [];
