@@ -4,22 +4,22 @@ import { Project, PROJECTS_UPLOAD_DIR } from "./Project";
 
 import { Folder, flatFolders, flatFiles } from "./FileSystem";
 
-export const REMOTE_PROJECTS_PUBLIC_DIR = "projects";
-
 export class RemoteProject extends Project {
   protected folder: Folder;
   protected path: string;
 
-  constructor(FS: EmscriptenFS, projectFolder: Folder) {
+  private baseUrl: URL;
+
+  constructor(FS: EmscriptenFS, basePath: string, projectFolder: Folder) {
     super(FS, "Remote");
 
+    this.baseUrl = new URL(basePath);
     this.folder = projectFolder;
 
+    const bsaeFolder = this.baseUrl.pathname.split("/").pop();
+
     this.name = projectFolder.name;
-    this.path = projectFolder.path.replace(
-      new RegExp(`^${REMOTE_PROJECTS_PUBLIC_DIR}\/`),
-      "",
-    );
+    this.path = projectFolder.path.replace(new RegExp(`^${bsaeFolder}\/`), "");
   }
 
   getDirectories(): string[] {
@@ -37,7 +37,8 @@ export class RemoteProject extends Project {
         return [
           file,
           new Promise<ArrayBuffer>((resolve, _reject) => {
-            fetch(REMOTE_PROJECTS_PUBLIC_DIR + "/" + file).then((response) =>
+            const remoteUrl = new URL(`${this.baseUrl.href}/${file}`);
+            fetch(remoteUrl).then((response) =>
               response.arrayBuffer().then((buffer) => {
                 resolve(buffer);
               }),
