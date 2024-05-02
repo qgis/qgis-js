@@ -60,26 +60,30 @@ export function useProjects(
     });
 
   const loadRemoteProjects = (
-    remoteProjects: string | Folder = "./projects/directory-listing.json",
+    remoteProjects: string = "./projects/directory-listing.json",
   ) =>
     new Promise<RemoteProject[]>(async (resolve, reject) => {
-      // if remoteProjects is a string, try to fetch it
-      if (typeof remoteProjects === "string") {
-        try {
-          const remoteProjectsResponse = await fetch(remoteProjects);
-          const remoteProjectsResponseJson =
-            await remoteProjectsResponse.json();
-          remoteProjects = remoteProjectsResponseJson as Folder;
-        } catch (error) {
-          reject(error);
+      try {
+        const url = new URL(remoteProjects as string, window.location.href);
+        const basePath = url.href.split("/").slice(0, -1).join("/");
+
+        const remoteProjectsResponse = await fetch(remoteProjects);
+        const remoteProjectsResponseJson = await remoteProjectsResponse.json();
+
+        const remoteFolder = remoteProjectsResponseJson as Folder;
+        if (!remoteFolder.type || remoteFolder.type !== "Folder") {
+          reject(new Error("Remote projects response seems not a folder"));
+          return;
         }
+
+        resolve(
+          remoteFolder.entries
+            .filter((entry) => entry.type === "Folder")
+            .map((entry) => new RemoteProject(fs, basePath, entry as Folder)),
+        );
+      } catch (error) {
+        reject(error);
       }
-      // validate the remoteProjects
-      resolve(
-        (remoteProjects as Folder).entries
-          .filter((entry) => entry.type === "Folder")
-          .map((entry) => new RemoteProject(fs, entry as Folder)),
-      );
     });
 
   const loadGithubProjects = (

@@ -44,9 +44,14 @@ export default function DirectoryListingPlugin(
           }
           // remove filename from url at the end
           dir = dir.slice(0, -`/${DIRECTORY_LISTING_FILENAME}`.length);
+
+          const dirParts = dir.split("/");
+          const dirBase = dirParts.slice(0, -1).join("/");
+          const dirName = dirParts[dirParts.length - 1];
+
           const drectoryListing = await createDirectoryListing(
-            join(process.cwd(), "public"),
-            dir,
+            join(process.cwd(), "public", dirBase),
+            dirName,
             ".",
           );
           res.setHeader("Content-Type", "application/json");
