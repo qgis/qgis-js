@@ -1,6 +1,6 @@
 {
   "private": true,
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "GPL-2.0-or-later",
   "homepage": "https://qgis.github.io/qgis-js/",
   "repository": "github:qgis/qgis-js",
