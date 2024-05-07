@@ -1,4 +1,9 @@
-import { QgisModelConstructors, Rectangle, MapLayer } from "./QgisModel";
+import {
+  QgisModelConstructors,
+  QgsMapRendererParallelJob,
+  Rectangle,
+  MapLayer,
+} from "./QgisModel";
 
 /**
  * Common QGIS API which exposes the {@link QgisModelConstructors} and methods that can be accessed from both the public {@link QgisApi} and the {@link InternalQgisApi}.
@@ -54,6 +59,24 @@ export interface CommonQgisApi extends QgisModelConstructors {
    * @returns true if the map theme was loaded successfully, false otherwise.
    */
   setMapTheme(mapTheme: string): boolean;
+
+  /**
+   * Renders an image of the loaded project and provides a QgsMapRendererParallelJob object to monitor the rendering progress and to retrieve preview images.
+   *
+   * @param srid - The SRID of the image.
+   * @param extent - The extent of the image.
+   * @param width - The width of the image.
+   * @param height - The height of the image.
+   * @param pixelRatio - The optional pixel ratio of the image which defaults to 1.
+   * @returns A QgsMapRendererParallelJob object that can be used to monitor the rendering progress and to retrieve preview images.
+   */
+  renderJob(
+    srid: string,
+    extent: Rectangle,
+    width: number,
+    height: number,
+    pixelRatio: number,
+  ): QgsMapRendererParallelJob;
 }
 
 /**

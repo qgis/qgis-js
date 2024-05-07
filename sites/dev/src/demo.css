@@ -219,6 +219,7 @@ body {
 
 #projects {
   min-width: 15em;
+  max-width: 20em;
 }
 
 #status {

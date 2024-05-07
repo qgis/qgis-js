@@ -31,11 +31,18 @@
       <input
         type="radio"
         name="tabset"
-        id="tab1"
+        id="tab0"
         aria-controls="openlayers_canvas"
         checked
       />
-      <label for="tab1">ol: Canvas Tile</label>
+      <label for="tab0">ol: Canvas Tile</label>
+      <input
+        type="radio"
+        name="tabset"
+        id="tab1"
+        aria-controls="openlayers_preview"
+      />
+      <label for="tab1">ol: Preview</label>
       <input
         type="radio"
         name="tabset"
@@ -101,6 +108,43 @@
             >
             for the demo setup used on this page.
           </p>
+        </section>
+
+        <section id="openlayers_preview" class="tab-panel">
+          <h2>OpenLayers: Preview</h2>
+          <div id="ol-demo-preview" class="demo"></div>
+          <div class="canvas-options">
+            <label for="previewRendering">Preview rendering:</label>
+            <input
+              type="checkbox"
+              checked="checked"
+              name="previewRendering"
+              id="previewRendering"
+              onchange="[...document.querySelectorAll('#previewTimeout, #previewOverlay')].map(e => e.disabled = !this.checked)"
+            />
+
+            <div class="seperator">&nbsp;</div>
+
+            <label for="previewTimeout">Preview timeout:</label>
+            <input
+              type="number"
+              value="200"
+              min="0"
+              max="10000"
+              name="previewTimeout"
+              id="previewTimeout"
+            />
+
+            <div class="seperator">&nbsp;</div>
+
+            <label for="previewOverlay">Preview overlay:</label>
+            <input
+              type="checkbox"
+              checked="checked"
+              name="previewOverlay"
+              id="previewOverlay"
+            />
+          </div>
         </section>
 
         <section id="openlayers_xyz" class="tab-panel">

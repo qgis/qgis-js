@@ -14,6 +14,9 @@
 
 #include "../model/MapLayer.hpp"
 #include "../model/PointXY.hpp"
+#include "../model/QgsMapRendererJob.hpp"
+#include "../model/QgsMapRendererParallelJob.hpp"
+#include "../model/QgsMapRendererQImageJob.hpp"
 #include "../model/Rectangle.hpp"
 
 #include <emscripten/bind.h>
@@ -145,7 +148,7 @@ void QgisApi_renderImage(
 
   QgsMapRendererParallelJob *job = new QgsMapRendererParallelJob(mapSettings);
 
-  QObject::connect(job, &QgsMapRendererSequentialJob::finished, [job, callback] {
+  QObject::connect(job, &QgsMapRendererParallelJob::finished, [job, callback] {
     auto image = job->renderedImage();
     image.rgbSwap(); // for html canvas
     callback(emscripten::val(emscripten::typed_memory_view(
@@ -153,6 +156,51 @@ void QgisApi_renderImage(
     job->deleteLater();
   });
   job->start();
+}
+
+QgsMapRendererParallelJob *QgisApi_renderJob(
+  std::string srid,
+  const QgsRectangle &extent,
+  unsigned int width,
+  unsigned int height,
+  float pixelRatio) {
+
+  QgsMapSettings mapSettings;
+
+  mapSettings.setOutputImageFormat(QImage::Format_ARGB32);
+  mapSettings.setBackgroundColor(Qt::transparent);
+  mapSettings.setOutputSize(QSize(width, height));
+  mapSettings.setOutputDpi(96.0 * pixelRatio);
+
+  mapSettings.setLayers(QgisApi_visibleLayers());
+
+  mapSettings.setDestinationCrs(QgsCoordinateReferenceSystem(QString::fromStdString(srid)));
+
+  mapSettings.setExtent(extent);
+
+  QgsExpressionContext context = QgsProject::instance()->createExpressionContext();
+  context << QgsExpressionContextUtils::mapSettingsScope(mapSettings);
+  mapSettings.setExpressionContext(context);
+
+  mapSettings.setPathResolver(QgsProject::instance()->pathResolver());
+
+  // START optimizations
+  QgsVectorSimplifyMethod simplify;
+  simplify.setSimplifyHints(QgsVectorSimplifyMethod::FullSimplification);
+  mapSettings.setSimplifyMethod(simplify);
+
+  mapSettings.setFlag(Qgis::MapSettingsFlag::UseRenderingOptimization, true);
+  mapSettings.setFlag(Qgis::MapSettingsFlag::ForceRasterMasks, true);
+  mapSettings.setFlag(Qgis::MapSettingsFlag::RenderPreviewJob, true);
+  mapSettings.setFlag(Qgis::MapSettingsFlag::RenderPartialOutput, true);
+
+  mapSettings.setRendererUsage(Qgis::RendererUsage::View);
+  // END optimizations
+
+  QgsMapRendererParallelJob *job = new QgsMapRendererParallelJob(mapSettings);
+
+  job->start();
+  return job;
 }
 
 const QgsRectangle QgisApi_transformRectangle(
@@ -212,6 +260,7 @@ EMSCRIPTEN_BINDINGS(QgisApi) {
   emscripten::function("srid", &QgisApi_srid);
   emscripten::function("renderImage", &QgisApi_renderImage);
   emscripten::function("renderXYZTile", &QgisApi_renderXYZTile);
+  emscripten::function("renderJob", &QgisApi_renderJob, emscripten::allow_raw_pointers());
   emscripten::function("transformRectangle", &QgisApi_transformRectangle);
   emscripten::function("mapLayers", &QgisApi_mapLayers);
   emscripten::register_vector<MapLayer>("vector<MapLayer>");
