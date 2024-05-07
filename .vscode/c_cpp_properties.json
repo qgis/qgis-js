@@ -3,13 +3,6 @@
     {
       "name": "Linux",
       "includePath": [
-        "${env:HOME}/Qt/6.6.2/wasm_multithread/include",
-        "${env:HOME}/Qt/6.6.2/wasm_multithread/include/QtCore",
-        "${env:HOME}/Qt/6.6.2/wasm_multithread/include/QtGui",
-        "${env:HOME}/Qt/6.6.2/wasm_multithread/include/QtWidgets",
-        "${env:HOME}/Qt/6.6.2/wasm_multithread/include/QtNetwork",
-        "${env:HOME}/Qt/6.6.2/wasm_multithread/include/QtConcurrent",
-        "${env:HOME}/Qt/6.6.2/wasm_multithread/include/QtXml",
         "${workspaceFolder}/build/wasm/vcpkg_installed/wasm32-emscripten-qt-threads/include",
         "${workspaceFolder}/build/wasm/vcpkg_installed/wasm32-emscripten-qt-threads/include/qgis",
         "${workspaceFolder}/build/emsdk/upstream/emscripten/system/include"
