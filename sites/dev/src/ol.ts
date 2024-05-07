@@ -1,6 +1,10 @@
 import { QgisApi } from "qgis-js";
 
-import { QgisXYZDataSource, QgisCanvasDataSource } from "@qgis-js/ol";
+import {
+  QgisJobDataSrouce,
+  QgisCanvasDataSource,
+  QgisXYZDataSource,
+} from "@qgis-js/ol";
 
 import Map from "ol/Map.js";
 import View from "ol/View.js";
@@ -191,6 +195,111 @@ export function olDemoCanvas(
     setTimeout(() => {
       // recreate the source to force reload the image in the layer
       source = new QgisCanvasDataSource(api, {
+        projection: new Projection({
+          code: srid!,
+          units: "m",
+        }),
+      });
+      layer?.setSource(source);
+    }, 0);
+  };
+
+  init();
+
+  return {
+    init,
+    update,
+    render,
+  };
+}
+
+export function olPreview(
+  target: HTMLDivElement,
+  api: QgisApi,
+): { init: () => void; update: () => void; render: () => void } {
+  let view: View | undefined = undefined;
+  let srid: string | undefined = undefined;
+  let map: Map | undefined = undefined;
+  let layer: ImageLayer<QgisJobDataSrouce> | undefined = undefined;
+  let source: QgisJobDataSrouce | undefined = undefined;
+
+  const inputPreview = document.getElementById(
+    "previewRendering",
+  ) as HTMLInputElement;
+  const inputTimeout = document.getElementById(
+    "previewTimeout",
+  ) as HTMLInputElement;
+  const inputOverlay = document.getElementById(
+    "previewOverlay",
+  ) as HTMLInputElement;
+
+  const init = () => {
+    target.innerHTML = "";
+
+    srid = api.srid();
+
+    const projection = new Projection({
+      code: srid,
+      // TODO map unit of QgsCoordinateReferenceSystem to ol unit
+      // https://api.qgis.org/api/classQgsCoordinateReferenceSystem.html#ad57c8a9222c27173c7234ca270306128
+      // https://openlayers.org/en/latest/apidoc/module-ol_proj_Units.html
+      units: "m",
+    });
+
+    const bbox = api.fullExtent();
+    const center = bbox.center();
+
+    view = new View({
+      projection,
+      center: [center.x, center.y],
+      zoom: 10,
+    });
+
+    source = new QgisJobDataSrouce(api, {
+      preview: inputPreview?.checked,
+      previewTimeout: inputTimeout?.valueAsNumber,
+      previewOverlay: inputOverlay?.checked,
+      projection,
+    });
+
+    layer = new ImageLayer({
+      source,
+    });
+
+    map = new Map({
+      target,
+      view,
+      controls: defaultControls().extend([new ScaleLine(), new FullScreen()]),
+      layers: [layer],
+    });
+
+    map.once("precompose", function (_event) {
+      const bbox = api.fullExtent();
+      view!.fit([bbox.xMinimum, bbox.yMinimum, bbox.xMaximum, bbox.yMaximum], {
+        duration: animationDuration,
+      });
+    });
+  };
+
+  // recreate the entire map on each update to get new projections working
+  const update = () => {
+    if (source) {
+      source.killPendingJobs();
+    }
+    init();
+  };
+
+  inputPreview?.addEventListener("change", () => update());
+  inputTimeout?.addEventListener("change", () => update());
+  inputOverlay?.addEventListener("change", () => update());
+
+  const render = () => {
+    setTimeout(() => {
+      // recreate the source to force reload the image in the layer
+      source = new QgisJobDataSrouce(api, {
+        preview: inputPreview?.checked,
+        previewTimeout: inputTimeout?.valueAsNumber,
+        previewOverlay: inputOverlay?.checked,
         projection: new Projection({
           code: srid!,
           units: "m",

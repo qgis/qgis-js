@@ -7,7 +7,7 @@ import type { Project } from "@qgis-js/utils";
 
 import { jsDemo } from "./js";
 
-import { olDemoXYZ, olDemoCanvas } from "./ol";
+import { olPreview, olDemoXYZ, olDemoCanvas } from "./ol";
 import { layersControl } from "./layers";
 
 const printVersion = true;
@@ -217,11 +217,11 @@ async function initDemo() {
     }
 
     // ol demo
-    const olDemoXYZDiv = document.getElementById(
-      "ol-demo-xyz",
+    const olDemoPreviewDiv = document.getElementById(
+      "ol-demo-preview",
     ) as HTMLDivElement | null;
-    if (olDemoXYZDiv) {
-      const { update, render } = olDemoXYZ(olDemoXYZDiv, api);
+    if (olDemoPreviewDiv) {
+      const { update, render } = olPreview(olDemoPreviewDiv, api);
       updateCallbacks.push(update);
       renderCallbacks.push(render);
     }
@@ -231,6 +231,15 @@ async function initDemo() {
     ) as HTMLDivElement | null;
     if (olDemoCanvasDiv) {
       const { update, render } = olDemoCanvas(olDemoCanvasDiv, api);
+      updateCallbacks.push(update);
+      renderCallbacks.push(render);
+    }
+
+    const olDemoXYZDiv = document.getElementById(
+      "ol-demo-xyz",
+    ) as HTMLDivElement | null;
+    if (olDemoXYZDiv) {
+      const { update, render } = olDemoXYZ(olDemoXYZDiv, api);
       updateCallbacks.push(update);
       renderCallbacks.push(render);
     }
