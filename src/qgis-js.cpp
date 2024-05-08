@@ -27,6 +27,8 @@
 #include <QTimer>
 #include <QtGlobal>
 
+#include <emscripten/val.h>
+
 static const QTemporaryDir temp;
 static QGuiApplication *app;
 
@@ -63,7 +65,16 @@ int main(int argc, char *argv[]) {
   QgsApplication::init(temp.path());
   QgsApplication::setPkgDataPath("/qgis"); // as set in CMakeLists.txt
 
-  QgsApplication::setMaxThreads(8);
+  int maxThreads = 4;
+  emscripten::val qgisJsMaxThreads = emscripten::val::module_property("qgisJsMaxThreads");
+  if (!qgisJsMaxThreads.isUndefined()) {
+    int maxThreadsValue = qgisJsMaxThreads.as<int>();
+    if (maxThreadsValue > 0) {
+      maxThreads = maxThreadsValue;
+    }
+  }
+  QgsApplication::setMaxThreads(maxThreads);
+
   QgsSettingsRegistryCore::settingsLayerParallelLoading->setValue(false);
 
   if (testLibraries) {
