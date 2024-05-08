@@ -42,7 +42,7 @@ export interface QgisRuntime {
  */
 export function threadPoolSize() {
   const MINIMAL_THREAD_POOL_SIZE = 4;
-  const MAXIMAL_THREAD_POOL_SIZE = 8;
+  const MAXIMAL_THREAD_POOL_SIZE = 16;
   return Math.min(
     Math.max(
       navigator?.hardwareConcurrency || MINIMAL_THREAD_POOL_SIZE,

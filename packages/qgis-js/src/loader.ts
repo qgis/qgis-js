@@ -1,10 +1,12 @@
 import { getQgisApiProxy } from "./QgisApiAdapter";
 
+import { threadPoolSize } from "./runtime";
 import type {
   QgisRuntime,
   QgisRuntimeConfig,
   QgisRuntimeModule,
 } from "./runtime";
+
 import type { EmscriptenRuntimeModule } from "./emscripten";
 
 /**
@@ -102,6 +104,7 @@ export async function qgis(
         function (module: any) {
           module.qtContainerElements = canvas ? [canvas] : [];
           module.qtFontDpi = 96;
+          module.qgisJsMaxThreads = threadPoolSize();
         },
       ],
       postRun: [

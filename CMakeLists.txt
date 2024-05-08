@@ -138,7 +138,7 @@ target_link_options(qgis-js PRIVATE "SHELL: \
 
 # Threading (see https://emscripten.org/docs/porting/pthreads.html)
 set(MINIMAL_THREAD_POOL_SIZE "4")
-set(MAXIMAL_THREAD_POOL_SIZE "8")
+set(MAXIMAL_THREAD_POOL_SIZE "16")
 target_link_options(qgis-js PRIVATE "SHELL: \
 -s PTHREAD_POOL_SIZE=\"Math.min(Math.max(((navigator&&navigator.hardwareConcurrency)||${MINIMAL_THREAD_POOL_SIZE}),${MINIMAL_THREAD_POOL_SIZE}),${MAXIMAL_THREAD_POOL_SIZE})\" \
 -s PTHREAD_POOL_SIZE_STRICT=2 \
