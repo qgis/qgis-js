@@ -10,7 +10,6 @@
 
 import { dirname } from "path";
 import { fileURLToPath } from "url";
-import { homedir } from "os";
 
 import type { BrotliCompress, Gzip } from "zlib";
 
@@ -165,10 +164,9 @@ export class CompileAction extends CommandLineAction {
   }
 
   protected onExecute(): Promise<void> {
-    return new Promise<void>(async (resolve) => {
+    return new Promise<void>(async (resolve, reject) => {
       const v = options.verbose;
 
-      const home = homedir();
       const repo = dirname(fileURLToPath(import.meta.url));
 
       const buildType = (this._buildType.value || "Dev") as BuildType;
@@ -220,21 +218,26 @@ export class CompileAction extends CommandLineAction {
         await $`find . -iwholename './build/vcpkg/downloads/tools/cmake-*/*/bin/cmake' | grep bin/cmake || echo cmake`;
 
       // configure and build vcpgk dependencies
-      await $`${cmake} \
+      try {
+        await $`${cmake} \
 -S . \
 -B build/wasm \
 -G Ninja \
 -DCMAKE_TOOLCHAIN_FILE=${
-        process.env.QGIS_JS_VCPKG
-      }/scripts/buildsystems/vcpkg.cmake \
+          process.env.QGIS_JS_VCPKG
+        }/scripts/buildsystems/vcpkg.cmake \
 -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=${repo}/build/vcpkg-toolchains/qgis-js.cmake \
 -DVCPKG_OVERLAY_TRIPLETS=./build/vcpkg-triplets \
 -DVCPKG_OVERLAY_PORTS=./build/vcpkg-ports \
 -DVCPKG_TARGET_TRIPLET=wasm32-emscripten-qt-threads \
 -DCMAKE_BUILD_TYPE=${buildType !== "Dev" ? buildType : ""}`;
 
-      // build
-      await $`${cmake} --build build/wasm`;
+        // build
+        await $`${cmake} --build build/wasm`;
+      } catch (error) {
+        reject(error);
+        return;
+      }
 
       resolve();
     });
