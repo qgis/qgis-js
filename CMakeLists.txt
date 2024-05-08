@@ -28,7 +28,7 @@ find_path(QGIS_INCLUDE_DIR
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-  set(qgis_debug_prefix "debug/")    # debug lib is in different folder
+  set(qgis_debug_prefix "debug/") # debug lib is in different folder
 endif()
 
 find_library(
@@ -66,7 +66,7 @@ target_link_libraries(qgis-js PRIVATE
   Qt6::Gui
   Qt6::Core5Compat
   Qt6::PrintSupport
-  Qt6::Widgets    # because QgsApplication -> QApplication
+  Qt6::Widgets # because QgsApplication -> QApplication
   )
 
 set(QGIS_PROVIDERS_LIST
@@ -101,6 +101,7 @@ target_link_libraries(qgis-js PRIVATE qca)
 
 qt_finalize_executable(qgis-js)
 
+# with a "Develop" build type, the js file is missing the .js extension
 if (NOT CMAKE_BUILD_TYPE STREQUAL "Release" AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
   set_target_properties(qgis-js PROPERTIES OUTPUT_NAME "qgis-js.js")
 endif()
@@ -113,10 +114,11 @@ endif()
 # Flags set by Qt:
 # -s PTHREAD_POOL_SIZE=4
 # -s INITIAL_MEMORY=50MB 
-# -s EXPORTED_RUNTIME_METHODS=UTF16ToString,stringToUTF16,JSEvents,specialHTMLTargets
+# -s EXPORTED_RUNTIME_METHODS=UTF16ToString,stringToUTF16,JSEvents,specialHTMLTargets,FS
 # -s MAX_WEBGL_VERSION=2
 # -s FETCH=1 
 # -s WASM_BIGINT=1
+# -s STACK_SIZE=5MB
 # -s MODULARIZE=1
 # -s EXPORT_NAME=createQtAppInstance
 # -s ALLOW_MEMORY_GROWTH
@@ -125,14 +127,11 @@ endif()
 
 # Emscripten Runtime
 target_link_options(qgis-js PRIVATE "SHELL: \
--s EXPORT_ES6 \
--s STACK_SIZE=5242880" # 5M 
+-s EXPORT_ES6"
 )
 
 # FS (see https://emscripten.org/docs/api_reference/Filesystem-API.html)
-# NOTE: EXTRA_EXPORTED_RUNTIME_METHODS is deprecated, but we need it for now in order to not overwrite the EXPORTED_RUNTIME_METHODS set by Qt
 target_link_options(qgis-js PRIVATE "SHELL: \
--s EXTRA_EXPORTED_RUNTIME_METHODS=[FS] \
 -s FORCE_FILESYSTEM=1"
 )
 
@@ -158,3 +157,8 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 -gsplit-dwarf \
 -gpubnames")
 endif()
+
+# TODO remove this fix (see https://github.com/emscripten-core/emscripten/issues/21844)
+target_link_options(qgis-js PRIVATE "SHELL: \
+-s EXPORTED_FUNCTIONS=_main,__emscripten_thread_crashed,__embind_initialize_bindings"
+)
