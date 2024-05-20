@@ -31,6 +31,44 @@ a.source {
   resize: both;
 }
 
+@keyframes loading {
+  0%,
+  100% {
+    transform: scaleX(0);
+  }
+  50% {
+    transform: scaleX(1);
+  }
+}
+
+.demo::before,
+.demo.spinner::before {
+  content: "";
+  transition: opacity 0.5s ease-in-out;
+}
+
+.demo::before {
+  opacity: 0;
+}
+
+.demo.spinner::before {
+  opacity: 1;
+
+  display: block;
+  position: absolute;
+  bottom: -0.5em;
+  left: 0.5em;
+  right: 0.5em;
+  height: 1px;
+  background-color: #589632;
+  animation: loading 1.5s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.demo.spinner:fullscreen::before {
+  bottom: 0.25em;
+}
+
 .canvas-options {
   margin: -1em 0 2em 0;
   padding: 1em;

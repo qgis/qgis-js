@@ -90,6 +90,13 @@ export function olDemoXYZ(
         ].reverse(),
       }));
 
+    map.on("loadstart", function () {
+      map!.getTargetElement().classList.add("spinner");
+    });
+    map.on("loadend", function () {
+      map!.getTargetElement().classList.remove("spinner");
+    });
+
     map.once("precompose", function (_event) {
       // fit the view to the extent of the data once the map gets actually rendered
       update();
@@ -176,6 +183,13 @@ export function olDemoCanvas(
       view,
       controls: defaultControls().extend([new ScaleLine(), new FullScreen()]),
       layers: [layer],
+    });
+
+    map.on("loadstart", function () {
+      map!.getTargetElement().classList.add("spinner");
+    });
+    map.on("loadend", function () {
+      map!.getTargetElement().classList.remove("spinner");
     });
 
     map.once("precompose", function (_event) {
@@ -273,6 +287,15 @@ export function olPreview(
       layers: [layer],
     });
 
+    // @ts-ignore
+    source.on("jobstart", function () {
+      map!.getTargetElement().classList.add("spinner");
+    });
+    // @ts-ignore
+    source.on("jobend", function () {
+      map!.getTargetElement().classList.remove("spinner");
+    });
+
     map.once("precompose", function (_event) {
       const bbox = api.fullExtent();
       view!.fit([bbox.xMinimum, bbox.yMinimum, bbox.xMaximum, bbox.yMaximum], {
@@ -306,6 +329,15 @@ export function olPreview(
         }),
       });
       layer?.setSource(source);
+
+      // @ts-ignore
+      source.on("jobstart", function () {
+        map!.getTargetElement().classList.add("spinner");
+      });
+      // @ts-ignore
+      source.on("jobend", function () {
+        map!.getTargetElement().classList.remove("spinner");
+      });
     }, 0);
   };
 

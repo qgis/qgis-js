@@ -43,6 +43,8 @@ export class QgisJobDataSrouce extends ImageSource {
     super({
       loader: (extent, resolution, requestPixelRatio) => {
         return new Promise(async (resolve) => {
+          this.dispatchEvent("jobstart");
+
           this.killPendingJobs();
 
           const pixelRatio = requestPixelRatio || window?.devicePixelRatio || 1;
@@ -167,6 +169,8 @@ export class QgisJobDataSrouce extends ImageSource {
 
             // remove the job from the list of pending jobs
             this.jobs = this.jobs.filter((j) => j !== job);
+
+            this.dispatchEvent("jobend");
           });
         });
       },
