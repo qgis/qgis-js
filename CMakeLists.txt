@@ -101,11 +101,6 @@ target_link_libraries(qgis-js PRIVATE qca)
 
 qt_finalize_executable(qgis-js)
 
-# with a "Develop" build type, the js file is missing the .js extension
-if (NOT CMAKE_BUILD_TYPE STREQUAL "Release" AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
-  set_target_properties(qgis-js PROPERTIES OUTPUT_NAME "qgis-js.js")
-endif()
-
 #
 # emcc settings (see https://emsettings.surma.technology/)
 #
