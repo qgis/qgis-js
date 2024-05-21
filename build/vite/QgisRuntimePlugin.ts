@@ -10,7 +10,6 @@ import type { Plugin, ResolvedConfig } from "vite";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const RUNTIME_JS = "js";
-const RUNTIME_WORKER = "worker.mjs";
 const RUNTIME_WASM = "wasm";
 const RUNTIME_WASM_MAP = "wasm.map";
 const RUNTIME_WASM_DEBUG = "wasm.debug.wasm";
@@ -51,7 +50,6 @@ export default function QgisRuntimePlugin(_runtime: Runtime | null): Plugin {
   }
 
   const fileRuntimeJs = file(RUNTIME_JS);
-  const fileRuntimeWorker = file(RUNTIME_WORKER);
   const fileRuntimeWasm = file(RUNTIME_WASM);
   const fileRuntimeWasmMap = file(RUNTIME_WASM_MAP);
   const fileRuntimeWasmDebug = file(RUNTIME_WASM_DEBUG);
@@ -59,7 +57,6 @@ export default function QgisRuntimePlugin(_runtime: Runtime | null): Plugin {
 
   const filesRuntime = [
     fileRuntimeJs,
-    fileRuntimeWorker,
     fileRuntimeWasmMap,
     fileRuntimeWasmDebug,
     fileRuntimeWasm,
@@ -100,10 +97,7 @@ export default function QgisRuntimePlugin(_runtime: Runtime | null): Plugin {
                 res.setHeader("Content-Type", "application/wasm");
               }
               res.end(raw);
-            } else if (
-              filePath.endsWith("." + RUNTIME_JS) ||
-              filePath.endsWith("." + RUNTIME_WORKER)
-            ) {
+            } else if (filePath.endsWith("." + RUNTIME_JS)) {
               const content = raw.toString();
               res.setHeader("Content-Type", "application/javascript");
               res.end(patchEmccJs(content));

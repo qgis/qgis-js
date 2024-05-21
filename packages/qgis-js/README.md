@@ -60,13 +60,12 @@ The size of the packages is **`54.01 MB`** (uncompressed) or `14.88 MB` Brotli c
 
 It consists of the following files:
 
-| File name                       | Size (uncompressed) | Size (Brotli compressed)      | Size (Gzip compressed)        |
-| ------------------------------- | ------------------- | ----------------------------- | ----------------------------- |
-| `qgis.js`                       | `4.86 kB`           | `1.73 kB` (64% space saving)  | `1.82 kB` (63% space saving)  |
-| `assets/wasm/qgis-js.js`        | `328.26 kB`         | `70.45 kB` (79% space saving) | `75.28 kB` (77% space saving) |
-| `assets/wasm/qgis-js.worker.js` | `3.1 kB`            | `1.19 kB` (61% space saving)  | `1.27 kB` (59% space saving)  |
-| `assets/wasm/qgis-js.data`      | `11.03 MB`          | `1.74 MB` (84% space saving)  | `2.27 MB` (79% space saving)  |
-| `assets/wasm/qgis-js.wasm`      | `42.66 MB`          | `13.07 MB` (69% space saving) | `14.89 MB` (65% space saving) |
+| File name                  | Size (uncompressed) | Size (Brotli compressed)      | Size (Gzip compressed)        |
+| -------------------------- | ------------------- | ----------------------------- | ----------------------------- |
+| `qgis.js`                  | `4.86 kB`           | `1.73 kB` (64% space saving)  | `1.82 kB` (63% space saving)  |
+| `assets/wasm/qgis-js.js`   | `328.26 kB`         | `70.45 kB` (79% space saving) | `75.28 kB` (77% space saving) |
+| `assets/wasm/qgis-js.data` | `11.03 MB`          | `1.74 MB` (84% space saving)  | `2.27 MB` (79% space saving)  |
+| `assets/wasm/qgis-js.wasm` | `42.66 MB`          | `13.07 MB` (69% space saving) | `14.89 MB` (65% space saving) |
 
 ### Libraries
 
