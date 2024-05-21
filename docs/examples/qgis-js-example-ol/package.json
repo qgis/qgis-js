@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "ol": "^9.1.0",
+    "ol": "^9.2.2",
     "@qgis-js/ol": "0.0.3",
     "qgis-js": "0.0.3"
   },
