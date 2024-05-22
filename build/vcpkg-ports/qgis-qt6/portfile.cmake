@@ -31,6 +31,7 @@ vcpkg_from_github(
         11-disable-openedFileLimit.patch
         12-disable-wcs-provider.patch
         13-no-LinguistTools-dep.patch
+        14-disable-map_crs_projection.patch
 )
 
 file(REMOVE ${SOURCE_PATH}/cmake/FindQtKeychain.cmake)

@@ -11,6 +11,7 @@
 
 #include <QImage>
 #include <QString>
+#include <QtConcurrent/QtConcurrent>
 
 #include "../model/MapLayer.hpp"
 #include "../model/PointXY.hpp"
@@ -155,7 +156,7 @@ void QgisApi_renderImage(
       image.width() * image.height() * 4, (const unsigned char *)image.constBits())));
     job->deleteLater();
   });
-  job->start();
+  (void)QtConcurrent::run([job]() { job->start(); });
 }
 
 QgsMapRendererParallelJob *QgisApi_renderJob(
@@ -199,7 +200,8 @@ QgsMapRendererParallelJob *QgisApi_renderJob(
 
   QgsMapRendererParallelJob *job = new QgsMapRendererParallelJob(mapSettings);
 
-  job->start();
+  (void)QtConcurrent::run([job]() { job->start(); });
+
   return job;
 }
 
