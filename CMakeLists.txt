@@ -39,6 +39,17 @@ find_library(
  NO_DEFAULT_PATH
 )
 
+# because on the initial build the Qt toolchain file is not yet generated and therefore not included by qgis-js.cmake
+# this will ensure that the Qt toolchain file is included after qtbase is built
+if(EXISTS ${QT_TOOLCHAIN_FILE})
+  set(QT_CHAINLOAD_TOOLCHAIN_FILE ${EMSCRIPTEN_TOOLCHAIN_FILE})
+  include(${QT_TOOLCHAIN_FILE})
+else()
+  message(FATAL_ERROR "Could not find Qt toolchain file: ${QT_TOOLCHAIN_FILE}")
+endif()
+
+# since Qt 6.3 qt_standard_project_setup should be used so set some default values
+qt_standard_project_setup()
 
 set(QGISJS_SOURCES
  src/qgis-js.cpp
