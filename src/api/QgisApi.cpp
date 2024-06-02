@@ -156,6 +156,9 @@ void QgisApi_renderImage(
       image.width() * image.height() * 4, (const unsigned char *)image.constBits())));
     job->deleteLater();
   });
+
+  // start the rendering job in a separate thread to prevent blocking the main thread
+  // (in theory strange things could happen, but this has been working well so far)
   (void)QtConcurrent::run([job]() { job->start(); });
 }
 
@@ -200,6 +203,8 @@ QgsMapRendererParallelJob *QgisApi_renderJob(
 
   QgsMapRendererParallelJob *job = new QgsMapRendererParallelJob(mapSettings);
 
+  // start the rendering job in a separate thread to prevent blocking the main thread
+  // (in theory strange things could happen, but this has been working well so far)
   (void)QtConcurrent::run([job]() { job->start(); });
 
   return job;
