@@ -1,7 +1,7 @@
 import { QgisApi } from "qgis-js";
 
 import {
-  QgisJobDataSrouce,
+  QgisJobDataSource,
   QgisCanvasDataSource,
   QgisXYZDataSource,
 } from "@qgis-js/ol";
@@ -234,8 +234,8 @@ export function olPreview(
   let view: View | undefined = undefined;
   let srid: string | undefined = undefined;
   let map: Map | undefined = undefined;
-  let layer: ImageLayer<QgisJobDataSrouce> | undefined = undefined;
-  let source: QgisJobDataSrouce | undefined = undefined;
+  let layer: ImageLayer<QgisJobDataSource> | undefined = undefined;
+  let source: QgisJobDataSource | undefined = undefined;
 
   const inputPreview = document.getElementById(
     "previewRendering",
@@ -269,7 +269,7 @@ export function olPreview(
       zoom: 10,
     });
 
-    source = new QgisJobDataSrouce(api, {
+    source = new QgisJobDataSource(api, {
       preview: inputPreview?.checked,
       previewTimeout: inputTimeout?.valueAsNumber,
       previewOverlay: inputOverlay?.checked,
@@ -319,7 +319,7 @@ export function olPreview(
   const render = () => {
     setTimeout(() => {
       // recreate the source to force reload the image in the layer
-      source = new QgisJobDataSrouce(api, {
+      source = new QgisJobDataSource(api, {
         preview: inputPreview?.checked,
         previewTimeout: inputTimeout?.valueAsNumber,
         previewOverlay: inputOverlay?.checked,

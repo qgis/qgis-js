@@ -8,7 +8,7 @@ import {
   compose as composeTransform,
 } from "ol/transform";
 
-export interface QgisJobDataSrouceOptions extends Options {
+export interface QgisJobDataSourceOptions extends Options {
   /**
    * Specifies whether to enable preview mode.
    * (default: true)
@@ -28,7 +28,7 @@ export interface QgisJobDataSrouceOptions extends Options {
   previewOverlay?: boolean;
 }
 
-export class QgisJobDataSrouce extends ImageSource {
+export class QgisJobDataSource extends ImageSource {
   protected api: QgisApi;
 
   protected preview: boolean;
@@ -39,7 +39,7 @@ export class QgisJobDataSrouce extends ImageSource {
 
   private jobs: QgsMapRendererJob[] = [];
 
-  constructor(api: QgisApi, options: QgisJobDataSrouceOptions = {}) {
+  constructor(api: QgisApi, options: QgisJobDataSourceOptions = {}) {
     super({
       loader: (extent, resolution, requestPixelRatio) => {
         return new Promise(async (resolve) => {
