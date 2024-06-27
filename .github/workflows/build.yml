@@ -27,6 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set Swap Space
+        if: ${{ !env.ACT }}
         uses: pierotofy/set-swap-space@master
         with:
           swap-size-gb: 8
@@ -41,6 +42,7 @@ jobs:
           flex
           bison
       - name: Free Disk Space (Ubuntu)
+        if: ${{ !env.ACT }}
         uses: jlumbroso/free-disk-space@main
         with:
           tool-cache: false
