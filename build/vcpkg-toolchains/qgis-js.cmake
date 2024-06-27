@@ -3,10 +3,10 @@ message(STATUS "Using 'qgis-js' toolchain")
 
 # use/derrive EMSDK and EMSCRIPTEN_ROOT to locate EMSCRIPTEN_TOOLCHAIN_FILE
 if(NOT DEFINED ENV{EMSDK})
-  get_filename_component(QGIS_JS_EMSDK
+  get_filename_component(QGIS_JS_BUILD_EMSDK
   "${CMAKE_CURRENT_LIST_DIR}/../emsdk"
   ABSOLUTE)
-  set(ENV{EMSDK} ${QGIS_JS_EMSDK})
+  set(ENV{EMSDK} ${QGIS_JS_BUILD_EMSDK})
 endif()
 if(NOT EMSCRIPTEN_ROOT)
    if(NOT DEFINED ENV{EMSDK})

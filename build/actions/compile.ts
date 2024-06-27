@@ -1,4 +1,4 @@
-import { dirname } from "path";
+import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 
 import {
@@ -53,7 +53,7 @@ export class CompileAction extends CommandLineAction {
       const v = this._options.verbose;
       $.verbose = true;
 
-      const repo = dirname(fileURLToPath(import.meta.url));
+      const repo = join(dirname(fileURLToPath(import.meta.url)), "../..");
 
       const buildType = (this._buildType.value || "Dev") as BuildType;
       const debug = this._debug.value || false;
@@ -88,10 +88,6 @@ export class CompileAction extends CommandLineAction {
         if (v) console.log(`"${CMakeCacheFile}" does not exist`);
       }
 
-      // set qgis-js internal environment variables
-      process.env.QGIS_JS_VCPKG = `${repo}/build/vcpkg`;
-      process.env.QGIS_JS_EMSDK = `${repo}/build/emsdk`;
-
       // set environment variables for CMake
       process.env.VCPKG_BINARY_SOURCES = "clear";
       if (debug) {
@@ -109,9 +105,7 @@ export class CompileAction extends CommandLineAction {
 -S . \
 -B build/wasm \
 -G Ninja \
--DCMAKE_TOOLCHAIN_FILE=${
-          process.env.QGIS_JS_VCPKG
-        }/scripts/buildsystems/vcpkg.cmake \
+-DCMAKE_TOOLCHAIN_FILE=${repo}/build/vcpkg/scripts/buildsystems/vcpkg.cmake \
 -DVCPKG_CHAINLOAD_TOOLCHAIN_FILE=${repo}/build/vcpkg-toolchains/qgis-js.cmake \
 -DVCPKG_OVERLAY_TRIPLETS=./build/vcpkg-triplets \
 -DVCPKG_OVERLAY_PORTS=./build/vcpkg-ports \
