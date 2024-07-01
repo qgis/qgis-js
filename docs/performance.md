@@ -2,37 +2,71 @@
 
 ## Preface
 
-In Feb-Mai 2024, we will conduct a performance test to measure the performance of qgis-js and find ways to optimize it. This document outlines the general approach, lists the potential optimizations and tracks the status of those optimizations
+In Feb-June 2024, we will conduct a performance test to measure the performance of qgis-js and find ways to optimize it. This document outlines the general approach, lists the potential optimizations and tracks the status of those optimizations
 
 More information
 
-- [`./debugging.md`](./debugging.md)
-- [`./profiling.md`](./profiling.md)
+- [Performance Comparison (between version 0.0.3 and 0.0.5)](https://github.com/boardend/qgis-js-performance)
+- Documentation
+  - [`./debugging.md`](./debugging.md)
+  - [`./profiling.md`](./profiling.md)
 
 ## Deliverables
 
-- A performance measurement tool for qgis-js
-  - A report on the performance of qgis-js before this effort (qgis-js 0.0.2, "baseline")
-  - A report for each optimization
-  - A report on the overall performance gain
-- A [final conclusion](#conclusion)
-  - on the performance improvements merged into the main branch
-  - as well as potential future optimizations
+- [x] [A performance measurement tool for qgis-js](../sites/performance/)
+  - [x] [A report on the performance gain](https://github.com/boardend/qgis-js-performance)
+- [x] [A final conclusion](#conclusion)
 
 ## Conclusion
 
-> 💡 **Note**: This section will be the final deliverable
+**Approach**:
+
+- In order to optimize the performance of qgis-js, we have gathered a list of potential [optimizations](#optimizations) and implemented as many as possible in the given time frame
+  - The status of each optimization is tracked in the [list](#optimizations)
+  - Note that most of them have been implemented
+- To challenge the performance of qgis-js, the demo project "AoS - Precipitation per balance basin" with the worst observed performance so far has been selected to verify the optimizations
+  - It is used on its worst performing extent (whole of Switzerland) and used to render a full screen map (`1920x1080`)
+  - The project was measured in two versions:
+    - [`aos-baseline`](https://github.com/boardend/qgis-js-projects/tree/main/performance/aos-baseline): The original version of the project, as it is used on the qgis-js website
+    - [`aos-playground`](https://github.com/boardend/qgis-js-projects/tree/main/performance/aos-playground): A optimized version of the project
+      - Added/Recalculate indices for all layers
+      - Simplified geometries for all vector layers
+      - Played with the project settings to achieve potential performance improvements
+- A performance measurement tool has been implemented used to measure the performance of the application before (version `0.0.3`) and after the optimizations (version `0.0.5`) and to compare the performance of the `aos-baseline` and `aos-playground` project:
+  - The full results can be found in a seperate repository: [Performance Comparison (between version 0.0.3 and 0.0.5)](https://github.com/boardend/qgis-js-performance)
+
+**Results**:
+
+- Rendering time could be reduced significantly between version `0.0.3` and `0.0.5`:
+  - Chrome: `41.60%`
+  - Firefox: `43.04%`
+- Chrome is performing better than Firefox
+  - Ratio rendering time Chrome/Firefox: `0.47`
+- Difference between `aos-baseline`/`aos-playground` project is negligible
+  - `100.38%`, `100.51%`, `93.66%`, `101.62%`
+
+> see [Performance Comparison (between version 0.0.3 and 0.0.5)](https://github.com/boardend/qgis-js-performance)
+
+**Further steps**:
+
+- Implement the not yet implemented [optimizations](#optimizations)
+- Add the performance measurement tool to the GitHub page
+- Automate the performance measurement tool to run on every commit/release
+- Further [profile](./profiling.md) the performance of the application in order to find bottlenecks
+- Compare the performance of the WebAssembly build against the native build of QGIS
 
 ## Optimizations
 
 > 💡 **Legend**: Each potential optimization will be prioritized with one of the following labels:
 >
 > **Priority**:
+>
 > - 🟢 High priority: _Should definitively taken into account_
 > - 🟡 Mid priority: _Would be nice to investigate_
 > - 🔴 Low priority: _Probably out of scope for now_
 >
 > **Status**:
+>
 > - [x] Implemented
 > - [ ] Open
 
@@ -100,7 +134,7 @@ More information
 - [x] **OpenLayers**
   - [x] 🟢 Check with the OL devs, if the current layer implementations are well designed
     - 💬 Checked with [Andreas Hocevar](https://github.com/ahocevar) and created this follow up issues:
-      - https://github.com/qgis/qgis-js/issues/40 , https://github.com/qgis/qgis-js/issues/41 , https://github.com/qgis/qgis-js/issues/42 , https://github.com/qgis/qgis-js/issues/16 
+      - https://github.com/qgis/qgis-js/issues/40 , https://github.com/qgis/qgis-js/issues/41 , https://github.com/qgis/qgis-js/issues/42 , https://github.com/qgis/qgis-js/issues/16
   - [x] 🟢 Cancellation of pending render jobs
     - 💬 Implemented with the `QgisJobDataSource`
   - [x] 🟢 Find a way to cache the results in "canvas" mode (like in XYZ mode)
@@ -117,14 +151,3 @@ More information
 - [x] 🟢 Ensure indices are created and used for all vector layers
   - 💬 This was already in place for the checked vector and raster layers ([`aos-baseline`](https://github.com/boardend/qgis-js-projects/tree/main/performance/aos-baseline))
 - [ ] 🟡 Check if there are faster data formats than GeoPackage (e.g. FlatGeobuf)
-
-## TODOs
-
-- [x] Create the performance measurement tool
-- [ ] Document the usage of the performance measurement tool
-- [ ] Write a [profiling guide](./profiling.md)
-- [ ] Write the [final conclusion](#conclusion)
-
-## Questions
-
-- Is it still possible to disable progressive rendering in QGIS desktop? (To get comparable measurements in the "Debugging/Development Tools")
