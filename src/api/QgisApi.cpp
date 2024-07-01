@@ -157,9 +157,7 @@ void QgisApi_renderImage(
     job->deleteLater();
   });
 
-  // start the rendering job in a separate thread to prevent blocking the main thread
-  // (in theory strange things could happen, but this has been working well so far)
-  (void)QtConcurrent::run([job]() { job->start(); });
+  job->start();
 }
 
 QgsMapRendererParallelJob *QgisApi_renderJob(
@@ -203,9 +201,7 @@ QgsMapRendererParallelJob *QgisApi_renderJob(
 
   QgsMapRendererParallelJob *job = new QgsMapRendererParallelJob(mapSettings);
 
-  // start the rendering job in a separate thread to prevent blocking the main thread
-  // (in theory strange things could happen, but this has been working well so far)
-  (void)QtConcurrent::run([job]() { job->start(); });
+  job->start();
 
   return job;
 }
