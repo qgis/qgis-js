@@ -1,6 +1,6 @@
 {
   "name": "@qgis-js/utils",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Utilities to integrate qgis-js into web applications",
   "license": "GPL-2.0-or-later",
   "homepage": "https://qgis.github.io/qgis-js/",
