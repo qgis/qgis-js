@@ -1,6 +1,6 @@
 {
   "name": "@qgis-js/ol",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "OpenLayers sources for qgis-js",
   "license": "GPL-2.0-or-later",
   "homepage": "https://qgis.github.io/qgis-js/",
