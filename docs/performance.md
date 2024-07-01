@@ -35,6 +35,8 @@ More information
 - A performance measurement tool has been implemented used to measure the performance of the application before (version `0.0.3`) and after the optimizations (version `0.0.5`) and to compare the performance of the `aos-baseline` and `aos-playground` project:
   - The full results can be found in a seperate repository: [Performance Comparison (between version 0.0.3 and 0.0.5)](https://github.com/boardend/qgis-js-performance)
 
+> All changes in the scope of this project have been merged with [PR #38](https://github.com/qgis/qgis-js/pull/38)
+
 **Results**:
 
 - Rendering time could be reduced significantly between version `0.0.3` and `0.0.5`:
