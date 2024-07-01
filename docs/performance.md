@@ -47,6 +47,11 @@ More information
 
 > see [Performance Comparison (between version 0.0.3 and 0.0.5)](https://github.com/boardend/qgis-js-performance)
 
+> Compare the two versions in the browser:
+>
+> - \>= `0.0.5`: https://qgis.github.io/qgis-js/
+> - `0.0.3`: https://boardend.github.io/qgis-js-baseline/
+
 **Further steps**:
 
 - Implement the not yet implemented [optimizations](#optimizations)
