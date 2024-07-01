@@ -7,9 +7,30 @@ import type { Project } from "@qgis-js/utils";
 let API: QgisApi;
 let FS: EmscriptenFS;
 
+const qgisJsDemoProjects = (path: string) => ({
+  owner: "boardend",
+  repo: "qgis-js-projects",
+  path: "/" + path,
+  branch: "main",
+  prefix: `${path[0].toUpperCase()}${path.slice(1)}: `,
+});
+
+const GITHUB_REPOS: Array<{
+  owner: string;
+  repo: string;
+  path?: string;
+  branch?: string;
+  prefix?: string;
+}> = [qgisJsDemoProjects("performance")];
+
+const PROJECTS = new Map<string, () => Project | Promise<Project>>();
+let OPEN_PROJECT: any;
+
 async function init() {
   // add option to boot input select
   const bootInput = document.querySelector("#boot-input") as HTMLSelectElement;
+  // switching the Runtime is not supported yet
+  bootInput.disabled = true;
 
   const option = document.createElement("option");
   option.value = "bundle";
@@ -64,10 +85,8 @@ async function bootRuntime(_eClick: Event) {
   if (btnTest) {
     btnTest.removeAttribute("disabled");
   }
-}
 
-async function loadProject(_eClick: Event) {
-  const { openProject, loadRemoteProjects } = useProjects(
+  const { openProject, loadRemoteProjects, loadGithubProjects } = useProjects(
     FS,
     (project: string) => {
       measureStart("project");
@@ -81,15 +100,53 @@ async function loadProject(_eClick: Event) {
     },
   );
 
-  const projects = await loadRemoteProjects();
+  OPEN_PROJECT = openProject;
 
+  const remoteProjects = await loadRemoteProjects();
+  remoteProjects.forEach((project) =>
+    PROJECTS.set(project.name, () => project),
+  );
+
+  for (const repo of GITHUB_REPOS) {
+    try {
+      const githubProjects = await loadGithubProjects(
+        repo.owner,
+        repo.repo,
+        repo.path,
+        repo.branch,
+      );
+      Object.entries(githubProjects).forEach(([name, projectLoadPromise]) => {
+        PROJECTS.set(name, projectLoadPromise);
+      });
+    } catch (error) {
+      console.warn(
+        `Unable to load GitHub project "${repo.owner}/${repo.repo}"`,
+        error,
+      );
+    }
+  }
+
+  const projectInput = document.querySelector(
+    "#project-input",
+  ) as HTMLInputElement;
+  for (const project of PROJECTS.keys()) {
+    const option = document.createElement("option");
+    option.value = project;
+    option.textContent = project;
+    projectInput.appendChild(option);
+  }
+  projectInput.disabled = false;
+}
+
+async function loadProject(_eClick: Event) {
   const project = (document.querySelector("#project-input") as HTMLInputElement)
     .value;
   if (!project) {
     throw new Error("Project not found");
   }
 
-  openProject(projects.find((p: Project) => p.name === project)!);
+  const selectedProject = PROJECTS.get(project)!;
+  OPEN_PROJECT(selectedProject());
 }
 
 async function renderFirstFrame(_eClick: Event) {
