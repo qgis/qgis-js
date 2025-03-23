@@ -25,12 +25,12 @@
     "qgis-js": "workspace:*"
   },
   "peerDependencies": {
-    "ol": "^9.2"
+    "ol": "^10.4.0"
   },
   "devDependencies": {
-    "@types/node": "^20.12.10",
-    "typescript": "5.5.2",
+    "@types/node": "^22.13.11",
+    "typescript": "5.8.2",
     "vite": "6.2.2",
-    "vite-plugin-dts": "3.9.1"
+    "vite-plugin-dts": "4.5.3"
   }
 }

@@ -8,12 +8,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "ol": "^9.2.4",
+    "ol": "^10.4.0",
     "@qgis-js/ol": "0.0.5",
     "qgis-js": "0.0.5"
   },
   "devDependencies": {
     "vite": "^6.2.2",
-    "vite-plugin-static-copy": "^1.0.5"
+    "vite-plugin-static-copy": "^2.3.0"
   }
 }
