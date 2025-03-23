@@ -18,7 +18,7 @@
   },
   "type": "module",
   "scripts": {
-    "_postinstall": "./qgis-js.ts -v install",
+    "postinstall": "./qgis-js.ts -v install",
     "update": "pnpm update --ignore-scripts",
     "clean": "./qgis-js.ts -v clean",
     "compile": "pnpm run compile:dev",
