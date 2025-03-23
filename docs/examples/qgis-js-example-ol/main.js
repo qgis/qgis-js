@@ -37,18 +37,60 @@ const projection = new Projection({
   units: "m",
 });
 
-new Map({
-  target: "map",
-  layers: [
-    new ImageLayer({
-      source: new QgisCanvasDataSource(api, {
-        projection,
-      }),
+function createQgisLayer() {
+  return new ImageLayer({
+    source: new QgisCanvasDataSource(api, {
+      projection,
     }),
-  ],
+  });
+}
+
+const map = new Map({
+  target: "map",
+  layers: [createQgisLayer()],
   view: new View({
     center: [0, 0],
     zoom: 2,
     projection,
   }),
 });
+
+// create a dropdown with all map themes
+const mapThemes = api.mapThemes();
+if (mapThemes.length > 0) {
+  const themeContainer = document.createElement("div");
+  themeContainer.style.marginTop = "1em";
+  document.body.appendChild(themeContainer);
+
+  themeContainer.appendChild(document.createTextNode("Map theme: "));
+
+  const select = document.createElement("select");
+  select.addEventListener("change", () => {
+    if (select.value) {
+      api.setMapTheme(select.value);
+      map.getLayers().clear();
+      map.addLayer(createQgisLayer());
+    }
+  });
+  themeContainer.appendChild(select);
+
+  const currentTheme = api.getMapTheme();
+
+  const option = document.createElement("option");
+  option.value = "";
+  option.text = "";
+  if (!currentTheme) {
+    option.selected = true;
+  }
+  select.appendChild(option);
+
+  for (const theme of api.mapThemes()) {
+    const option = document.createElement("option");
+    option.value = theme;
+    option.text = theme;
+    if (theme === currentTheme) {
+      option.selected = true;
+    }
+    select.appendChild(option);
+  }
+}
