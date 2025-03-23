@@ -7,10 +7,10 @@
   "bugs": {
     "url": "https://github.com/qgis/qgis-js/issues"
   },
-  "packageManager": "pnpm@9.4.0",
+  "packageManager": "pnpm@10.6.5",
   "engines": {
     "node": "20.10.0",
-    "pnpm": "9.4.0",
+    "pnpm": "10.6.5",
     "emsdk": "3.1.59",
     "vcpkg": "2024.02.14",
     "qt": "6.6.1",
@@ -18,7 +18,7 @@
   },
   "type": "module",
   "scripts": {
-    "postinstall": "./qgis-js.ts -v install",
+    "_postinstall": "./qgis-js.ts -v install",
     "update": "pnpm update --ignore-scripts",
     "clean": "./qgis-js.ts -v clean",
     "compile": "pnpm run compile:dev",
@@ -38,7 +38,7 @@
     "lint:clang-format": "clang-format -i \"--glob=src/**/*.{cpp,hpp}\""
   },
   "devDependencies": {
-    "pnpm": "9.4.0",
+    "pnpm": "10.6.5",
     "vite": "5.3.1",
     "vite-node": "1.6.0",
     "zx": "8.1.3",
