@@ -14,10 +14,10 @@
     "@qgis-js/utils": "workspace:*"
   },
   "devDependencies": {
-    "@playwright/test": "^1.45.0",
-    "@types/node": "^20.12.10",
-    "typescript": "5.5.2",
+    "@playwright/test": "^1.51.1",
+    "@types/node": "^22.13.11",
+    "typescript": "5.8.2",
     "vite": "6.2.2",
-    "vite-plugin-static-copy": "1.0.5"
+    "vite-plugin-static-copy": "2.3.0"
   }
 }
