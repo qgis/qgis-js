@@ -9,12 +9,12 @@
   },
   "packageManager": "pnpm@10.6.5",
   "engines": {
-    "node": "22.14.0",
+    "node": "22.16.0",
     "pnpm": "10.6.5",
     "emsdk": "4.0.22",
-    "vcpkg": "2024.02.14",
-    "qt": "6.6.1",
-    "qgis": "3.32.1"
+    "vcpkg": "2025.12.12",
+    "qt": "6.9.3",
+    "qgis": "3.99.0"
   },
   "type": "module",
   "scripts": {
