@@ -10,6 +10,9 @@ set(VCPKG_CMAKE_SYSTEM_NAME Emscripten)
 
 set(VCPKG_ENV_PASSTHROUGH_UNTRACKED EMSDK EMSCRIPTEN EMSCRIPTEN_ROOT PATH)
 
+# Tell autoconf configure scripts this is cross-compilation (fixes error 77)
+set(VCPKG_MAKE_BUILD_TRIPLET "--host=wasm32-unknown-emscripten")
+
 # this needs to be present for vcpkg installs, but also the same VCPKG_CHAINLOAD_TOOLCHAIN_FILE
 # needs to be present when running CMake so that the project gets it
 get_filename_component(QGISJS_TOOLCHAIN_FILE

@@ -137,7 +137,7 @@ void QgisApi_renderImage(
 
   // START optimizations
   QgsVectorSimplifyMethod simplify;
-  simplify.setSimplifyHints(QgsVectorSimplifyMethod::FullSimplification);
+  simplify.setSimplifyHints(Qgis::VectorRenderingSimplificationFlag::FullSimplification);
   mapSettings.setSimplifyMethod(simplify);
 
   mapSettings.setFlag(Qgis::MapSettingsFlag::UseRenderingOptimization, true);
@@ -188,7 +188,7 @@ QgsMapRendererParallelJob *QgisApi_renderJob(
 
   // START optimizations
   QgsVectorSimplifyMethod simplify;
-  simplify.setSimplifyHints(QgsVectorSimplifyMethod::FullSimplification);
+  simplify.setSimplifyHints(Qgis::VectorRenderingSimplificationFlag::FullSimplification);
   mapSettings.setSimplifyMethod(simplify);
 
   mapSettings.setFlag(Qgis::MapSettingsFlag::UseRenderingOptimization, true);

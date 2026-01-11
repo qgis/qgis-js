@@ -1,6 +1,18 @@
 {
   "name": "qgis-js",
   "version": "0.1.0",
+  "vcpkg-configuration": {
+    "default-registry": {
+      "kind": "git",
+      "baseline": "5d57f5a0a5469a23e005fc79a7c1814ab4fc967e",
+      "repository": "https://github.com/microsoft/vcpkg"
+    },
+    "overlay-triplets": ["./build/vcpkg-triplets"],
+    "overlay-ports": [
+      "./build/vcpkg-ports",
+      "../qgis/vcpkg/ports"
+    ]
+  },
   "dependencies": [
     "geos",
     {
@@ -42,6 +54,7 @@
         "opengl",
         "gles3",
         "concurrent",
+        "freetype",
         "gui",
         "jpeg",
         "network",
@@ -62,14 +75,20 @@
       "features": ["textcodec"]
     },
     {
+      "name": "qtkeychain-qt6",
+      "default-features": false
+    },
+    {
       "name": "qtsvg",
       "default-features": false
     },
     {
-      "name": "qca",
+      "name": "qtmultimedia",
       "default-features": false
     },
-    "qtkeychain-qt6",
-    "qgis-qt6"
+    {
+      "name": "qgis-qt6",
+      "default-features": false
+    }
   ]
 }

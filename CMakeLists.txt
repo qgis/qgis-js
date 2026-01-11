@@ -12,12 +12,12 @@ find_package(expat CONFIG REQUIRED)
 find_package(libzip CONFIG REQUIRED)
 find_package(exiv2 CONFIG REQUIRED)
 find_package(Protobuf CONFIG REQUIRED)
+find_package(zstd CONFIG REQUIRED)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Xml Network Concurrent Core5Compat PrintSupport Widgets)
 
 find_library(SPATIALINDEX_LIBRARY spatialindex PATHS ${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib NO_DEFAULT_PATH REQUIRED)
 
-find_package(Qca CONFIG REQUIRED)
 find_package(Qt6Keychain CONFIG REQUIRED)
 
 find_path(QGIS_INCLUDE_DIR
@@ -85,6 +85,7 @@ set(QGIS_PROVIDERS_LIST
   provider_arcgismapserver
   provider_delimitedtext
   provider_wms
+  provider_wcs
 )
 
 foreach (provider ${QGIS_PROVIDERS_LIST})
@@ -108,7 +109,7 @@ target_link_libraries(qgis-js PRIVATE protobuf::libprotobuf-lite)
 target_link_libraries(qgis-js PRIVATE ${SPATIALINDEX_LIBRARY})
 target_link_libraries(qgis-js PRIVATE libzip::zip)
 target_link_libraries(qgis-js PRIVATE Qt6Keychain::Qt6Keychain)
-target_link_libraries(qgis-js PRIVATE qca)
+target_link_libraries(qgis-js PRIVATE $<IF:$<TARGET_EXISTS:zstd::libzstd_shared>,zstd::libzstd_shared,zstd::libzstd_static>)
 
 qt_finalize_executable(qgis-js)
 
