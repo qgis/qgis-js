@@ -1,38 +1,6 @@
-set(QGIS_REF final-3_32_1)
-set(QGIS_SHA512 37a8f92739e0ed1df1e8bc1b81b513d275b25d6afeb5d612c3e4cd51123deee29406b3347b863d06d1f6055fac0dd3e032d81ddda19f21e845ddb113c0724974)
-
-vcpkg_from_github(
-    OUT_SOURCE_PATH SOURCE_PATH
-    REPO qgis/QGIS
-    REF ${QGIS_REF}
-    SHA512 ${QGIS_SHA512}
-    PATCHES
-        gdal.patch
-        keychain.patch
-        crssync.patch
-        bigobj.patch
-        # wasm-specific
-        qt6positioning.patch
-        no-tcp-udp-sensors.patch
-        exiv2-0.28.patch
-        no-exiv.patch
-        fix-settings-tree.patch
-        fix-ssl-network-access-manager.patch
-        disable-auth-manager.patch
-        no-user-agent-override.patch
-        02-exclude-wfs-provider.patch
-        03-fix-missing-QTimeZone.patch
-        04-fix-missing-QCryptographicHash.patch
-        06-GDAL-no-QThread-sleep.patch
-        07-fix-QgsArcGisRestQueryUtils-includes.patch
-        08-skip-QgsExpression-initFunctionHelp.patch
-        09-fix-QgsExpression-Functions.patch
-        10-exclude-qgscoordinatereferencesystem_legacy.patch
-        11-disable-openedFileLimit.patch
-        12-disable-wcs-provider.patch
-        13-no-LinguistTools-dep.patch
-        14-disable-map_crs_projection.patch
-)
+# Use local QGIS source instead of downloading from GitHub
+# Assumes patches are already applied to the local fork
+set(SOURCE_PATH "${CMAKE_CURRENT_LIST_DIR}/../../../../qgis")
 
 file(REMOVE ${SOURCE_PATH}/cmake/FindQtKeychain.cmake)
 file(REMOVE ${SOURCE_PATH}/cmake/FindGDAL.cmake)
@@ -49,36 +17,50 @@ vcpkg_add_to_path(${PYTHON3_PATH})
 vcpkg_add_to_path(${PYTHON3_PATH}/Scripts)
 set(PYTHON_EXECUTABLE ${PYTHON3})
 
+# Core options (matching build.sh / wasm.yml)
 list(APPEND QGIS_OPTIONS -DFORCE_STATIC_LIBS:BOOL=ON)
 list(APPEND QGIS_OPTIONS -DBUILD_WITH_QT6:BOOL=ON)
-
 list(APPEND QGIS_OPTIONS -DENABLE_TESTS:BOOL=OFF)
-list(APPEND QGIS_OPTIONS -DWITH_QTWEBKIT:BOOL=OFF)
-list(APPEND QGIS_OPTIONS -DWITH_GRASS7:BOOL=OFF)
-list(APPEND QGIS_OPTIONS -DUSE_OPENCL:BOOL=OFF)
-list(APPEND QGIS_OPTIONS -DWITH_BINDINGS:BOOL=OFF)
+list(APPEND QGIS_OPTIONS -DNATIVE_CRSSYNC_BIN=/bin/true)
+
+# Disabled features (matching build.sh / wasm.yml)
 list(APPEND QGIS_OPTIONS -DWITH_GUI:BOOL=OFF)
 list(APPEND QGIS_OPTIONS -DWITH_DESKTOP:BOOL=OFF)
+list(APPEND QGIS_OPTIONS -DWITH_BINDINGS:BOOL=OFF)
+list(APPEND QGIS_OPTIONS -DWITH_3D:BOOL=OFF)
+list(APPEND QGIS_OPTIONS -DWITH_OPENCL:BOOL=OFF)
+list(APPEND QGIS_OPTIONS -DWITH_EXIV2:BOOL=OFF)
+list(APPEND QGIS_OPTIONS -DWITH_PDAL:BOOL=OFF)
+list(APPEND QGIS_OPTIONS -DWITH_DRACO:BOOL=OFF)
+list(APPEND QGIS_OPTIONS -DWITH_QTSERIALPORT:BOOL=OFF)
+list(APPEND QGIS_OPTIONS -DWITH_QTPOSITIONING:BOOL=OFF)
+list(APPEND QGIS_OPTIONS -DWITH_QTWEBENGINE:BOOL=OFF)
+list(APPEND QGIS_OPTIONS -DWITH_AUTH:BOOL=OFF)
+list(APPEND QGIS_OPTIONS -DWITH_SPATIALITE:BOOL=OFF)
+list(APPEND QGIS_OPTIONS -DWITH_ANALYSIS:BOOL=OFF)
+list(APPEND QGIS_OPTIONS -DWITH_QGIS_PROCESS:BOOL=OFF)
+
+# Additional disabled features for WASM/qgis-js
+list(APPEND QGIS_OPTIONS -DWITH_POSTGRESQL:BOOL=OFF)
+list(APPEND QGIS_OPTIONS -DWITH_QTWEBKIT:BOOL=OFF)
+list(APPEND QGIS_OPTIONS -DWITH_GRASS7:BOOL=OFF)
 list(APPEND QGIS_OPTIONS -DWITH_CUSTOM_WIDGETS:BOOL=OFF)
 list(APPEND QGIS_OPTIONS -DWITH_SERVER:BOOL=OFF)
-list(APPEND QGIS_OPTIONS -DWITH_QGIS_PROCESS:BOOL=OFF)
-list(APPEND QGIS_OPTIONS -DWITH_PDAL:BOOL=OFF)
-list(APPEND QGIS_OPTIONS -DWITH_EPT:BOOL=OFF)
-list(APPEND QGIS_OPTIONS -DWITH_3D:BOOL=OFF)
-list(APPEND QGIS_OPTIONS -DWITH_COPC=OFF)
-list(APPEND QGIS_OPTIONS -DWITH_ANALYSIS=OFF)
-list(APPEND QGIS_OPTIONS -DENABLE_TESTS=OFF)
-list(APPEND QGIS_OPTIONS -DWITH_GUI=OFF)
-list(APPEND QGIS_OPTIONS -DWITH_APIDOC=OFF)
-list(APPEND QGIS_OPTIONS -DWITH_ASTYLE=OFF)
+# Note: WITH_EPT and WITH_COPC are NOT disabled - they use WITH_INTERNAL_LAZPERF
+list(APPEND QGIS_OPTIONS -DWITH_APIDOC:BOOL=OFF)
+list(APPEND QGIS_OPTIONS -DWITH_ASTYLE:BOOL=OFF)
 list(APPEND QGIS_OPTIONS -DWITH_QUICK:BOOL=OFF)
-list(APPEND QGIS_OPTIONS -DQGIS_MACAPP_FRAMEWORK=FALSE)
-list(APPEND QGIS_OPTIONS -DWITH_QTSERIALPORT=FALSE)
+list(APPEND QGIS_OPTIONS -DQGIS_MACAPP_FRAMEWORK:BOOL=OFF)
 
-# WASM
-list(APPEND QGIS_OPTIONS -DWITH_POSTGRESQL:BOOL=FALSE)
-list(APPEND QGIS_OPTIONS -DWITH_SPATIALITE:BOOL=FALSE)
-list(APPEND QGIS_OPTIONS -DWITH_AUTH:BOOL=FALSE)
+list(APPEND QGIS_OPTIONS -DWITH_INTERNAL_POLY2TRI=ON)
+list(APPEND QGIS_OPTIONS -DWITH_INTERNAL_SPATIALINDEX=OFF)
+list(APPEND QGIS_OPTIONS -DWITH_INTERNAL_LAZPERF=ON)
+
+# Point CMake to the installed Qt6, not the buildtrees
+list(APPEND QGIS_OPTIONS -DQt6_DIR=${CURRENT_INSTALLED_DIR}/share/Qt6)
+list(APPEND QGIS_OPTIONS -DCMAKE_PREFIX_PATH=${CURRENT_INSTALLED_DIR})
+
+list(APPEND QGIS_OPTIONS -DQt6LinguistTools_DIR=${CURRENT_HOST_INSTALLED_DIR}/share/Qt6LinguistTools)
 
 list(APPEND QGIS_OPTIONS -DQT_LRELEASE_EXECUTABLE=${CURRENT_HOST_INSTALLED_DIR}/tools/Qt6/bin/lrelease)
 
