@@ -16,9 +16,18 @@ find_package(zstd CONFIG REQUIRED)
 
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Xml Network Concurrent Core5Compat PrintSupport Widgets)
 
-find_library(SPATIALINDEX_LIBRARY spatialindex PATHS ${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib NO_DEFAULT_PATH REQUIRED)
-
 find_package(Qt6Keychain CONFIG REQUIRED)
+
+# Set debug prefix early so all find_library calls use it
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+  set(qgis_debug_prefix "debug/")
+  set(spatialindex_name "spatialindexd")
+else()
+  set(qgis_debug_prefix "")
+  set(spatialindex_name "spatialindex")
+endif()
+
+find_library(SPATIALINDEX_LIBRARY ${spatialindex_name} PATHS ${VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/${qgis_debug_prefix}lib NO_DEFAULT_PATH REQUIRED)
 
 find_path(QGIS_INCLUDE_DIR
   NAMES qgis.h
@@ -26,10 +35,6 @@ find_path(QGIS_INCLUDE_DIR
   PATH_SUFFIXES qgis
   NO_DEFAULT_PATH
 )
-
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-  set(qgis_debug_prefix "debug/") # debug lib is in different folder
-endif()
 
 find_library(
  QGIS_LIBRARY
@@ -67,7 +72,6 @@ target_compile_options(qgis-js PRIVATE "-msimd128")
 set_target_properties(qgis-js PROPERTIES LINK_FLAGS "-msimd128")
 
 target_include_directories(qgis-js PRIVATE ${QGIS_INCLUDE_DIR})
-target_link_libraries(qgis-js PRIVATE ${QGIS_LIBRARY})
 
 target_link_libraries(qgis-js PRIVATE
   Qt6::Xml
@@ -92,13 +96,16 @@ foreach (provider ${QGIS_PROVIDERS_LIST})
  find_library(
   QGIS_${provider}_LIBRARY
   NAMES ${provider}_a
-  PATHS "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/lib"
+  PATHS "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/${qgis_debug_prefix}lib"
   PATH_SUFFIXES qgis
   NO_DEFAULT_PATH
  )
  target_link_libraries(qgis-js PRIVATE ${QGIS_${provider}_LIBRARY}
  )
 endforeach ()
+
+# qgis_core must come after providers (they depend on it)
+target_link_libraries(qgis-js PRIVATE ${QGIS_LIBRARY})
 
 target_link_libraries(qgis-js PRIVATE PROJ::proj)
 target_link_libraries(qgis-js PRIVATE unofficial::sqlite3::sqlite3)
@@ -154,7 +161,8 @@ target_link_options(qgis-js PRIVATE "SHELL: \
 
 target_link_options(qgis-js PRIVATE "SHELL: \
 --preload-file ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/share/proj@/proj \
---preload-file ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/share/qgis/resources/srs.db@/qgis/resources/srs.db"
+--preload-file ${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}/share/qgis/resources/srs.db@/qgis/resources/srs.db \
+--preload-file ${CMAKE_CURRENT_SOURCE_DIR}/src/qt.conf@/qt.conf"
 )
 
 # DWARF debug info (see https://developer.chrome.com/blog/faster-wasm-debugging/)
