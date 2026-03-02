@@ -1,3 +1,4 @@
+#include <memory>
 #include <string>
 
 #include <qgsexpressioncontextutils.h>
@@ -21,6 +22,7 @@
 #include "../model/Rectangle.hpp"
 
 #include <emscripten/bind.h>
+#include <emscripten/val.h>
 
 QList<QgsMapLayer *> QgisApi_allLayers() {
   return QgsProject::instance()->layerTreeRoot()->layerOrder();
@@ -257,6 +259,50 @@ const bool QgisApi_setMapTheme(std::string themeName) {
   }
 }
 
+emscripten::val QgisApi_globalVariables() {
+  emscripten::val result = emscripten::val::object();
+  std::unique_ptr<QgsExpressionContextScope> scope(
+    QgsExpressionContextUtils::globalScope());
+  for (const QString &name : scope->variableNames()) {
+    result.set(name.toStdString(), scope->variable(name).toString().toStdString());
+  }
+  return result;
+}
+
+emscripten::val QgisApi_projectVariables() {
+  emscripten::val result = emscripten::val::object();
+  std::unique_ptr<QgsExpressionContextScope> scope(
+    QgsExpressionContextUtils::projectScope(QgsProject::instance()));
+  for (const QString &name : scope->variableNames()) {
+    result.set(name.toStdString(), scope->variable(name).toString().toStdString());
+  }
+  return result;
+}
+
+void QgisApi_setGlobalVariables(emscripten::val variables) {
+  QVariantMap vars;
+  emscripten::val keys = emscripten::val::global("Object").call<emscripten::val>("keys", variables);
+  int length = keys["length"].as<int>();
+  for (int i = 0; i < length; i++) {
+    std::string key = keys[i].as<std::string>();
+    std::string value = variables[key].as<std::string>();
+    vars.insert(QString::fromStdString(key), QString::fromStdString(value));
+  }
+  QgsExpressionContextUtils::setGlobalVariables(vars);
+}
+
+void QgisApi_setProjectVariables(emscripten::val variables) {
+  QVariantMap vars;
+  emscripten::val keys = emscripten::val::global("Object").call<emscripten::val>("keys", variables);
+  int length = keys["length"].as<int>();
+  for (int i = 0; i < length; i++) {
+    std::string key = keys[i].as<std::string>();
+    std::string value = variables[key].as<std::string>();
+    vars.insert(QString::fromStdString(key), QString::fromStdString(value));
+  }
+  QgsExpressionContextUtils::setProjectVariables(QgsProject::instance(), vars);
+}
+
 EMSCRIPTEN_BINDINGS(QgisApi) {
   emscripten::function("loadProject", &QgisApi_loadProject);
   emscripten::function("fullExtent", &QgisApi_fullExtent);
@@ -271,4 +317,8 @@ EMSCRIPTEN_BINDINGS(QgisApi) {
   emscripten::function("getMapTheme", &QgisApi_getMapTheme);
   emscripten::function("setMapTheme", &QgisApi_setMapTheme);
   emscripten::register_vector<std::string>("vector<std::string>");
+  emscripten::function("globalVariables", &QgisApi_globalVariables);
+  emscripten::function("projectVariables", &QgisApi_projectVariables);
+  emscripten::function("setGlobalVariables", &QgisApi_setGlobalVariables);
+  emscripten::function("setProjectVariables", &QgisApi_setProjectVariables);
 }

@@ -61,6 +61,47 @@ export interface CommonQgisApi extends QgisModelConstructors {
   setMapTheme(mapTheme: string): boolean;
 
   /**
+   * Returns the global expression variables.
+   *
+   * These are system-level variables such as `qgis_version`, `qgis_locale`,
+   * `qgis_os_name`, `qgis_platform`, etc.
+   *
+   * @returns A record of variable names to their string values.
+   */
+  globalVariables(): Record<string, string>;
+
+  /**
+   * Returns the project expression variables.
+   *
+   * These are project-level variables such as `project_crs`, `project_title`,
+   * `project_filename`, `layer_ids`, `project_area_units`, etc.
+   * Only available after a project has been loaded.
+   *
+   * @returns A record of variable names to their string values.
+   */
+  projectVariables(): Record<string, string>;
+
+  /**
+   * Sets global expression variables.
+   *
+   * Custom variables that will be available in all expression contexts.
+   * Note: This replaces all custom global variables.
+   *
+   * @param variables - A record of variable names to their string values.
+   */
+  setGlobalVariables(variables: Record<string, string>): void;
+
+  /**
+   * Sets project expression variables.
+   *
+   * Custom variables that will be available in the project's expression contexts.
+   * Note: This replaces all custom project variables.
+   *
+   * @param variables - A record of variable names to their string values.
+   */
+  setProjectVariables(variables: Record<string, string>): void;
+
+  /**
    * Renders an image of the loaded project and provides a QgsMapRendererParallelJob object to monitor the rendering progress and to retrieve preview images.
    *
    * @param srid - The SRID of the image.
