@@ -8,7 +8,7 @@ import { QgisJsOptions } from "./lib/QgisJsOptions";
 
 export class LibsAction extends CommandLineAction {
   private _options: QgisJsOptions;
-  private _output!: CommandLineChoiceParameter;
+  private _output: CommandLineChoiceParameter;
 
   public constructor(options: QgisJsOptions) {
     super({
@@ -17,9 +17,7 @@ export class LibsAction extends CommandLineAction {
       documentation: `Generates a list of all vcpkg libraries with version and license.`,
     });
     this._options = options;
-  }
 
-  protected onDefineParameters(): void {
     this._output = this.defineChoiceParameter({
       parameterLongName: "--output",
       parameterShortName: "-o",
@@ -30,7 +28,7 @@ export class LibsAction extends CommandLineAction {
     });
   }
 
-  protected onExecute(): Promise<void> {
+  protected onExecuteAsync(): Promise<void> {
     return new Promise<void>(async (resolve) => {
       $.verbose = this._options.verbose;
 

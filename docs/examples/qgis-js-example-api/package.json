@@ -9,6 +9,6 @@
     "qgis-js": "4.0.0"
   },
   "devDependencies": {
-    "vite": "^6.2.2"
+    "vite": "^7.3.1"
   }
 }
