@@ -16,7 +16,7 @@ export class InstallAction extends CommandLineAction {
     this._options = options;
   }
 
-  protected onExecute(): Promise<void> {
+  protected onExecuteAsync(): Promise<void> {
     return new Promise<void>(async (resolve) => {
       const v = this._options.verbose;
       $.verbose = true;

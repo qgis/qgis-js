@@ -17,8 +17,8 @@ const CMakeCacheFile = "build/wasm/CMakeCache.txt";
 export class CompileAction extends CommandLineAction {
   private _options: QgisJsOptions;
 
-  private _buildType!: CommandLineChoiceParameter;
-  private _debug!: CommandLineFlagParameter;
+  private _buildType: CommandLineChoiceParameter;
+  private _debug: CommandLineFlagParameter;
 
   public constructor(options: QgisJsOptions) {
     super({
@@ -28,9 +28,7 @@ export class CompileAction extends CommandLineAction {
         "Uses emsdk, vcpkg and CMake to configure and build qgis-js.",
     });
     this._options = options;
-  }
 
-  protected onDefineParameters(): void {
     this._debug = this.defineFlagParameter({
       parameterLongName: "--debug",
       parameterShortName: "-d",
@@ -48,7 +46,7 @@ export class CompileAction extends CommandLineAction {
     });
   }
 
-  protected onExecute(): Promise<void> {
+  protected onExecuteAsync(): Promise<void> {
     return new Promise<void>(async (resolve, reject) => {
       const v = this._options.verbose;
       $.verbose = true;

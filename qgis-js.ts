@@ -31,9 +31,7 @@ export class QgisJsCommandLine extends CommandLineParser {
     this.addAction(new CompileAction(options));
     this.addAction(new LibsAction(options));
     this.addAction(new SizeAction(options));
-  }
 
-  protected onDefineParameters(): void {
     this.defineFlagParameter({
       parameterLongName: "--verbose",
       parameterShortName: "-v",
@@ -41,14 +39,14 @@ export class QgisJsCommandLine extends CommandLineParser {
     });
   }
 
-  protected onExecute(): Promise<void> {
+  protected onExecuteAsync(): Promise<void> {
     options.verbose = this.getFlagParameter("--verbose")?.value || false;
 
     process.env.FORCE_COLOR = "1";
 
-    return super.onExecute();
+    return super.onExecuteAsync();
   }
 }
 
 const qgisjs = new QgisJsCommandLine();
-qgisjs.execute();
+qgisjs.executeAsync();
