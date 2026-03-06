@@ -6,7 +6,7 @@
     "start": "vite preview --outDir ."
   },
   "dependencies": {
-    "qgis-js": "0.0.5"
+    "qgis-js": "4.0.0"
   },
   "devDependencies": {
     "vite": "^6.2.2"
