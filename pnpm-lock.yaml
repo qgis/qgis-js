@@ -67,8 +67,8 @@ importers:
   packages/qgis-js-ol:
     dependencies:
       ol:
-        specifier: ^10.4.0
-        version: 10.4.0
+        specifier: ^10.8.0
+        version: 10.8.0
       qgis-js:
         specifier: workspace:*
         version: link:../qgis-js
@@ -127,8 +127,8 @@ importers:
         specifier: 0.1.7
         version: 0.1.7
       ol:
-        specifier: ^10.4.0
-        version: 10.4.0
+        specifier: ^10.8.0
+        version: 10.8.0
       typescript:
         specifier: 5.8.2
         version: 5.8.2
@@ -371,8 +371,8 @@ packages:
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
 
-  '@petamoriken/float16@3.9.2':
-    resolution: {integrity: sha512-VgffxawQde93xKxT3qap3OH+meZf7VaSB5Sqd4Rqc+FP5alWbpOyan/7tRbOAvynjpG3GpdtAuGU/NdhQpmrog==}
+  '@petamoriken/float16@3.9.3':
+    resolution: {integrity: sha512-8awtpHXCx/bNpFt4mt2xdkgtgVvKqty8VbjHI/WWWQuEw+KLzFot3f4+LkQY9YmOtq7A5GdOnqoIC8Pdygjk2g==}
 
   '@playwright/test@1.51.1':
     resolution: {integrity: sha512-nM+kEaTSAoVlXmMPH10017vn3FSiFqr/bh4fKg9vmAdMfd9SDqRZNvPSiAHADc/itWak+qPvMPZQOPwCBW7k7Q==}
@@ -582,6 +582,9 @@ packages:
   '@vue/shared@3.5.13':
     resolution: {integrity: sha512-/hnE/qP5ZoGpol0a5mDi45bOd7t3tjYJBjsgCsivow7D48cJeV5l05RD82lPqi7gRiphZM37rnhW1l6ZoCNNnQ==}
 
+  '@zarrita/storage@0.1.4':
+    resolution: {integrity: sha512-qURfJAQcQGRfDQ4J9HaCjGaj3jlJKc66bnRk6G/IeLUsM7WKyG7Bzsuf1EZurSXyc0I4LVcu6HaeQQ4d3kZ16g==}
+
   acorn@8.14.1:
     resolution: {integrity: sha512-OvQ/2pUDKmgfCg++xsTX1wGxfTaszcHVcTctW4UJB4hibJx2HXxxO5UmVgyjMa+ZDsiaf5wWLXYpRWMmBI0QHg==}
     engines: {node: '>=0.4.0'}
@@ -657,19 +660,6 @@ packages:
   coi-serviceworker@0.1.7:
     resolution: {integrity: sha512-bjSUqEngCPOkErY2vbyWsaIGCNRODYzlNycaREVw5s12/C8SM+RnRUUeX6pZbTtov6C52ZLY/+tvHK+BDxuUuA==}
 
-  color-name@2.0.0:
-    resolution: {integrity: sha512-SbtvAMWvASO5TE2QP07jHBMXKafgdZz8Vrsrn96fiL+O92/FN/PLARzUW5sKt013fjAprK2d2iCn2hk2Xb5oow==}
-    engines: {node: '>=12.20'}
-
-  color-parse@2.0.2:
-    resolution: {integrity: sha512-eCtOz5w5ttWIUcaKLiktF+DxZO1R9KLNY/xhbV6CkhM7sR3GhVghmt6X6yOnzeaM24po+Z9/S1apbXMwA3Iepw==}
-
-  color-rgba@3.0.0:
-    resolution: {integrity: sha512-PPwZYkEY3M2THEHHV6Y95sGUie77S7X8v+h1r6LSAPF3/LL2xJ8duUXSrkic31Nzc4odPwHgUbiX/XuTYzQHQg==}
-
-  color-space@2.3.1:
-    resolution: {integrity: sha512-5DJdKYwoDji3ik/i0xSn+SiwXsfwr+1FEcCMUz2GS5speGCfGSbBMOLd84SDUBOuX8y4CvdFJmOBBJuC4wp7sQ==}
-
   compare-versions@6.1.1:
     resolution: {integrity: sha512-4hm4VPpIecmlg59CHXnRDnqGplJFrbLG4aFEl5vl6cK1u76ws3LLvX7ikFnTDl5vo39sjWD6AaDPYodJp/NNHg==}
 
@@ -703,8 +693,8 @@ packages:
       supports-color:
         optional: true
 
-  earcut@3.0.1:
-    resolution: {integrity: sha512-0l1/0gOjESMeQyYaK5IDiPNvFeu93Z/cO0TjZh9eZ1vyCtZnA7KMZ8rQggpsJHIbGSdrqYq9OhuveadOVHCshw==}
+  earcut@3.0.2:
+    resolution: {integrity: sha512-X7hshQbLyMJ/3RPhyObLARM2sNxxmRALLKx1+NVFFnQ9gKzmCrxm9+uLIAdBcvc8FNLpctqlQ2V6AE92Ol9UDQ==}
 
   entities@4.5.0:
     resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
@@ -739,6 +729,9 @@ packages:
   fastq@1.19.1:
     resolution: {integrity: sha512-GwLTyxkCXjXbxqIhTsMI2Nui8huMPtnxg7krajPJAjnEG/iiOS7i+zCtWGZR9G0NBKbXKh6X9m9UIsYX/N6vvQ==}
 
+  fflate@0.8.2:
+    resolution: {integrity: sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==}
+
   fill-range@7.1.1:
     resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
     engines: {node: '>=8'}
@@ -771,8 +764,8 @@ packages:
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
 
-  geotiff@2.1.3:
-    resolution: {integrity: sha512-PT6uoF5a1+kbC3tHmZSUsLHBp2QJlHasxxxxPW47QIY1VBKpFB+FcDvX+MxER6UzgLQZ0xDzJ9s48B9JbOCTqA==}
+  geotiff@3.0.4:
+    resolution: {integrity: sha512-lzcQkSZ5XYAYgDVVCKrPPn6OyzFFEmewYc4PzQyzrKdf7KxCG5WPCnwvpkKNrz1nHQD1HkyYXo7ZRFAmlMrTOw==}
     engines: {node: '>=10.19'}
 
   glob-parent@5.1.2:
@@ -913,8 +906,11 @@ packages:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
 
-  ol@10.4.0:
-    resolution: {integrity: sha512-gv3voS4wgej1WVvdCz2ZIBq3lPWy8agaf0094E79piz8IGQzHiOWPs2in1pdoPmuTNvcqGqyUFG3IbxNE6n08g==}
+  numcodecs@0.3.2:
+    resolution: {integrity: sha512-6YSPnmZgg0P87jnNhi3s+FVLOcIn3y+1CTIgUulA3IdASzK9fJM87sUFkpyA+be9GibGRaST2wCgkD+6U+fWKw==}
+
+  ol@10.8.0:
+    resolution: {integrity: sha512-kLk7jIlJvKyhVMAjORTXKjzlM6YIByZ1H/d0DBx3oq8nSPCG6/gbLr5RxukzPgwbhnAqh+xHNCmrvmFKhVMvoQ==}
 
   once@1.4.0:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
@@ -1041,6 +1037,9 @@ packages:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==}
     engines: {node: '>=8.10.0'}
 
+  reference-spec-reader@0.2.0:
+    resolution: {integrity: sha512-q0mfCi5yZSSHXpCyxjgQeaORq3tvDsxDyzaadA/5+AbAUwRyRuuTh0aRQuE/vAOt/qzzxidJ5iDeu1cLHaNBlQ==}
+
   require-from-string@2.0.2:
     resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
     engines: {node: '>=0.10.0'}
@@ -1125,8 +1124,15 @@ packages:
     resolution: {integrity: sha512-gptHNQghINnc/vTGIk0SOFGFNXw7JVrlRUtConJRlvaw6DuX0wO5Jeko9sWrMBhh+PsYAZ7oXAiOnf/UKogyiw==}
     engines: {node: '>= 10.0.0'}
 
+  unzipit@1.4.3:
+    resolution: {integrity: sha512-gsq2PdJIWWGhx5kcdWStvNWit9FVdTewm4SEG7gFskWs+XCVaULt9+BwuoBtJiRE8eo3L1IPAOrbByNLtLtIlg==}
+    engines: {node: '>=12'}
+
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
+
+  uzip-module@1.0.3:
+    resolution: {integrity: sha512-AMqwWZaknLM77G+VPYNZLEruMGWGzyigPK3/Whg99B3S6vGHuqsyl5ZrOv1UUF3paGK1U6PM0cnayioaryg/fA==}
 
   vite-node@3.0.9:
     resolution: {integrity: sha512-w3Gdx7jDcuT9cNn9jExXgOyKmf5UOTb6WMHz8LGAm54eS1Elf5OuBhCxl6zJxGhEeIkgsE1WbHuoL0mj/UXqXg==}
@@ -1197,8 +1203,8 @@ packages:
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
 
-  xml-utils@1.10.1:
-    resolution: {integrity: sha512-Dn6vJ1Z9v1tepSjvnCpwk5QqwIPcEFKdgnjqfYOABv1ngSofuAhtlugcUC3ehS1OHdgDWSG6C5mvj+Qm15udTQ==}
+  xml-utils@1.10.2:
+    resolution: {integrity: sha512-RqM+2o1RYs6T8+3DzDSoTRAUfrvaejbVHcp3+thnAtDKo8LskR+HomLajEy5UjTz24rpka7AxVBRR3g2wTUkJA==}
 
   yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
@@ -1216,8 +1222,11 @@ packages:
     resolution: {integrity: sha512-AyeEbWOu/TAXdxlV9wmGcR0+yh2j3vYPGOECcIj2S7MkrLyC7ne+oye2BKTItt0ii2PHk4cDy+95+LshzbXnGg==}
     engines: {node: '>=12.20'}
 
-  zstddec@0.1.0:
-    resolution: {integrity: sha512-w2NTI8+3l3eeltKAdK8QpiLo/flRAr2p8AGeakfMZOXBxOg9HIu4LVDxBi81sYgVhFhdJjv1OrB5ssI8uFPoLg==}
+  zarrita@0.6.1:
+    resolution: {integrity: sha512-YOMTW8FT55Rz+vadTIZeOFZ/F2h4svKizyldvPtMYSxPgSNcRkOzkxCsWpIWlWzB1I/LmISmi0bEekOhLlI+Zw==}
+
+  zstddec@0.2.0:
+    resolution: {integrity: sha512-oyPnDa1X5c13+Y7mA/FDMNJrn4S8UNBe0KCqtDmor40Re7ALrPN6npFwyYVRRh+PqozZQdeg23QtbcamZnG5rA==}
 
   zx@8.4.1:
     resolution: {integrity: sha512-1Cb+Tfwt/daKV6wckBeDbB6h3IMauqj9KWp+EcbYzi9doeJeIHCktxp/yWspXOXRdoUzBCQSKoUgm3g8r9fz5A==}
@@ -1378,7 +1387,7 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.19.1
 
-  '@petamoriken/float16@3.9.2': {}
+  '@petamoriken/float16@3.9.3': {}
 
   '@playwright/test@1.51.1':
     dependencies:
@@ -1560,6 +1569,11 @@ snapshots:
 
   '@vue/shared@3.5.13': {}
 
+  '@zarrita/storage@0.1.4':
+    dependencies:
+      reference-spec-reader: 0.2.0
+      unzipit: 1.4.3
+
   acorn@8.14.1: {}
 
   ajv-draft-04@1.0.0(ajv@8.13.0):
@@ -1638,19 +1652,6 @@ snapshots:
 
   coi-serviceworker@0.1.7: {}
 
-  color-name@2.0.0: {}
-
-  color-parse@2.0.2:
-    dependencies:
-      color-name: 2.0.0
-
-  color-rgba@3.0.0:
-    dependencies:
-      color-parse: 2.0.2
-      color-space: 2.3.1
-
-  color-space@2.3.1: {}
-
   compare-versions@6.1.1: {}
 
   concat-map@0.0.1: {}
@@ -1669,7 +1670,7 @@ snapshots:
     dependencies:
       ms: 2.1.3
 
-  earcut@3.0.1: {}
+  earcut@3.0.2: {}
 
   entities@4.5.0: {}
 
@@ -1724,6 +1725,8 @@ snapshots:
     dependencies:
       reusify: 1.1.0
 
+  fflate@0.8.2: {}
+
   fill-range@7.1.1:
     dependencies:
       to-regex-range: 5.0.1
@@ -1755,16 +1758,16 @@ snapshots:
 
   function-bind@1.1.2: {}
 
-  geotiff@2.1.3:
+  geotiff@3.0.4:
     dependencies:
-      '@petamoriken/float16': 3.9.2
+      '@petamoriken/float16': 3.9.3
       lerc: 3.0.0
       pako: 2.1.0
       parse-headers: 2.0.6
       quick-lru: 6.1.2
       web-worker: 1.5.0
-      xml-utils: 1.10.1
-      zstddec: 0.1.0
+      xml-utils: 1.10.2
+      zstddec: 0.2.0
 
   glob-parent@5.1.2:
     dependencies:
@@ -1897,15 +1900,18 @@ snapshots:
 
   normalize-path@3.0.0: {}
 
-  ol@10.4.0:
+  numcodecs@0.3.2:
+    dependencies:
+      fflate: 0.8.2
+
+  ol@10.8.0:
     dependencies:
       '@types/rbush': 4.0.0
-      color-rgba: 3.0.0
-      color-space: 2.3.1
-      earcut: 3.0.1
-      geotiff: 2.1.3
+      earcut: 3.0.2
+      geotiff: 3.0.4
       pbf: 4.0.1
       rbush: 4.0.1
+      zarrita: 0.6.1
 
   once@1.4.0:
     dependencies:
@@ -2012,6 +2018,8 @@ snapshots:
     dependencies:
       picomatch: 2.3.1
 
+  reference-spec-reader@0.2.0: {}
+
   require-from-string@2.0.2: {}
 
   resolve-protobuf-schema@2.1.0:
@@ -2101,9 +2109,15 @@ snapshots:
 
   universalify@2.0.1: {}
 
+  unzipit@1.4.3:
+    dependencies:
+      uzip-module: 1.0.3
+
   uri-js@4.4.1:
     dependencies:
       punycode: 2.3.1
+
+  uzip-module@1.0.3: {}
 
   vite-node@3.0.9(@types/node@22.13.11)(yaml@2.8.2):
     dependencies:
@@ -2170,7 +2184,7 @@ snapshots:
 
   wrappy@1.0.2: {}
 
-  xml-utils@1.10.1: {}
+  xml-utils@1.10.2: {}
 
   yallist@4.0.0: {}
 
@@ -2180,6 +2194,11 @@ snapshots:
 
   yocto-queue@1.2.1: {}
 
-  zstddec@0.1.0: {}
+  zarrita@0.6.1:
+    dependencies:
+      '@zarrita/storage': 0.1.4
+      numcodecs: 0.3.2
+
+  zstddec@0.2.0: {}
 
   zx@8.4.1: {}

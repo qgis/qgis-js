@@ -25,7 +25,7 @@
     "qgis-js": "workspace:*"
   },
   "peerDependencies": {
-    "ol": "^10.4.0"
+    "ol": "^10.8.0"
   },
   "devDependencies": {
     "@types/node": "^22.13.11",
