@@ -1,6 +1,10 @@
-# Use local QGIS source instead of downloading from GitHub
-# Assumes patches are already applied to the local fork
-set(SOURCE_PATH "${CMAKE_CURRENT_LIST_DIR}/../../../../qgis")
+vcpkg_from_github(
+    OUT_SOURCE_PATH SOURCE_PATH
+    REPO boardend/QGIS
+    REF d67279fec204df964b49e1bfcbe726eb62bfe8ce
+    SHA512 d2c6765b200b3d812ed36d5076dd6c23e840339354c734e319adf3dd1eff3f4aaf39ce721df7898d4da4942952fbee3da911b00d297469124eedfc691a44258c
+    HEAD_REF main
+)
 
 file(REMOVE ${SOURCE_PATH}/cmake/FindQtKeychain.cmake)
 file(REMOVE ${SOURCE_PATH}/cmake/FindGDAL.cmake)
