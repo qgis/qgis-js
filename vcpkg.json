@@ -82,7 +82,7 @@
       "default-features": false
     },
     {
-      "name": "qgis-qt6",
+      "name": "qgis",
       "default-features": false
     }
   ]

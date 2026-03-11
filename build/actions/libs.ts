@@ -34,7 +34,7 @@ export class LibsAction extends CommandLineAction {
 
       const vcpgkPortList = JSON.parse(
         "" +
-          (await $`./build/vcpkg/vcpkg list \
+        (await $`./build/vcpkg/vcpkg list \
       --x-install-root=build/wasm/vcpkg_installed \
       --overlay-triplets=build/vcpkg-triplets \
       --overlay-ports=build/vcpkg-ports \
@@ -49,7 +49,7 @@ export class LibsAction extends CommandLineAction {
           website: "https://www.qt.io/",
           source: "https://github.com/qt/qtbase",
         },
-        "qgis-qt6": {
+        "qgis": {
           license: "GPL-2.0",
           website: "https://www.qgis.org/",
           source: "https://github.com/qgis/QGIS",
@@ -85,7 +85,7 @@ export class LibsAction extends CommandLineAction {
                   resolve({
                     name: vcpgkPort["package_name"].replace(/-qt6$/, ""),
                     version: vcpgkPort["version"],
-                    description: vcpgkPort["desc"].join("\n"),
+                    description: vcpgkPort["desc"][0] || "",
                     website: vcpkgLink["homepage_href"],
                     license: vcpkgLink["license"],
                     source: vcpkgLink["repository"]?.["href"],
@@ -95,7 +95,7 @@ export class LibsAction extends CommandLineAction {
                     resolve({
                       name: vcpgkPort["package_name"].replace(/-qt6$/, ""),
                       version: vcpgkPort["version"],
-                      description: vcpgkPort["desc"].join("\n"),
+                      description: vcpgkPort["desc"][0] || "",
                       website: custom[vcpgkPort["package_name"]]["website"],
                       license: custom[vcpgkPort["package_name"]]["license"],
                       source: custom[vcpgkPort["package_name"]]["source"],
