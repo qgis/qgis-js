@@ -2,10 +2,11 @@
   "name": "qgis-js",
   "version": "0.1.0",
   "vcpkg-configuration": {
-    "overlay-triplets": ["./build/vcpkg-triplets"],
+    "overlay-triplets": [
+      "./build/vcpkg-triplets"
+    ],
     "overlay-ports": [
-      "./build/vcpkg-ports",
-      "../qgis/vcpkg/ports"
+      "./build/vcpkg-ports"
     ]
   },
   "dependencies": [
