@@ -66,10 +66,10 @@ qt_add_executable(qgis-js MANUAL_FINALIZATION ${QGISJS_SOURCES})
 
 
 target_compile_options(qgis-js PRIVATE "-fwasm-exceptions")
-set_target_properties(qgis-js PROPERTIES LINK_FLAGS "-fwasm-exceptions")
+target_link_options(qgis-js PRIVATE "-fwasm-exceptions")
 
 target_compile_options(qgis-js PRIVATE "-msimd128")
-set_target_properties(qgis-js PROPERTIES LINK_FLAGS "-msimd128")
+target_link_options(qgis-js PRIVATE "-msimd128")
 
 target_include_directories(qgis-js PRIVATE ${QGIS_INCLUDE_DIR})
 
@@ -165,12 +165,14 @@ target_link_options(qgis-js PRIVATE "SHELL: \
 --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/src/qt.conf@/qt.conf"
 )
 
-# DWARF debug info (see https://developer.chrome.com/blog/faster-wasm-debugging/)
+# Debug build settings
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-  set_target_properties(qgis-js PROPERTIES LINK_FLAGS "-gseparate-dwarf \
--gdwarf-5 \
--gsplit-dwarf \
--gpubnames")
+  target_compile_options(qgis-js PRIVATE "-Og")
+  target_link_options(qgis-js PRIVATE "-Og")
+  # DWARF debug info (see https://developer.chrome.com/blog/faster-wasm-debugging/)
+  target_link_options(qgis-js PRIVATE "-gseparate-dwarf" "-gdwarf-5" "-gsplit-dwarf" "-gpubnames")
+  # Allow the wasm function table to grow dynamically (debug builds have more indirect call targets)
+  target_link_options(qgis-js PRIVATE "SHELL:-s ALLOW_TABLE_GROWTH=1")
 endif()
 
 # TODO remove this fix (see https://github.com/emscripten-core/emscripten/issues/21844)
