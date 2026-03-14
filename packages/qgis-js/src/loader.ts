@@ -70,7 +70,7 @@ export async function qgis(
           prefix = new URL("assets/wasm", window.location.href).pathname;
         }
       } else {
-        prefix = new URL("assets/wasm", import.meta.url).href;
+        prefix = new URL(/* @vite-ignore */ "assets/wasm", import.meta.url).href;
       }
     }
 
