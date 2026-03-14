@@ -41,6 +41,10 @@ jobs:
           pkg-config
           flex
           bison
+          autoconf
+          autoconf-archive
+          automake
+          libtool
       - name: Free Disk Space (Ubuntu)
         if: ${{ !env.ACT }}
         uses: jlumbroso/free-disk-space@main
