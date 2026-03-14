@@ -64,21 +64,21 @@ jobs:
           path: build/vcpkg/buildtrees/**/*.log
       - name: Build qgis-js packages
         run: pnpm run build
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: "package-qgis-js"
           path: |
             packages/qgis-js/package.json
             packages/qgis-js/README.md
             packages/qgis-js/dist/**/*
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: "package-qgis-js-utils"
           path: |
             packages/qgis-js-utils/package.json
             packages/qgis-js-utils/README.md
             packages/qgis-js-utils/dist/**/*
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: "package-qgis-js-ol"
           path: |
