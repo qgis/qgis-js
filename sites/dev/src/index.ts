@@ -41,13 +41,13 @@ const GITHUB_REPOS: Array<{
 ];
 
 function testApi(api: QgisApi) {
-  const p1 = new api.PointXY();
+  const p1 = new api.QgsPointXY();
   console.dir(p1);
 
-  const r1 = new api.Rectangle();
+  const r1 = new api.QgsRectangle();
   console.log(r1);
 
-  const r2 = new api.Rectangle(1, 2, 3, 4);
+  const r2 = new api.QgsRectangle(1, 2, 3, 4);
   console.log(r2.xMinimum, r2.yMinimum, r2.xMaximum, r2.yMaximum);
   r2.scale(5);
   console.log(r2.xMinimum, r2.yMinimum, r2.xMaximum, r2.yMaximum);

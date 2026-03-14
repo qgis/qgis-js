@@ -14,12 +14,12 @@
 #include <QString>
 #include <QtConcurrent/QtConcurrent>
 
-#include "../model/MapLayer.hpp"
-#include "../model/PointXY.hpp"
+#include "../model/QgsMapLayer.hpp"
 #include "../model/QgsMapRendererJob.hpp"
 #include "../model/QgsMapRendererParallelJob.hpp"
 #include "../model/QgsMapRendererQImageJob.hpp"
-#include "../model/Rectangle.hpp"
+#include "../model/QgsPointXY.hpp"
+#include "../model/QgsRectangle.hpp"
 
 #include <emscripten/bind.h>
 #include <emscripten/val.h>
@@ -312,7 +312,7 @@ EMSCRIPTEN_BINDINGS(QgisApi) {
   emscripten::function("renderJob", &QgisApi_renderJob, emscripten::allow_raw_pointers());
   emscripten::function("transformRectangle", &QgisApi_transformRectangle);
   emscripten::function("mapLayers", &QgisApi_mapLayers);
-  emscripten::register_vector<MapLayer>("vector<MapLayer>");
+  emscripten::register_vector<MapLayer>("vector<QgsMapLayer>");
   emscripten::function("mapThemes", &QgisApi_mapThemes);
   emscripten::function("getMapTheme", &QgisApi_getMapTheme);
   emscripten::function("setMapTheme", &QgisApi_setMapTheme);

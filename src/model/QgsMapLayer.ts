@@ -1,7 +1,7 @@
 /**
  * Represents a map layer.
  */
-export interface MapLayer {
+export interface QgsMapLayer {
   name: string;
   visible: boolean;
   opacity: number;

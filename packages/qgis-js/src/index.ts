@@ -14,6 +14,6 @@ export type {
 
 export type { EmscriptenFS } from "./emscripten";
 
-export type { PointXY, Rectangle } from "../../../src/api/QgisModel";
+export type { QgsPointXY, QgsRectangle, QgsMapLayer } from "../../../src/api/QgisModel";
 
 export { qgis } from "./loader";

@@ -1,6 +1,6 @@
 import { QgisApi } from "qgis-js";
 
-import type { Rectangle } from "qgis-js";
+import type { QgsRectangle } from "qgis-js";
 
 const mapScaleFactor = 1.5;
 const mapMoveFactor = 0.1;
@@ -9,7 +9,7 @@ export function jsDemo(
   canvas: HTMLCanvasElement,
   api: QgisApi,
 ): { update: () => void; render: () => void } {
-  let lastExtent: Rectangle | null = null;
+  let lastExtent: QgsRectangle | null = null;
 
   // ensure pixel perfect rendering
   // see https://web.dev/articles/device-pixel-content-box

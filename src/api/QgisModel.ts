@@ -1,6 +1,6 @@
-import { PointXY, PointXYConstructors } from "../model/PointXY";
-import { Rectangle, RectangleConstructors } from "../model/Rectangle";
-import { MapLayer } from "../model/MapLayer";
+import { QgsPointXY, QgsPointXYConstructors } from "../model/QgsPointXY";
+import { QgsRectangle, QgsRectangleConstructors } from "../model/QgsRectangle";
+import { QgsMapLayer } from "../model/QgsMapLayer";
 import { QgsMapRendererParallelJob } from "../model/QgsMapRendererParallelJob";
 import { QgsMapRendererJob } from "../model/QgsMapRendererJob";
 import { QgsMapRendererQImageJob } from "../model/QgsMapRendererQImageJob";
@@ -9,9 +9,9 @@ export type {
   QgsMapRendererJob,
   QgsMapRendererQImageJob,
   QgsMapRendererParallelJob,
-  PointXY,
-  Rectangle,
-  MapLayer,
+  QgsPointXY,
+  QgsRectangle,
+  QgsMapLayer,
 };
 
 /* prettier-ignore */
@@ -21,6 +21,6 @@ export type {
  */
 export interface QgisModelConstructors
   extends
-    PointXYConstructors,
-    RectangleConstructors
+    QgsPointXYConstructors,
+    QgsRectangleConstructors
   {}

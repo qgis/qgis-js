@@ -49,7 +49,7 @@ An example of how to use qgis-js from a CDN (e.g. [jsDelivr](https://www.jsdeliv
       // boot the qgis-js runtime
       const { api } = await qgis();
       // use the qgis-js api
-      const rect = new api.Rectangle(1, 1, 42, 42);
+      const rect = new api.QgsRectangle(1, 1, 42, 42);
       const center = rect.center();
       console.log(`Center: x: ${center.x}, y: ${center.y}`);
     </script>

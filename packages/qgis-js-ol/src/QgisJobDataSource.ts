@@ -60,7 +60,7 @@ export class QgisJobDataSource extends ImageSource {
 
           const job = api.renderJob(
             this.getProjection()?.getCode() || "EPSG:3857",
-            new api.Rectangle(extent[0], extent[1], extent[2], extent[3]),
+            new api.QgsRectangle(extent[0], extent[1], extent[2], extent[3]),
             width,
             height,
             pixelRatio,

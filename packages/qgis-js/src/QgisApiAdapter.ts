@@ -3,7 +3,7 @@ import {
   QgisApi,
   QgisApiAdapter,
 } from "../../../src/api/QgisApi";
-import { MapLayer, Rectangle } from "../../../src/api/QgisModel";
+import { QgsMapLayer, QgsRectangle } from "../../../src/api/QgisModel";
 
 import { threadPoolSize } from "./runtime";
 
@@ -27,7 +27,7 @@ export class QgisApiAdapterImplementation implements QgisApiAdapter {
 
   renderImage(
     srid: string,
-    extent: Rectangle,
+    extent: QgsRectangle,
     width: number,
     height: number,
     pixelRatio: number = window?.devicePixelRatio || 1,
@@ -76,9 +76,9 @@ export class QgisApiAdapterImplementation implements QgisApiAdapter {
     });
   }
 
-  mapLayers(): readonly MapLayer[] {
+  mapLayers(): readonly QgsMapLayer[] {
     const mapLayersRaw = this._api.mapLayers();
-    const result = new Array<MapLayer>(mapLayersRaw.size());
+    const result = new Array<QgsMapLayer>(mapLayersRaw.size());
     for (let i = 0; i < mapLayersRaw.size(); i++) {
       result[i] = mapLayersRaw.get(i);
     }

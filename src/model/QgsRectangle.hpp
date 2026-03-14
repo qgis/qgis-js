@@ -12,7 +12,7 @@ static void QgsRectangle_move(QgsRectangle &r, double dx, double dy) {
 }
 
 EMSCRIPTEN_BINDINGS(QgsRectangle) {
-  emscripten::class_<QgsRectangle>("Rectangle")
+  emscripten::class_<QgsRectangle>("QgsRectangle")
     .constructor<>()
     .constructor<double, double, double, double>()
     .property("xMinimum", &QgsRectangle::xMinimum, &QgsRectangle::setXMinimum)
