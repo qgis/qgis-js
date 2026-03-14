@@ -30,7 +30,7 @@ export default defineConfig({
       rollupConfig: {
         docModel: {
           enabled: true,
-          apiJsonFilePath: "<projectFolder>/etc/<unscopedPackageName>.api.json",
+          apiJsonFilePath: resolve(__dirname, "etc/qgis-js.api.json"),
         },
       },
       async afterBuild() {

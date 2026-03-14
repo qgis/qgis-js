@@ -1,4 +1,5 @@
 {
+  "name": "qgis-js-repo",
   "private": true,
   "version": "4.0.0",
   "license": "GPL-2.0-or-later",
@@ -19,7 +20,7 @@
   "type": "module",
   "scripts": {
     "postinstall": "./qgis-js.ts -v install",
-    "update": "pnpm update --ignore-scripts",
+    "update": "pnpm update -r --ignore-scripts",
     "clean": "./qgis-js.ts -v clean",
     "compile": "pnpm run compile:dev",
     "compile:dev": "./qgis-js.ts compile",
