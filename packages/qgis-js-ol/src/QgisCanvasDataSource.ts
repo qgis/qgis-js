@@ -35,7 +35,7 @@ export class QgisCanvasDataSource extends ImageSource {
   ) => {
     return api.renderImage(
       srid,
-      new api.Rectangle(xMin, yMin, xMax, yMax),
+      new api.QgsRectangle(xMin, yMin, xMax, yMax),
       width,
       height,
       pixelRatio,

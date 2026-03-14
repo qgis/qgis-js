@@ -13,7 +13,7 @@ console.log(`- qgis-js ready`);
 
 // qgis-js API example
 console.log(`- creating a rectangle`);
-const rect = new api.Rectangle(1, 2, 3, 4);
+const rect = new api.QgsRectangle(1, 2, 3, 4);
 console.log("-> " + printRect(rect));
 
 console.log(`- scaling the rectangle`);
@@ -25,5 +25,5 @@ const center = rect.center();
 console.log(`-> Point: x: ${center.x}, y: ${center.y}`);
 
 function printRect(rect) {
-  return `Rectangle: xMaximum: ${rect.xMaximum}, xMinimum: ${rect.xMinimum}, yMaximum: ${rect.yMaximum}, yMinimum: ${rect.yMinimum}`;
+  return `QgsRectangle: xMaximum: ${rect.xMaximum}, xMinimum: ${rect.xMinimum}, yMaximum: ${rect.yMaximum}, yMinimum: ${rect.yMinimum}`;
 }

@@ -1,8 +1,8 @@
 import {
   QgisModelConstructors,
   QgsMapRendererParallelJob,
-  Rectangle,
-  MapLayer,
+  QgsRectangle,
+  QgsMapLayer,
 } from "./QgisModel";
 
 /**
@@ -22,7 +22,7 @@ export interface CommonQgisApi extends QgisModelConstructors {
    *
    * @returns The full extent of the loaded project.
    */
-  fullExtent(): Rectangle;
+  fullExtent(): QgsRectangle;
 
   /**
    * Returns the SRID of the loaded project.
@@ -40,10 +40,10 @@ export interface CommonQgisApi extends QgisModelConstructors {
    * @returns The transformed rectangle.
    */
   transformRectangle(
-    rect: Rectangle,
+    rect: QgsRectangle,
     inputSrid: string,
     outputSrid: string,
-  ): Rectangle;
+  ): QgsRectangle;
 
   /**
    * Gets the current map theme of the current project.
@@ -113,7 +113,7 @@ export interface CommonQgisApi extends QgisModelConstructors {
    */
   renderJob(
     srid: string,
-    extent: Rectangle,
+    extent: QgsRectangle,
     width: number,
     height: number,
     pixelRatio: number,
@@ -136,7 +136,7 @@ export interface QgisApiAdapter {
    */
   renderImage(
     srid: string,
-    extent: Rectangle,
+    extent: QgsRectangle,
     width: number,
     height: number,
     pixelRatio?: number,
@@ -167,7 +167,7 @@ export interface QgisApiAdapter {
    *
    * @returns The map layers of the loaded project.
    */
-  mapLayers(): readonly MapLayer[];
+  mapLayers(): readonly QgsMapLayer[];
 
   /**
    * Returns the map themes of the loaded project.
@@ -190,7 +190,7 @@ export interface QgisApi extends CommonQgisApi, QgisApiAdapter {}
 export interface InternalQgisApi extends CommonQgisApi {
   renderImage(
     srid: string,
-    extent: Rectangle,
+    extent: QgsRectangle,
     width: number,
     height: number,
     pixelRatio: number,

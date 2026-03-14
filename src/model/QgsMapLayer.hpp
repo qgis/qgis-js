@@ -51,8 +51,8 @@ private:
   QgsMapLayer *qgsMapLayer;
 };
 
-EMSCRIPTEN_BINDINGS(MapLayer) {
-  emscripten::class_<MapLayer>("MapLayer")
+EMSCRIPTEN_BINDINGS(QgsMapLayer) {
+  emscripten::class_<MapLayer>("QgsMapLayer")
     .property("name", &MapLayer::name, &MapLayer::setName)
     .property("visible", &MapLayer::isVisible, &MapLayer::setVisible)
     .property("opacity", &MapLayer::opacity, &MapLayer::setOpacity);

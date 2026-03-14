@@ -29,7 +29,7 @@ import { qgis } from "qgis-js";
 
 const { api } = await qgis();
 
-const rect = new api.Rectangle(1, 2, 3, 4);
+const rect = new api.QgsRectangle(1, 2, 3, 4);
 rect.scale(5);
 const center = rect.center();
 console.log(center.x, center.y);
