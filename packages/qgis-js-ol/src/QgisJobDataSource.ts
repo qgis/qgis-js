@@ -68,7 +68,9 @@ export class QgisJobDataSource extends ImageSource {
           this.jobs.push(job);
 
           const putRenderedImage = () => {
-            const data = new Uint8ClampedArray(job.renderedImage()) as Uint8ClampedArray<ArrayBuffer>;
+            const data = new Uint8ClampedArray(
+              job.renderedImage(),
+            ) as Uint8ClampedArray<ArrayBuffer>;
             const imageData = new ImageData(data, width, height);
             ctx!.putImageData(imageData, 0, 0);
           };

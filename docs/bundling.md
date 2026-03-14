@@ -43,9 +43,8 @@ An example of how to use qgis-js from a CDN (e.g. [jsDelivr](https://www.jsdeliv
   <body>
     <script type="module">
       // import qgis-js from a CDN
-      const { qgis } = await import(
-        "https://cdn.jsdelivr.net/npm/qgis-js/dist/qgis.js"
-      );
+      const { qgis } =
+        await import("https://cdn.jsdelivr.net/npm/qgis-js/dist/qgis.js");
       // boot the qgis-js runtime
       const { api } = await qgis();
       // use the qgis-js api

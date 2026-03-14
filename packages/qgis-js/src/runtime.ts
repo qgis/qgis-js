@@ -6,8 +6,7 @@ import { QgisApi, InternalQgisApi } from "../../../src/api/QgisApi";
  * Qt emscripten runtime module that exposes the QgisInternalApi
  */
 export interface QgisRuntimeModule
-  extends EmscriptenRuntimeModule,
-    InternalQgisApi {}
+  extends EmscriptenRuntimeModule, InternalQgisApi {}
 
 /**
  * Boot configuration options for the QGIS runtime.

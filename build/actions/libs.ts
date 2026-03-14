@@ -34,7 +34,7 @@ export class LibsAction extends CommandLineAction {
 
       const vcpgkPortList = JSON.parse(
         "" +
-        (await $`./build/vcpkg/vcpkg list \
+          (await $`./build/vcpkg/vcpkg list \
       --x-install-root=build/wasm/vcpkg_installed \
       --overlay-triplets=build/vcpkg-triplets \
       --overlay-ports=build/vcpkg-ports \
@@ -49,7 +49,7 @@ export class LibsAction extends CommandLineAction {
           website: "https://www.qt.io/",
           source: "https://github.com/qt/qtbase",
         },
-        "qgis": {
+        qgis: {
           license: "GPL-2.0",
           website: "https://www.qgis.org/",
           source: "https://github.com/qgis/QGIS",

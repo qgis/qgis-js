@@ -41,7 +41,9 @@ export class QgisApiAdapterImplementation implements QgisApiAdapter {
           height,
           pixelRatio,
           (tileData) => {
-            const data = new Uint8ClampedArray(tileData) as Uint8ClampedArray<ArrayBuffer>;
+            const data = new Uint8ClampedArray(
+              tileData,
+            ) as Uint8ClampedArray<ArrayBuffer>;
             const imageData = new ImageData(data, width, height);
             resolve(imageData);
           },
@@ -67,7 +69,9 @@ export class QgisApiAdapterImplementation implements QgisApiAdapter {
           pixelRatio,
           extentBuffer,
           (tileData) => {
-            const data = new Uint8ClampedArray(tileData) as Uint8ClampedArray<ArrayBuffer>;
+            const data = new Uint8ClampedArray(
+              tileData,
+            ) as Uint8ClampedArray<ArrayBuffer>;
             const imageData = new ImageData(data, tileSize, tileSize);
             resolve(imageData);
           },

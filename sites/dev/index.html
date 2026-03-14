@@ -120,7 +120,13 @@
               checked="checked"
               name="previewRendering"
               id="previewRendering"
-              onchange="[...document.querySelectorAll('#previewTimeout, #previewOverlay')].map(e => e.disabled = !this.checked)"
+              onchange="
+                [
+                  ...document.querySelectorAll(
+                    '#previewTimeout, #previewOverlay',
+                  ),
+                ].map((e) => (e.disabled = !this.checked))
+              "
             />
 
             <div class="seperator">&nbsp;</div>
@@ -165,7 +171,11 @@
               value="0.5"
               name="extentBufferFactor"
               id="extentBufferFactor"
-              oninput="this.nextElementSibling.value = (Math.round(this.value * 100) / 100).toFixed(2)"
+              oninput="
+                this.nextElementSibling.value = (
+                  Math.round(this.value * 100) / 100
+                ).toFixed(2)
+              "
             />
             <output>0.50</output>
 

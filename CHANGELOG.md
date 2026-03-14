@@ -1,11 +1,11 @@
 This document describes changes between tagged qgis-js versions
 
-4.1.0 (in development)
-----------------------
+## 4.1.0 (in development)
+
 - TBD
 
-4.0.0 (16. March 2026)
-----------------------
+## 4.0.0 (16. March 2026)
+
 - Major version bump to align with QGIS 4 (based on QGIS 4.0.0). (#39)
   - Upstreamed patches to the QGIS repository for long-term maintainability.
   - Made possible by the QGIS.org grant programme 2025.

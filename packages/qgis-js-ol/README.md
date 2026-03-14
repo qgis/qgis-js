@@ -13,7 +13,6 @@
 - This package requires **[OpenLayers](https://openlayers.org) `>=8`** to be installed as a peer dependency
 
 - The [qgis-js](https://www.npmjs.com/package/@qgis-js/ol) package is also required as a direct dependency of this package
-
   - An instance of the qgis-js runtime has to be created at runtime and its API must be passed to the OpenLayers source constructor
 
 ## Installation

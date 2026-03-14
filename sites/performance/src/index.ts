@@ -272,7 +272,12 @@ async function startPerformanceTest(_eClick: Event) {
     measureStart(job.id);
     const result = await API.renderImage(
       API.srid(),
-      new API.QgsRectangle(extent[0][0], extent[0][1], extent[1][0], extent[1][1]),
+      new API.QgsRectangle(
+        extent[0][0],
+        extent[0][1],
+        extent[1][0],
+        extent[1][1],
+      ),
       resolution[0],
       resolution[1],
       1,

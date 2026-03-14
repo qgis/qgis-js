@@ -66,7 +66,7 @@ export function olDemoXYZ(
       },
     });
 
-    (layer = new WebGLTileLayer({
+    ((layer = new WebGLTileLayer({
       source,
     })),
       (map = new Map({
@@ -88,7 +88,7 @@ export function olDemoXYZ(
             },
           }),
         ].reverse(),
-      }));
+      })));
 
     map.on("loadstart", function () {
       map!.getTargetElement().classList.add("spinner");

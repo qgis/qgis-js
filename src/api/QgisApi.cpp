@@ -261,8 +261,7 @@ const bool QgisApi_setMapTheme(std::string themeName) {
 
 emscripten::val QgisApi_globalVariables() {
   emscripten::val result = emscripten::val::object();
-  std::unique_ptr<QgsExpressionContextScope> scope(
-    QgsExpressionContextUtils::globalScope());
+  std::unique_ptr<QgsExpressionContextScope> scope(QgsExpressionContextUtils::globalScope());
   for (const QString &name : scope->variableNames()) {
     result.set(name.toStdString(), scope->variable(name).toString().toStdString());
   }
