@@ -58,7 +58,7 @@ jobs:
         run: pnpm run compile:release
       - name: Save logs on failure
         if: ${{ failure() }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: vcpkg-buildtrees-logs
           path: build/vcpkg/buildtrees/**/*.log
@@ -88,11 +88,11 @@ jobs:
       - name: Build site
         run: pnpm run dev:build
       - name: Setup Pages
-        uses: actions/configure-pages@v3
+        uses: actions/configure-pages@v4
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           path: "./sites/dev/dist"
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4
