@@ -68,8 +68,9 @@ qt_add_executable(qgis-js MANUAL_FINALIZATION ${QGISJS_SOURCES})
 target_compile_options(qgis-js PRIVATE "-fwasm-exceptions")
 target_link_options(qgis-js PRIVATE "-fwasm-exceptions")
 
-target_compile_options(qgis-js PRIVATE "-msimd128")
-target_link_options(qgis-js PRIVATE "-msimd128")
+# TODO reenable -msimd128
+# target_compile_options(qgis-js PRIVATE "-msimd128")
+# target_link_options(qgis-js PRIVATE "-msimd128")
 
 target_include_directories(qgis-js PRIVATE ${QGIS_INCLUDE_DIR})
 
@@ -165,10 +166,15 @@ target_link_options(qgis-js PRIVATE "SHELL: \
 --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/src/qt.conf@/qt.conf"
 )
 
+# Non-release builds: optimize link step to reduce function count (237K+ causes V8 OOM in Chrome)
+# This only affects the post-link wasm-opt pass, not source-level compilation
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+  target_link_options(qgis-js PRIVATE "-O2")
+endif()
+
 # Debug build settings
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
   target_compile_options(qgis-js PRIVATE "-Og")
-  target_link_options(qgis-js PRIVATE "-Og")
   # DWARF debug info (see https://developer.chrome.com/blog/faster-wasm-debugging/)
   target_link_options(qgis-js PRIVATE "-gseparate-dwarf" "-gdwarf-5" "-gsplit-dwarf" "-gpubnames")
   # Allow the wasm function table to grow dynamically (debug builds have more indirect call targets)
