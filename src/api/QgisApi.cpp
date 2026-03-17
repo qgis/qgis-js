@@ -3,6 +3,7 @@
 
 #include <qgsexpressioncontextutils.h>
 #include <qgslayertree.h>
+#include <qgslayertreemodel.h>
 #include <qgsmaprenderercustompainterjob.h>
 #include <qgsmaprendererparalleljob.h>
 #include <qgsmaprenderersequentialjob.h>
@@ -14,7 +15,7 @@
 #include <QString>
 #include <QtConcurrent/QtConcurrent>
 
-#include "../model/QgsMapLayer.hpp"
+#include "../model/QgsLayerTreeNode.hpp"
 #include "../model/QgsMapRendererJob.hpp"
 #include "../model/QgsMapRendererParallelJob.hpp"
 #include "../model/QgsMapRendererQImageJob.hpp"
@@ -217,12 +218,8 @@ const QgsRectangle QgisApi_transformRectangle(
   return transform.transformBoundingBox(inputRectangle);
 }
 
-const std::vector<MapLayer> QgisApi_mapLayers() {
-  std::vector<MapLayer> result = {};
-  for (QgsMapLayer *layer : QgisApi_allLayers()) {
-    result.push_back(MapLayer(layer));
-  }
-  return result;
+LayerTreeGroup QgisApi_layerTreeRoot() {
+  return LayerTreeGroup(QgsProject::instance()->layerTreeRoot());
 }
 
 const std::vector<std::string> QgisApi_mapThemes() {
@@ -310,8 +307,7 @@ EMSCRIPTEN_BINDINGS(QgisApi) {
   emscripten::function("renderXYZTile", &QgisApi_renderXYZTile);
   emscripten::function("renderJob", &QgisApi_renderJob, emscripten::allow_raw_pointers());
   emscripten::function("transformRectangle", &QgisApi_transformRectangle);
-  emscripten::function("mapLayers", &QgisApi_mapLayers);
-  emscripten::register_vector<MapLayer>("vector<QgsMapLayer>");
+  emscripten::function("layerTreeRoot", &QgisApi_layerTreeRoot);
   emscripten::function("mapThemes", &QgisApi_mapThemes);
   emscripten::function("getMapTheme", &QgisApi_getMapTheme);
   emscripten::function("setMapTheme", &QgisApi_setMapTheme);

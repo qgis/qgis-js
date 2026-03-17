@@ -3,7 +3,7 @@ import {
   QgisApi,
   QgisApiAdapter,
 } from "../../../src/api/QgisApi";
-import { QgsMapLayer, QgsRectangle } from "../../../src/api/QgisModel";
+import { QgsRectangle } from "../../../src/api/QgisModel";
 
 import { threadPoolSize } from "./runtime";
 
@@ -78,15 +78,6 @@ export class QgisApiAdapterImplementation implements QgisApiAdapter {
         );
       });
     });
-  }
-
-  mapLayers(): readonly QgsMapLayer[] {
-    const mapLayersRaw = this._api.mapLayers();
-    const result = new Array<QgsMapLayer>(mapLayersRaw.size());
-    for (let i = 0; i < mapLayersRaw.size(); i++) {
-      result[i] = mapLayersRaw.get(i);
-    }
-    return result;
   }
 
   mapThemes(): readonly string[] {
