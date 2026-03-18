@@ -1,9 +1,17 @@
-import { QgsPointXY, QgsPointXYConstructors } from "../model/QgsPointXY";
-import { QgsRectangle, QgsRectangleConstructors } from "../model/QgsRectangle";
-import { QgsMapLayer } from "../model/QgsMapLayer";
-import { QgsMapRendererParallelJob } from "../model/QgsMapRendererParallelJob";
-import { QgsMapRendererJob } from "../model/QgsMapRendererJob";
-import { QgsMapRendererQImageJob } from "../model/QgsMapRendererQImageJob";
+import type { QgsPointXY, QgsPointXYConstructors } from "../model/QgsPointXY";
+import type {
+  QgsRectangle,
+  QgsRectangleConstructors,
+} from "../model/QgsRectangle";
+import type {
+  QgsLayerTreeNode,
+  QgsLayerTreeGroup,
+  QgsLayerTreeLayer,
+  LayerTreeNodeType,
+} from "../model/QgsLayerTreeNode";
+import type { QgsMapRendererParallelJob } from "../model/QgsMapRendererParallelJob";
+import type { QgsMapRendererJob } from "../model/QgsMapRendererJob";
+import type { QgsMapRendererQImageJob } from "../model/QgsMapRendererQImageJob";
 
 export type {
   QgsMapRendererJob,
@@ -11,14 +19,14 @@ export type {
   QgsMapRendererParallelJob,
   QgsPointXY,
   QgsRectangle,
-  QgsMapLayer,
+  QgsLayerTreeNode,
+  QgsLayerTreeGroup,
+  QgsLayerTreeLayer,
+  LayerTreeNodeType,
 };
 
 /* prettier-ignore */
 
-/**
- * Geathers all constructors of the QGIS model classes.
- */
 export interface QgisModelConstructors
   extends
     QgsPointXYConstructors,

@@ -1,4 +1,81 @@
-import { QgisApi } from "qgis-js";
+import type { QgisApi, QgsLayerTreeNode, QgsLayerTreeLayer } from "qgis-js";
+
+function renderNode(
+  parent: HTMLElement,
+  node: QgsLayerTreeNode,
+  redraw: () => void,
+  update: () => void,
+  parentVisible: boolean = true,
+) {
+  const el = document.createElement("div");
+
+  const header = document.createElement("div");
+  header.className = "layer-header";
+  const visible = parentVisible && node.itemVisibilityChecked;
+  if (!visible) header.classList.add("disabled");
+
+  if (node.isGroup()) {
+    const toggle = document.createElement("span");
+    toggle.className = "layer-toggle";
+    toggle.textContent = node.expanded ? "\u25BE" : "\u25B8";
+    toggle.addEventListener("click", () => {
+      node.expanded = !node.expanded;
+      update();
+    });
+    header.appendChild(toggle);
+  } else {
+    const spacer = document.createElement("span");
+    spacer.className = "layer-toggle";
+    header.appendChild(spacer);
+  }
+
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = node.itemVisibilityChecked;
+  checkbox.addEventListener("change", () => {
+    node.itemVisibilityChecked = checkbox.checked;
+    redraw();
+    update();
+  });
+  header.appendChild(checkbox);
+
+  const name = document.createElement("span");
+  name.className = "layer-name";
+  if (node.isGroup()) name.classList.add("is-group");
+  name.textContent = node.name;
+  header.appendChild(name);
+
+  if (node.isLayer()) {
+    const layer = node as QgsLayerTreeLayer;
+    const slider = document.createElement("input");
+    slider.className = "layer-slider";
+    slider.type = "range";
+    slider.min = "0";
+    slider.max = "100";
+    slider.value = "" + layer.opacity * 100;
+    slider.step = "1";
+    slider.addEventListener("change", () => {
+      layer.opacity = parseInt(slider.value) / 100;
+      redraw();
+    });
+    header.appendChild(slider);
+  }
+
+  el.appendChild(header);
+
+  if (node.isGroup()) {
+    const childContainer = document.createElement("div");
+    childContainer.className = "layer-children";
+    if (!node.expanded) childContainer.style.display = "none";
+    const children = node.children();
+    for (const child of children) {
+      renderNode(childContainer, child, redraw, update, visible);
+    }
+    el.appendChild(childContainer);
+  }
+
+  parent.appendChild(el);
+}
 
 export function layersControl(
   target: HTMLDivElement,
@@ -12,45 +89,13 @@ export function layersControl(
     layerContainer.className = "layers";
     target.appendChild(layerContainer);
 
-    const layers = api.mapLayers();
-    for (const layer of layers) {
-      const node = document.createElement("div");
-      node.className = "layer";
+    const tree = document.createElement("div");
+    tree.className = "layer-tree";
+    layerContainer.appendChild(tree);
 
-      // create checkbox in node
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      if (layer.visible) {
-        checkbox.checked = true;
-      }
-      checkbox.addEventListener("change", () => {
-        layer.visible = checkbox.checked;
-        redraw();
-        update();
-      });
-      node.appendChild(checkbox);
-
-      // create name as text node
-      const textnode = document.createTextNode(layer.name);
-      node.appendChild(textnode);
-
-      // create opacity slider in node
-      const slider = document.createElement("input");
-      if (!layer.visible) {
-        slider.style.visibility = "hidden";
-      }
-      slider.type = "range";
-      slider.min = "0";
-      slider.max = "100";
-      slider.value = "" + layer.opacity * 100;
-      slider.step = "1";
-      slider.addEventListener("change", () => {
-        layer.opacity = parseInt(slider.value) / 100;
-        redraw();
-      });
-
-      node.appendChild(slider);
-      layerContainer.appendChild(node);
+    const root = api.layerTreeRoot();
+    for (const child of root.children()) {
+      renderNode(tree, child, redraw, update);
     }
 
     if (api.mapThemes().length > 0) {

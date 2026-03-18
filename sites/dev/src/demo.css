@@ -121,22 +121,51 @@ a.source {
   width: 18em;
 }
 
-#layers-control .layers :first-child {
+#layers-control .layers .layer-tree {
   margin-top: 0.5em;
+  font-size: 0.85em;
 }
 
-#layers-control .layers .layer {
-  padding: 0 0.5em;
-  margin-bottom: 0.5em;
-  clear: both;
+#layers-control .layers .layer-header {
+  display: flex;
+  align-items: center;
+  padding: 2px 0;
+  gap: 4px;
+  white-space: nowrap;
 }
 
-#layers-control .layers .layer :first-child {
-  margin-right: 0.5em;
+#layers-control .layers .layer-header.disabled {
+  opacity: 0.4;
 }
 
-#layers-control .layers .layer :last-child {
-  float: right;
+#layers-control .layers .layer-toggle {
+  cursor: pointer;
+  user-select: none;
+  width: 1em;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+#layers-control .layers .layer-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+
+#layers-control .layers .layer-name.is-group {
+  font-weight: 600;
+}
+
+#layers-control .layers .layer-slider {
+  width: 5em;
+  flex-shrink: 0;
+}
+
+#layers-control .layers .layer-children {
+  padding-left: 1.2em;
+  border-left: 1px solid #ddd;
+  margin-left: 0.45em;
 }
 
 #js-demo-canvas {

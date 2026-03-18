@@ -17,7 +17,10 @@ export type { EmscriptenFS } from "./emscripten";
 export type {
   QgsPointXY,
   QgsRectangle,
-  QgsMapLayer,
+  QgsLayerTreeNode,
+  QgsLayerTreeGroup,
+  QgsLayerTreeLayer,
+  LayerTreeNodeType,
 } from "../../../src/api/QgisModel";
 
 export { qgis } from "./loader";

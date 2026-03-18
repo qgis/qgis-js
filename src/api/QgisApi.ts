@@ -2,7 +2,7 @@ import {
   QgisModelConstructors,
   QgsMapRendererParallelJob,
   QgsRectangle,
-  QgsMapLayer,
+  QgsLayerTreeGroup,
 } from "./QgisModel";
 
 /**
@@ -102,6 +102,13 @@ export interface CommonQgisApi extends QgisModelConstructors {
   setProjectVariables(variables: Record<string, string>): void;
 
   /**
+   * Returns the root of the project's layer tree.
+   *
+   * @returns The root layer tree node.
+   */
+  layerTreeRoot(): QgsLayerTreeGroup;
+
+  /**
    * Renders an image of the loaded project and provides a QgsMapRendererParallelJob object to monitor the rendering progress and to retrieve preview images.
    *
    * @param srid - The SRID of the image.
@@ -163,13 +170,6 @@ export interface QgisApiAdapter {
   ): Promise<ImageData>;
 
   /**
-   * Returns the map layers of the loaded project.
-   *
-   * @returns The map layers of the loaded project.
-   */
-  mapLayers(): readonly QgsMapLayer[];
-
-  /**
    * Returns the map themes of the loaded project.
    *
    * @returns The map themes of the loaded project.
@@ -205,6 +205,5 @@ export interface InternalQgisApi extends CommonQgisApi {
     extentBuffer: number,
     callback: (tileData: ArrayBufferLike) => void,
   ): number;
-  mapLayers(): any;
   mapThemes(): any;
 }
