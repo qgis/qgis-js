@@ -1,4 +1,4 @@
-export type LayerTreeNodeType = "group" | "layer";
+export type LayerTreeNodeType = "group" | "layer" | "";
 
 export interface QgsLayerTreeNode {
   name: string;
