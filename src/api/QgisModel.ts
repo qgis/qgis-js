@@ -1,5 +1,8 @@
 import type { QgsPointXY, QgsPointXYConstructors } from "../model/QgsPointXY";
-import type { QgsRectangle, QgsRectangleConstructors } from "../model/QgsRectangle";
+import type {
+  QgsRectangle,
+  QgsRectangleConstructors,
+} from "../model/QgsRectangle";
 import type {
   QgsLayerTreeNode,
   QgsLayerTreeGroup,
