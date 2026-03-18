@@ -1,6 +1,6 @@
 This document describes changes between tagged qgis-js versions
 
-## 5.0.0 (in development)
+## 4.1.0 (in development)
 
 - Replaced `mapLayers()` with `layerTreeRoot()`. (#25)
   - Exposing the full layer tree hierarchy (groups, nested layers, visibility, expand/collapse).
