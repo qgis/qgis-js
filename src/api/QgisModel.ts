@@ -1,14 +1,14 @@
-import { QgsPointXY, QgsPointXYConstructors } from "../model/QgsPointXY";
-import { QgsRectangle, QgsRectangleConstructors } from "../model/QgsRectangle";
-import {
+import type { QgsPointXY, QgsPointXYConstructors } from "../model/QgsPointXY";
+import type { QgsRectangle, QgsRectangleConstructors } from "../model/QgsRectangle";
+import type {
   QgsLayerTreeNode,
   QgsLayerTreeGroup,
   QgsLayerTreeLayer,
   LayerTreeNodeType,
 } from "../model/QgsLayerTreeNode";
-import { QgsMapRendererParallelJob } from "../model/QgsMapRendererParallelJob";
-import { QgsMapRendererJob } from "../model/QgsMapRendererJob";
-import { QgsMapRendererQImageJob } from "../model/QgsMapRendererQImageJob";
+import type { QgsMapRendererParallelJob } from "../model/QgsMapRendererParallelJob";
+import type { QgsMapRendererJob } from "../model/QgsMapRendererJob";
+import type { QgsMapRendererQImageJob } from "../model/QgsMapRendererQImageJob";
 
 export type {
   QgsMapRendererJob,
