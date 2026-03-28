@@ -52,6 +52,7 @@ function renderNode(
   header.appendChild(name);
 
   let filterRow: HTMLDivElement | undefined;
+  let legendContainer: HTMLDivElement | undefined;
   if (node.isLayer()) {
     const treeLayer = node as QgsLayerTreeLayer;
     const mapLayer = treeLayer.layer();
@@ -89,6 +90,41 @@ function renderNode(
         if (!isVisible) filterInput.focus();
       });
     }
+
+    const legendIcon = document.createElement("span");
+    legendIcon.className = "layer-legend-icon";
+    legendIcon.title = "Legend";
+    legendIcon.textContent = "\u2630";
+    header.appendChild(legendIcon);
+
+    legendContainer = document.createElement("div");
+    legendContainer.className = "layer-legend";
+    legendContainer.style.display = "none";
+
+    legendIcon.addEventListener("click", () => {
+      const isVisible = legendContainer!.style.display !== "none";
+      legendContainer!.style.display = isVisible ? "none" : "";
+      legendIcon.classList.toggle("active", !isVisible);
+      if (!isVisible && legendContainer!.childElementCount === 0) {
+        for (const legendNode of treeLayer.legendNodes()) {
+          const row = document.createElement("div");
+          row.className = "legend-item";
+          const icon = legendNode.symbolImage(16);
+          if (icon) {
+            const img = document.createElement("img");
+            img.className = "legend-icon";
+            img.src = icon;
+            row.appendChild(img);
+          }
+          const label = document.createElement("span");
+          label.className = "legend-label";
+          label.textContent = legendNode.label();
+          row.appendChild(label);
+          legendContainer!.appendChild(row);
+        }
+      }
+    });
+
     if (mapLayer) {
       const slider = document.createElement("input");
       slider.className = "layer-slider";
@@ -107,6 +143,7 @@ function renderNode(
 
   el.appendChild(header);
   if (filterRow) el.appendChild(filterRow);
+  if (legendContainer) el.appendChild(legendContainer);
 
   if (node.isGroup()) {
     const childContainer = document.createElement("div");
@@ -133,6 +170,27 @@ export function layersControl(
     const layerContainer = document.createElement("div");
     layerContainer.className = "layers";
     target.appendChild(layerContainer);
+
+    const toolbar = document.createElement("div");
+    toolbar.className = "layers-toolbar";
+
+    const downloadIcon = document.createElement("span");
+    downloadIcon.className = "layers-download";
+    downloadIcon.title = "Download legend as PNG";
+    downloadIcon.textContent = "\u2630";
+    downloadIcon.addEventListener("click", () => {
+      const dataUrl = api.renderLegend(300);
+      if (!dataUrl) return;
+      const link = document.createElement("a");
+      link.href = dataUrl;
+      link.download = "legend.png";
+      link.style.display = "none";
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => document.body.removeChild(link), 100);
+    });
+    toolbar.appendChild(downloadIcon);
+    layerContainer.appendChild(toolbar);
 
     const tree = document.createElement("div");
     tree.className = "layer-tree";

@@ -299,6 +299,21 @@ void QgisApi_setProjectVariables(emscripten::val variables) {
   QgsExpressionContextUtils::setProjectVariables(QgsProject::instance(), vars);
 }
 
+std::string QgisApi_renderLegend(float dpi) {
+  return renderLegendForTree(QgsProject::instance()->layerTreeRoot(), dpi);
+}
+
+std::string QgisApi_renderLegendForLayers(float dpi, emscripten::val layerIds) {
+  QgsLayerTree tempRoot;
+  int length = layerIds["length"].as<int>();
+  for (int i = 0; i < length; i++) {
+    std::string id = layerIds[i].as<std::string>();
+    QgsMapLayer *layer = QgsProject::instance()->mapLayer(QString::fromStdString(id));
+    if (layer) tempRoot.addLayer(layer);
+  }
+  return renderLegendForTree(&tempRoot, dpi);
+}
+
 EMSCRIPTEN_BINDINGS(QgisApi) {
   emscripten::function("loadProject", &QgisApi_loadProject);
   emscripten::function("fullExtent", &QgisApi_fullExtent);
@@ -316,4 +331,6 @@ EMSCRIPTEN_BINDINGS(QgisApi) {
   emscripten::function("projectVariables", &QgisApi_projectVariables);
   emscripten::function("setGlobalVariables", &QgisApi_setGlobalVariables);
   emscripten::function("setProjectVariables", &QgisApi_setProjectVariables);
+  emscripten::function("renderLegend", &QgisApi_renderLegend);
+  emscripten::function("renderLegendForLayers", &QgisApi_renderLegendForLayers);
 }
