@@ -20,7 +20,10 @@ export type {
   QgsLayerTreeNode,
   QgsLayerTreeGroup,
   QgsLayerTreeLayer,
-  LayerTreeNodeType,
+  QgsMapLayer,
+  QgsVectorLayer,
 } from "../../../src/api/QgisModel";
+
+export { LayerType, NodeType } from "../../../src/api/QgisModel";
 
 export { qgis } from "./loader";

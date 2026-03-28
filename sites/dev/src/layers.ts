@@ -1,4 +1,10 @@
-import type { QgisApi, QgsLayerTreeNode, QgsLayerTreeLayer } from "qgis-js";
+import type {
+  QgisApi,
+  QgsLayerTreeNode,
+  QgsLayerTreeLayer,
+  QgsVectorLayer,
+} from "qgis-js";
+import { LayerType } from "qgis-js";
 
 function renderNode(
   parent: HTMLElement,
@@ -45,23 +51,62 @@ function renderNode(
   name.textContent = node.name;
   header.appendChild(name);
 
+  let filterRow: HTMLDivElement | undefined;
   if (node.isLayer()) {
-    const layer = node as QgsLayerTreeLayer;
-    const slider = document.createElement("input");
-    slider.className = "layer-slider";
-    slider.type = "range";
-    slider.min = "0";
-    slider.max = "100";
-    slider.value = "" + layer.opacity * 100;
-    slider.step = "1";
-    slider.addEventListener("change", () => {
-      layer.opacity = parseInt(slider.value) / 100;
-      redraw();
-    });
-    header.appendChild(slider);
+    const treeLayer = node as QgsLayerTreeLayer;
+    const mapLayer = treeLayer.layer();
+    if (mapLayer && mapLayer.type() === LayerType.Vector) {
+      const vectorLayer = mapLayer as QgsVectorLayer;
+      const hasFilter = vectorLayer.subsetString() !== "";
+
+      const filterIcon = document.createElement("span");
+      filterIcon.className = "layer-filter-icon";
+      if (hasFilter) filterIcon.classList.add("active");
+      filterIcon.title = "SQL filter";
+      filterIcon.textContent = "\u2AF6";
+      header.appendChild(filterIcon);
+
+      filterRow = document.createElement("div");
+      filterRow.className = "layer-filter";
+      filterRow.style.display = "none";
+
+      const filterInput = document.createElement("input");
+      filterInput.type = "text";
+      filterInput.placeholder = "SQL filter expression";
+      filterInput.value = vectorLayer.subsetString();
+      const applyFilter = () => {
+        const success = vectorLayer.setSubsetString(filterInput.value);
+        filterInput.classList.toggle("filter-error", !success);
+        filterIcon.classList.toggle("active", filterInput.value !== "");
+        if (success) redraw();
+      };
+      filterInput.addEventListener("change", applyFilter);
+      filterRow.appendChild(filterInput);
+
+      filterIcon.addEventListener("click", () => {
+        const isVisible = filterRow!.style.display !== "none";
+        filterRow!.style.display = isVisible ? "none" : "";
+        if (!isVisible) filterInput.focus();
+      });
+    }
+    if (mapLayer) {
+      const slider = document.createElement("input");
+      slider.className = "layer-slider";
+      slider.type = "range";
+      slider.min = "0";
+      slider.max = "100";
+      slider.value = "" + mapLayer.opacity * 100;
+      slider.step = "1";
+      slider.addEventListener("change", () => {
+        mapLayer.opacity = parseInt(slider.value) / 100;
+        redraw();
+      });
+      header.appendChild(slider);
+    }
   }
 
   el.appendChild(header);
+  if (filterRow) el.appendChild(filterRow);
 
   if (node.isGroup()) {
     const childContainer = document.createElement("div");

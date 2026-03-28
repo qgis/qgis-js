@@ -1,4 +1,10 @@
-export type LayerTreeNodeType = "group" | "layer" | "";
+import type { QgsLayerTreeGroup } from "./QgsLayerTreeGroup";
+import type { QgsLayerTreeLayer } from "./QgsLayerTreeLayer";
+
+export enum NodeType {
+  NodeGroup = 0,
+  NodeLayer = 1,
+}
 
 export interface QgsLayerTreeNode {
   name: string;
@@ -6,23 +12,9 @@ export interface QgsLayerTreeNode {
   expanded: boolean;
 
   isValid(): boolean;
-  nodeType(): LayerTreeNodeType;
+  nodeType(): NodeType;
   isGroup(): boolean;
   isLayer(): boolean;
   isVisible(): boolean;
   children(): (QgsLayerTreeGroup | QgsLayerTreeLayer)[];
-}
-
-export interface QgsLayerTreeGroup extends QgsLayerTreeNode {
-  isMutuallyExclusive: boolean;
-
-  findLayers(): QgsLayerTreeLayer[];
-  findGroup(name: string): QgsLayerTreeGroup | null;
-  findLayer(layerId: string): QgsLayerTreeLayer | null;
-}
-
-export interface QgsLayerTreeLayer extends QgsLayerTreeNode {
-  opacity: number;
-
-  layerId(): string;
 }

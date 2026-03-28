@@ -15,7 +15,7 @@
 #include <QString>
 #include <QtConcurrent/QtConcurrent>
 
-#include "../model/QgsLayerTreeNode.hpp"
+#include "../model/QgsLayerTreeLayer.hpp"
 #include "../model/QgsMapRendererJob.hpp"
 #include "../model/QgsMapRendererParallelJob.hpp"
 #include "../model/QgsMapRendererQImageJob.hpp"
