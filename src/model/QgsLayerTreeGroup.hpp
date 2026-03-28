@@ -4,6 +4,7 @@
 
 #include <qgslayertreegroup.h>
 
+#include "./QgsLayerTreeModelLegendNode.hpp"
 #include "./QgsLayerTreeNode.hpp"
 
 class LayerTreeGroup : public LayerTreeNode {
@@ -46,6 +47,14 @@ public:
     if (auto *group = asGroup()) group->setIsMutuallyExclusive(exclusive);
   }
 
+  std::string renderLegend(float dpi) const {
+    auto *group = asGroup();
+    if (!group) return "";
+    QgsLayerTree tempRoot;
+    tempRoot.addChildNode(group->clone());
+    return renderLegendForTree(&tempRoot, dpi);
+  }
+
 private:
   QgsLayerTreeGroup *asGroup() const {
     Q_ASSERT(_node && _node->nodeType() == QgsLayerTreeNode::NodeGroup);
@@ -61,5 +70,6 @@ EMSCRIPTEN_BINDINGS(QgsLayerTreeGroup) {
     .property(
       "isMutuallyExclusive",
       &LayerTreeGroup::isMutuallyExclusive,
-      &LayerTreeGroup::setIsMutuallyExclusive);
+      &LayerTreeGroup::setIsMutuallyExclusive)
+    .function("renderLegend", &LayerTreeGroup::renderLegend);
 }

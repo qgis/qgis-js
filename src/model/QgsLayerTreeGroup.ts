@@ -7,4 +7,5 @@ export interface QgsLayerTreeGroup extends QgsLayerTreeNode {
   findLayers(): QgsLayerTreeLayer[];
   findGroup(name: string): QgsLayerTreeGroup | null;
   findLayer(layerId: string): QgsLayerTreeLayer | null;
+  renderLegend(dpi: number): string;
 }

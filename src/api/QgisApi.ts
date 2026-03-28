@@ -109,6 +109,23 @@ export interface CommonQgisApi extends QgisModelConstructors {
   layerTreeRoot(): QgsLayerTreeGroup;
 
   /**
+   * Renders the full project legend as a PNG image.
+   *
+   * @param dpi - The DPI for rendering the legend.
+   * @returns A base64 data URL of the legend PNG, or an empty string if the legend is empty.
+   */
+  renderLegend(dpi: number): string;
+
+  /**
+   * Renders a legend for specific layers as a PNG image.
+   *
+   * @param dpi - The DPI for rendering the legend.
+   * @param layerIds - An array of layer IDs to include in the legend.
+   * @returns A base64 data URL of the legend PNG, or an empty string if the legend is empty.
+   */
+  renderLegendForLayers(dpi: number, layerIds: string[]): string;
+
+  /**
    * Renders an image of the loaded project and provides a QgsMapRendererParallelJob object to monitor the rendering progress and to retrieve preview images.
    *
    * @param srid - The SRID of the image.

@@ -17,6 +17,7 @@ export type { EmscriptenFS } from "./emscripten";
 export type {
   QgsPointXY,
   QgsRectangle,
+  QgsLayerTreeModelLegendNode,
   QgsLayerTreeNode,
   QgsLayerTreeGroup,
   QgsLayerTreeLayer,

@@ -3,6 +3,7 @@ import type {
   QgsRectangle,
   QgsRectangleConstructors,
 } from "../model/QgsRectangle";
+import type { QgsLayerTreeModelLegendNode } from "../model/QgsLayerTreeModelLegendNode";
 import type { QgsLayerTreeNode } from "../model/QgsLayerTreeNode";
 import { NodeType } from "../model/QgsLayerTreeNode";
 import type { QgsLayerTreeGroup } from "../model/QgsLayerTreeGroup";
@@ -19,6 +20,7 @@ export type {
   QgsMapRendererParallelJob,
   QgsPointXY,
   QgsRectangle,
+  QgsLayerTreeModelLegendNode,
   QgsLayerTreeNode,
   QgsLayerTreeGroup,
   QgsLayerTreeLayer,
