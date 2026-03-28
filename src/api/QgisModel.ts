@@ -3,12 +3,12 @@ import type {
   QgsRectangle,
   QgsRectangleConstructors,
 } from "../model/QgsRectangle";
-import type {
-  QgsLayerTreeNode,
-  QgsLayerTreeGroup,
-  QgsLayerTreeLayer,
-  LayerTreeNodeType,
-} from "../model/QgsLayerTreeNode";
+import type { QgsLayerTreeNode } from "../model/QgsLayerTreeNode";
+import { NodeType } from "../model/QgsLayerTreeNode";
+import type { QgsLayerTreeGroup } from "../model/QgsLayerTreeGroup";
+import type { QgsLayerTreeLayer } from "../model/QgsLayerTreeLayer";
+import type { QgsMapLayer, QgsVectorLayer } from "../model/QgsMapLayer";
+import { LayerType } from "../model/QgsMapLayer";
 import type { QgsMapRendererParallelJob } from "../model/QgsMapRendererParallelJob";
 import type { QgsMapRendererJob } from "../model/QgsMapRendererJob";
 import type { QgsMapRendererQImageJob } from "../model/QgsMapRendererQImageJob";
@@ -22,8 +22,11 @@ export type {
   QgsLayerTreeNode,
   QgsLayerTreeGroup,
   QgsLayerTreeLayer,
-  LayerTreeNodeType,
+  QgsMapLayer,
+  QgsVectorLayer,
 };
+
+export { LayerType, NodeType };
 
 /* prettier-ignore */
 
