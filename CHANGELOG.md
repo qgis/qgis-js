@@ -5,6 +5,15 @@ This document describes changes between tagged qgis-js versions
 - Replaced `mapLayers()` with `layerTreeRoot()`. (#25)
   - Exposing the full layer tree hierarchy (groups, nested layers, visibility, expand/collapse).
   - Use `layerTreeRoot().findLayers()` as a migration path for flat layer access.
+- Added `QgsMapLayer` and `QgsVectorLayer` wrappers with `name`, `opacity`, `id()`, `type()`, and `subsetString()`. (#59)
+- Added layer legend support. (#59)
+  - `QgsLayerTreeLayer.legendNodes()` returns individual legend entries with `label()` and `symbolImage()`.
+  - `renderLegend()` renders the full project legend as a high-DPI PNG (base64 data URL).
+  - `QgsLayerTreeGroup.renderLegend()` and `QgsLayerTreeLayer.renderLegend()` for subtree/single-layer legends.
+- Added optional `layerIds` parameter to all render functions (`renderImage`, `renderXYZTile`, `renderJob`, `fullExtent`, `renderLegend`). (#59)
+  - Enables rendering subsets of layers and composing multiple OL layers from different QGIS layer groups.
+  - All three OL data sources (`QgisCanvasDataSource`, `QgisXYZDataSource`, `QgisJobDataSource`) accept `layerIds` in options.
+- Added `loadLayerDefinition()` to load .qlr files at runtime into the project layer tree. (#59)
 
 ## 4.0.0 (16. March 2026)
 
