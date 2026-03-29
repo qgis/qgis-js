@@ -76,6 +76,10 @@ public:
     return result;
   }
 
+  QgsLayerTreeNode *nativeNode() const {
+    return _node;
+  }
+
 protected:
   QgsLayerTreeNode *_node;
 };

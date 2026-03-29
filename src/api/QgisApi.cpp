@@ -3,6 +3,7 @@
 #include <string>
 
 #include <qgsexpressioncontextutils.h>
+#include <qgslayerdefinition.h>
 #include <qgslayertree.h>
 #include <qgslayertreemodel.h>
 #include <qgsmaprenderercustompainterjob.h>
@@ -330,7 +331,27 @@ std::string QgisApi_renderLegend(float dpi, std::optional<emscripten::val> layer
   return renderLegendForTree(&tempRoot, dpi);
 }
 
+struct LayerDefinitionResult {
+  bool success;
+  std::string errorMessage;
+};
+
+LayerDefinitionResult
+QgisApi_loadLayerDefinition(std::string path, std::optional<LayerTreeGroup> targetGroup) {
+  QString errorMessage;
+  QgsLayerTreeGroup *group = QgsProject::instance()->layerTreeRoot();
+  if (targetGroup.has_value() && targetGroup->isValid()) {
+    group = static_cast<QgsLayerTreeGroup *>(targetGroup->nativeNode());
+  }
+  bool ok = QgsLayerDefinition::loadLayerDefinition(
+    QString::fromStdString(path), QgsProject::instance(), group, errorMessage);
+  return {ok, errorMessage.toStdString()};
+}
+
 EMSCRIPTEN_BINDINGS(QgisApi) {
+  emscripten::value_object<LayerDefinitionResult>("LayerDefinitionResult")
+    .field("success", &LayerDefinitionResult::success)
+    .field("errorMessage", &LayerDefinitionResult::errorMessage);
   emscripten::function("loadProject", &QgisApi_loadProject);
   emscripten::function("fullExtent", &QgisApi_fullExtent);
   emscripten::function("srid", &QgisApi_srid);
@@ -343,9 +364,12 @@ EMSCRIPTEN_BINDINGS(QgisApi) {
   emscripten::function("getMapTheme", &QgisApi_getMapTheme);
   emscripten::function("setMapTheme", &QgisApi_setMapTheme);
   emscripten::register_vector<std::string>("vector<std::string>");
+  emscripten::register_optional<emscripten::val>();
+  emscripten::register_optional<LayerTreeGroup>();
   emscripten::function("globalVariables", &QgisApi_globalVariables);
   emscripten::function("projectVariables", &QgisApi_projectVariables);
   emscripten::function("setGlobalVariables", &QgisApi_setGlobalVariables);
   emscripten::function("setProjectVariables", &QgisApi_setProjectVariables);
   emscripten::function("renderLegend", &QgisApi_renderLegend);
+  emscripten::function("loadLayerDefinition", &QgisApi_loadLayerDefinition);
 }
