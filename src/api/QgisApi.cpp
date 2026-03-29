@@ -1,4 +1,5 @@
 #include <memory>
+#include <optional>
 #include <string>
 
 #include <qgsexpressioncontextutils.h>
@@ -42,6 +43,19 @@ QList<QgsMapLayer *> QgisApi_visibleLayers() {
   return result;
 }
 
+QList<QgsMapLayer *> resolveLayers(std::optional<emscripten::val> layerIds) {
+  if (!layerIds.has_value() || layerIds->isUndefined() || layerIds->isNull())
+    return QgisApi_visibleLayers();
+  QList<QgsMapLayer *> result;
+  int length = (*layerIds)["length"].as<int>();
+  for (int i = 0; i < length; i++) {
+    std::string id = (*layerIds)[i].as<std::string>();
+    QgsMapLayer *layer = QgsProject::instance()->mapLayer(QString::fromStdString(id));
+    if (layer) result << layer;
+  }
+  return result;
+}
+
 bool QgisApi_loadProject(std::string filename) {
   Qgis::ProjectReadFlags readFlags =
     Qgis::ProjectReadFlag::ForceReadOnlyLayers | Qgis::ProjectReadFlag::TrustLayerMetadata;
@@ -52,10 +66,10 @@ bool QgisApi_loadProject(std::string filename) {
   return true;
 }
 
-QgsRectangle QgisApi_fullExtent() {
+QgsRectangle QgisApi_fullExtent(std::optional<emscripten::val> layerIds) {
   QgsMapSettings mapSettings;
   mapSettings.setDestinationCrs(QgsProject::instance()->crs());
-  mapSettings.setLayers(QgisApi_visibleLayers());
+  mapSettings.setLayers(resolveLayers(layerIds));
   return mapSettings.fullExtent();
 }
 
@@ -70,7 +84,8 @@ void QgisApi_renderXYZTile(
   unsigned int tileSize,
   float pixelRatio,
   float extentBufferFactor,
-  emscripten::val callback) {
+  emscripten::val callback,
+  std::optional<emscripten::val> layerIds) {
 
   QgsMapSettings mapSettings;
 
@@ -79,7 +94,7 @@ void QgisApi_renderXYZTile(
   mapSettings.setOutputSize(QSize(tileSize, tileSize));
   mapSettings.setOutputDpi(96.0 * pixelRatio);
 
-  mapSettings.setLayers(QgisApi_visibleLayers());
+  mapSettings.setLayers(resolveLayers(layerIds));
 
   mapSettings.setDestinationCrs(QgsCoordinateReferenceSystem(QStringLiteral("EPSG:3857")));
 
@@ -117,7 +132,8 @@ void QgisApi_renderImage(
   unsigned int width,
   unsigned int height,
   float pixelRatio,
-  emscripten::val callback) {
+  emscripten::val callback,
+  std::optional<emscripten::val> layerIds) {
 
   QgsMapSettings mapSettings;
 
@@ -126,7 +142,7 @@ void QgisApi_renderImage(
   mapSettings.setOutputSize(QSize(width, height));
   mapSettings.setOutputDpi(96.0 * pixelRatio);
 
-  mapSettings.setLayers(QgisApi_visibleLayers());
+  mapSettings.setLayers(resolveLayers(layerIds));
 
   mapSettings.setDestinationCrs(QgsCoordinateReferenceSystem(QString::fromStdString(srid)));
 
@@ -168,7 +184,8 @@ QgsMapRendererParallelJob *QgisApi_renderJob(
   const QgsRectangle &extent,
   unsigned int width,
   unsigned int height,
-  float pixelRatio) {
+  float pixelRatio,
+  std::optional<emscripten::val> layerIds) {
 
   QgsMapSettings mapSettings;
 
@@ -177,7 +194,7 @@ QgsMapRendererParallelJob *QgisApi_renderJob(
   mapSettings.setOutputSize(QSize(width, height));
   mapSettings.setOutputDpi(96.0 * pixelRatio);
 
-  mapSettings.setLayers(QgisApi_visibleLayers());
+  mapSettings.setLayers(resolveLayers(layerIds));
 
   mapSettings.setDestinationCrs(QgsCoordinateReferenceSystem(QString::fromStdString(srid)));
 
@@ -299,15 +316,14 @@ void QgisApi_setProjectVariables(emscripten::val variables) {
   QgsExpressionContextUtils::setProjectVariables(QgsProject::instance(), vars);
 }
 
-std::string QgisApi_renderLegend(float dpi) {
-  return renderLegendForTree(QgsProject::instance()->layerTreeRoot(), dpi);
-}
-
-std::string QgisApi_renderLegendForLayers(float dpi, emscripten::val layerIds) {
+std::string QgisApi_renderLegend(float dpi, std::optional<emscripten::val> layerIds) {
+  if (!layerIds.has_value() || layerIds->isUndefined() || layerIds->isNull()) {
+    return renderLegendForTree(QgsProject::instance()->layerTreeRoot(), dpi);
+  }
   QgsLayerTree tempRoot;
-  int length = layerIds["length"].as<int>();
+  int length = (*layerIds)["length"].as<int>();
   for (int i = 0; i < length; i++) {
-    std::string id = layerIds[i].as<std::string>();
+    std::string id = (*layerIds)[i].as<std::string>();
     QgsMapLayer *layer = QgsProject::instance()->mapLayer(QString::fromStdString(id));
     if (layer) tempRoot.addLayer(layer);
   }
@@ -332,5 +348,4 @@ EMSCRIPTEN_BINDINGS(QgisApi) {
   emscripten::function("setGlobalVariables", &QgisApi_setGlobalVariables);
   emscripten::function("setProjectVariables", &QgisApi_setProjectVariables);
   emscripten::function("renderLegend", &QgisApi_renderLegend);
-  emscripten::function("renderLegendForLayers", &QgisApi_renderLegendForLayers);
 }

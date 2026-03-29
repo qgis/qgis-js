@@ -22,7 +22,7 @@ export interface CommonQgisApi extends QgisModelConstructors {
    *
    * @returns The full extent of the loaded project.
    */
-  fullExtent(): QgsRectangle;
+  fullExtent(layerIds?: string[]): QgsRectangle;
 
   /**
    * Returns the SRID of the loaded project.
@@ -114,16 +114,7 @@ export interface CommonQgisApi extends QgisModelConstructors {
    * @param dpi - The DPI for rendering the legend.
    * @returns A base64 data URL of the legend PNG, or an empty string if the legend is empty.
    */
-  renderLegend(dpi: number): string;
-
-  /**
-   * Renders a legend for specific layers as a PNG image.
-   *
-   * @param dpi - The DPI for rendering the legend.
-   * @param layerIds - An array of layer IDs to include in the legend.
-   * @returns A base64 data URL of the legend PNG, or an empty string if the legend is empty.
-   */
-  renderLegendForLayers(dpi: number, layerIds: string[]): string;
+  renderLegend(dpi: number, layerIds?: string[]): string;
 
   /**
    * Renders an image of the loaded project and provides a QgsMapRendererParallelJob object to monitor the rendering progress and to retrieve preview images.
@@ -141,6 +132,7 @@ export interface CommonQgisApi extends QgisModelConstructors {
     width: number,
     height: number,
     pixelRatio: number,
+    layerIds?: string[],
   ): QgsMapRendererParallelJob;
 }
 
@@ -164,6 +156,7 @@ export interface QgisApiAdapter {
     width: number,
     height: number,
     pixelRatio?: number,
+    layerIds?: string[],
   ): Promise<ImageData>;
 
   /**
@@ -175,6 +168,7 @@ export interface QgisApiAdapter {
    * @param tileSize - The optional size of the tile which defaults to 256.
    * @param pixelRatio - The optional pixel ratio of the tile which defaults to 1.
    * @param extentBufferFactor - The optional extent buffer factor of the tile which defaults to 0.
+   * @param layerIds - Optional array of layer IDs to render. If omitted, renders all visible layers.
    * @returns The rendered tile as an ImageData object.
    */
   renderXYZTile(
@@ -184,6 +178,7 @@ export interface QgisApiAdapter {
     tileSize?: number,
     pixelRatio?: number,
     extentBufferFactor?: number,
+    layerIds?: string[],
   ): Promise<ImageData>;
 
   /**
@@ -212,6 +207,7 @@ export interface InternalQgisApi extends CommonQgisApi {
     height: number,
     pixelRatio: number,
     callback: (tileData: ArrayBufferLike) => void,
+    layerIds?: string[],
   ): void;
   renderXYZTile(
     x: number,
@@ -221,6 +217,7 @@ export interface InternalQgisApi extends CommonQgisApi {
     pixelRatio: number,
     extentBuffer: number,
     callback: (tileData: ArrayBufferLike) => void,
+    layerIds?: string[],
   ): number;
   mapThemes(): any;
 }

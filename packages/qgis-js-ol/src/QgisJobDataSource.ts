@@ -10,6 +10,11 @@ import {
 
 export interface QgisJobDataSourceOptions extends Options {
   /**
+   * Optional array of layer IDs to render. If omitted, renders all visible layers.
+   */
+  layerIds?: string[];
+
+  /**
    * Specifies whether to enable preview mode.
    * (default: true)
    */
@@ -30,6 +35,7 @@ export interface QgisJobDataSourceOptions extends Options {
 
 export class QgisJobDataSource extends ImageSource {
   protected api: QgisApi;
+  protected layerIds: string[] | undefined;
 
   protected preview: boolean;
   protected previewTimeout: number;
@@ -64,6 +70,7 @@ export class QgisJobDataSource extends ImageSource {
             width,
             height,
             pixelRatio,
+            this.layerIds,
           );
           this.jobs.push(job);
 
@@ -180,6 +187,7 @@ export class QgisJobDataSource extends ImageSource {
     });
 
     this.api = api;
+    this.layerIds = options.layerIds;
     this.preview =
       typeof options.preview !== "undefined" ? options.preview : true;
     this.previewTimeout =
