@@ -4,6 +4,7 @@ import ImageSource, { Options } from "ol/source/Image";
 import { getWidth, getHeight } from "ol/extent";
 
 export interface QgisCanvasDataSourceOptions extends Options {
+  layerIds?: string[];
   renderFunction?: QgisCanvasRenderFunction;
 }
 
@@ -17,6 +18,7 @@ export type QgisCanvasRenderFunction = (
   width: number,
   height: number,
   pixelRatio: number,
+  layerIds?: string[],
 ) => Promise<ImageData>;
 
 export class QgisCanvasDataSource extends ImageSource {
@@ -32,6 +34,7 @@ export class QgisCanvasDataSource extends ImageSource {
     width: number,
     height: number,
     pixelRatio: number,
+    layerIds?: string[],
   ) => {
     return api.renderImage(
       srid,
@@ -39,10 +42,12 @@ export class QgisCanvasDataSource extends ImageSource {
       width,
       height,
       pixelRatio,
+      layerIds,
     );
   };
 
   protected renderFunction: QgisCanvasRenderFunction | undefined;
+  protected layerIds: string[] | undefined;
 
   protected getrenderFunction(): QgisCanvasRenderFunction {
     return this.renderFunction || QgisCanvasDataSource.DEFAULT_RENDERFUNCTION;
@@ -69,6 +74,7 @@ export class QgisCanvasDataSource extends ImageSource {
             width,
             height,
             pixelRatio,
+            this.layerIds,
           );
 
           resolve(createImageBitmap(imageData));
@@ -79,5 +85,6 @@ export class QgisCanvasDataSource extends ImageSource {
 
     this.api = api;
     this.renderFunction = options.renderFunction;
+    this.layerIds = options.layerIds;
   }
 }

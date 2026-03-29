@@ -31,6 +31,7 @@ export class QgisApiAdapterImplementation implements QgisApiAdapter {
     width: number,
     height: number,
     pixelRatio: number = window?.devicePixelRatio || 1,
+    layerIds?: string[],
   ): Promise<ImageData> {
     return this.runLimited(() => {
       return new Promise((resolve) => {
@@ -47,6 +48,7 @@ export class QgisApiAdapterImplementation implements QgisApiAdapter {
             const imageData = new ImageData(data, width, height);
             resolve(imageData);
           },
+          layerIds,
         );
       });
     });
@@ -58,6 +60,7 @@ export class QgisApiAdapterImplementation implements QgisApiAdapter {
     tileSize: number = 256,
     pixelRatio: number = window?.devicePixelRatio || 1,
     extentBuffer: number = 0,
+    layerIds?: string[],
   ): Promise<ImageData> {
     return this.runLimited(() => {
       return new Promise((resolve) => {
@@ -75,6 +78,7 @@ export class QgisApiAdapterImplementation implements QgisApiAdapter {
             const imageData = new ImageData(data, tileSize, tileSize);
             resolve(imageData);
           },
+          layerIds,
         );
       });
     });

@@ -10,6 +10,7 @@ import ImageTile from "ol/ImageTile";
 
 export interface QgisXYZDataSourceOptions extends Options {
   extentBufferFactor?: number | (() => number);
+  layerIds?: string[];
   renderFunction?: QgisXYZRenderFunction;
   debug?: boolean;
 }
@@ -20,6 +21,7 @@ export type QgisXYZRenderFunction = (
   tileSize: number,
   pixelRatio: number,
   extentBufferFactor: number,
+  layerIds?: string[],
 ) => Promise<ImageData>;
 
 export class QgisXYZDataSource extends XYZ {
@@ -31,6 +33,7 @@ export class QgisXYZDataSource extends XYZ {
     tileSize: number,
     devicePixelRatio: number,
     extentBufferFactor: number,
+    layerIds?: string[],
   ) => {
     return api.renderXYZTile(
       tileCoord[1],
@@ -39,10 +42,12 @@ export class QgisXYZDataSource extends XYZ {
       tileSize,
       devicePixelRatio,
       extentBufferFactor,
+      layerIds,
     );
   };
 
   protected renderFunction: QgisXYZRenderFunction | undefined;
+  protected layerIds: string[] | undefined;
 
   protected getrenderFunction(): QgisXYZRenderFunction {
     return this.renderFunction || QgisXYZDataSource.DEFAULT_RENDERFUNCTION;
@@ -83,6 +88,7 @@ export class QgisXYZDataSource extends XYZ {
             tileSize,
             pixelRatio,
             this.getextentBufferFactor(),
+            this.layerIds,
           );
           context.putImageData(imageData, 0, 0);
 
@@ -109,5 +115,6 @@ export class QgisXYZDataSource extends XYZ {
     this.api = api;
     this.renderFunction = options.renderFunction;
     this.extentBufferFactor = options.extentBufferFactor;
+    this.layerIds = options.layerIds;
   }
 }
