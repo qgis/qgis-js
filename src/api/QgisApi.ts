@@ -5,6 +5,11 @@ import {
   QgsLayerTreeGroup,
 } from "./QgisModel";
 
+export interface LayerDefinitionResult {
+  success: boolean;
+  errorMessage: string;
+}
+
 /**
  * Common QGIS API which exposes the {@link QgisModelConstructors} and methods that can be accessed from both the public {@link QgisApi} and the {@link InternalQgisApi}.
  */
@@ -16,6 +21,18 @@ export interface CommonQgisApi extends QgisModelConstructors {
    * @returns true if the project was loaded successfully, false otherwise.
    */
   loadProject(filename: string): boolean;
+
+  /**
+   * Loads a QGIS Layer Definition (.qlr) file into the project.
+   *
+   * @param path - Path to the .qlr file on the virtual filesystem.
+   * @param targetGroup - Optional target group to load into. Defaults to the root group.
+   * @returns Result indicating success or failure with an error message.
+   */
+  loadLayerDefinition(
+    path: string,
+    targetGroup?: QgsLayerTreeGroup,
+  ): LayerDefinitionResult;
 
   /**
    * Returns the full extent of the loaded project.

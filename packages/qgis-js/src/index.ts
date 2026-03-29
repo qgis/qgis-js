@@ -10,6 +10,7 @@ export type {
   QgisApiAdapter,
   CommonQgisApi,
   InternalQgisApi,
+  LayerDefinitionResult,
 } from "../../../src/api/QgisApi";
 
 export type { EmscriptenFS } from "./emscripten";

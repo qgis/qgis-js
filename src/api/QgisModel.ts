@@ -28,6 +28,8 @@ export type {
   QgsVectorLayer,
 };
 
+export type { LayerDefinitionResult } from "./QgisApi";
+
 export { LayerType, NodeType };
 
 /* prettier-ignore */
