@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cmath>
 #include <string>
 
 #include <qgslayertreemodel.h>
@@ -11,8 +12,11 @@
 #include <qgssymbol.h>
 
 #include <QBuffer>
+#include <QIcon>
 #include <QImage>
 #include <QPainter>
+#include <QPixmap>
+#include <QVariant>
 
 #include <emscripten/bind.h>
 #include <emscripten/val.h>
