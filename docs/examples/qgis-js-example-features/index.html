@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>qgis-js-example-features</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <div id="top">
+        <aside>
+          <h3>Layer</h3>
+          <select id="layer-select"></select>
+          <p id="summary"></p>
+          <h3>Fields</h3>
+          <table id="fields-table">
+            <thead>
+              <tr>
+                <th>name</th>
+                <th>type</th>
+                <th>length</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </aside>
+        <div id="map"></div>
+        <aside id="identify">
+          <h3>Identify</h3>
+          <p id="identify-summary">Click the map to identify features</p>
+          <div id="identify-list"></div>
+        </aside>
+      </div>
+      <div id="bottom">
+        <h3>Features</h3>
+        <div class="actions">
+          <button id="load-more">Load more (50)</button>
+          <button id="filter-by-view">Filter by current view</button>
+          <button id="reset">Reset filter</button>
+        </div>
+        <div class="features-scroll">
+          <table id="features-table">
+            <thead>
+              <tr></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <template id="identify-card-template">
+      <div class="identify-card">
+        <div class="identify-card-header"></div>
+        <table>
+          <tbody></tbody>
+        </table>
+      </div>
+    </template>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>

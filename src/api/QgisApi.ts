@@ -5,6 +5,8 @@ import {
   QgsLayerTreeGroup,
 } from "./QgisModel";
 
+import type { IdentifyMode, IdentifyResult } from "./QgisIdentify";
+
 export interface LayerDefinitionResult {
   success: boolean;
   errorMessage: string;
@@ -151,6 +153,28 @@ export interface CommonQgisApi extends QgisModelConstructors {
     pixelRatio: number,
     layerIds?: string[],
   ): QgsMapRendererParallelJob;
+
+  /**
+   * Identifies vector features intersecting a rectangle, walking visible
+   * layers in top-down render order. Mirrors the core of QGIS's
+   * `QgsMapToolIdentify::identifyVectorLayer` without the GUI dependency.
+   *
+   * The rect is interpreted in `rectSrid`; per-layer queries reproject it
+   * into each layer's CRS. Returned feature geometries are in `rectSrid`.
+   *
+   * Uses provider spatial indexes (`setFilterRect`) + exact geometry
+   * intersection (`Qgis::FeatureRequestFlag::ExactIntersect`) — no
+   * full-layer scans.
+   *
+   * @param rect - The hit-box rectangle.
+   * @param rectSrid - SRID of the rectangle (e.g. the map's project CRS).
+   * @param mode - See {@link IdentifyMode}.
+   */
+  identify(
+    rect: QgsRectangle,
+    rectSrid: string,
+    mode: IdentifyMode,
+  ): IdentifyResult[];
 }
 
 /**

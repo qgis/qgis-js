@@ -13,6 +13,16 @@ import { LayerType } from "../model/QgsMapLayer";
 import type { QgsMapRendererParallelJob } from "../model/QgsMapRendererParallelJob";
 import type { QgsMapRendererJob } from "../model/QgsMapRendererJob";
 import type { QgsMapRendererQImageJob } from "../model/QgsMapRendererQImageJob";
+import type { QgsField } from "../model/QgsField";
+import type { QgsFields } from "../model/QgsFields";
+import type { QgsGeometry } from "../model/QgsGeometry";
+import type { QgsFeature } from "../model/QgsFeature";
+import type { QgsFeatureIterator } from "../model/QgsFeatureIterator";
+import type {
+  QgsFeatureRequest,
+  QgsFeatureRequestConstructors,
+} from "../model/QgsFeatureRequest";
+import { FeatureRequestFlag } from "../model/QgsFeatureRequest";
 
 export type {
   QgsMapRendererJob,
@@ -26,16 +36,25 @@ export type {
   QgsLayerTreeLayer,
   QgsMapLayer,
   QgsVectorLayer,
+  QgsField,
+  QgsFields,
+  QgsGeometry,
+  QgsFeature,
+  QgsFeatureIterator,
+  QgsFeatureRequest,
 };
 
 export type { LayerDefinitionResult } from "./QgisApi";
+export type { IdentifyResult } from "./QgisIdentify";
+export { IdentifyMode } from "./QgisIdentify";
 
-export { LayerType, NodeType };
+export { LayerType, NodeType, FeatureRequestFlag };
 
 /* prettier-ignore */
 
 export interface QgisModelConstructors
   extends
     QgsPointXYConstructors,
-    QgsRectangleConstructors
+    QgsRectangleConstructors,
+    QgsFeatureRequestConstructors
   {}

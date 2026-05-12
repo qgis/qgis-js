@@ -1,0 +1,162 @@
+@import "node_modules/ol/ol.css";
+
+:root {
+  --qgis: #589632;
+
+  --color-border: color-mix(in srgb, var(--qgis) 30%, white);
+  --color-row-divider: color-mix(in srgb, var(--qgis) 10%, white);
+  --color-thead-bg: color-mix(in srgb, var(--qgis) 5%, white);
+  --color-thead-border: color-mix(in srgb, var(--qgis) 25%, white);
+  --color-row-hover: color-mix(in srgb, var(--qgis) 10%, white);
+  --color-row-selected: color-mix(in srgb, var(--qgis) 30%, white);
+  --color-highlight-stroke: var(--qgis);
+  --color-highlight-fill: color-mix(in srgb, var(--qgis) 20%, transparent);
+  --color-highlight-marker-fill: color-mix(
+    in srgb,
+    var(--qgis) 40%,
+    transparent
+  );
+
+  --gap: 1rem;
+  --pad: 0.75rem;
+  --side-col: 20rem;
+  --cell-max: 10rem;
+  --hairline: 1px;
+
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-size-panel: 0.8125rem;
+  --font-size-table: 0.75rem;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+body {
+  font-family: sans-serif;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  height: 100vh;
+  padding: var(--gap);
+  box-sizing: border-box;
+}
+
+#top {
+  display: grid;
+  grid-template-columns: var(--side-col) 1fr var(--side-col);
+  gap: var(--gap);
+  flex: 1 1 50%;
+  min-height: 0;
+}
+
+#bottom {
+  flex: 1 1 50%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+aside,
+#map,
+#bottom {
+  border: var(--hairline) solid var(--color-border);
+  box-sizing: border-box;
+}
+
+aside,
+#bottom {
+  padding: var(--pad);
+  font-size: var(--font-size-panel);
+}
+
+aside {
+  overflow: auto;
+}
+
+:where(aside, #bottom) h3 {
+  margin: 1em 0 0.25em;
+}
+
+:where(aside, #bottom) h3:first-child {
+  margin-top: 0;
+}
+
+table {
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-table);
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.2em 0.4em;
+  vertical-align: top;
+}
+
+thead th {
+  position: sticky;
+  top: 0;
+  background: var(--color-thead-bg);
+  border-bottom: var(--hairline) solid var(--color-thead-border);
+  z-index: 1;
+}
+
+tbody td {
+  border-bottom: var(--hairline) solid var(--color-row-divider);
+  white-space: nowrap;
+  max-width: var(--cell-max);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.features-scroll {
+  overflow: auto;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.identify-card {
+  margin-bottom: 0.5em;
+}
+
+.identify-card-header {
+  font-weight: bold;
+  font-size: var(--font-size-table);
+  font-family: var(--font-mono);
+  margin-bottom: 0.25em;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0.5em 0;
+  flex-wrap: wrap;
+}
+
+button {
+  font-size: var(--font-size-table);
+  padding: 0.4em 0.8em;
+  cursor: pointer;
+}
+
+#features-table tbody tr {
+  cursor: pointer;
+}
+
+#features-table tbody tr:hover {
+  background: var(--color-row-hover);
+}
+
+#features-table tbody tr.selected {
+  background: var(--color-row-selected);
+}

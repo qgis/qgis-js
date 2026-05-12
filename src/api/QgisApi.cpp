@@ -17,6 +17,8 @@
 #include <QString>
 #include <QtConcurrent/QtConcurrent>
 
+#include "../model/QgsFeature.hpp"
+#include "../model/QgsFeatureRequest.hpp"
 #include "../model/QgsLayerTreeLayer.hpp"
 #include "../model/QgsMapRendererJob.hpp"
 #include "../model/QgsMapRendererParallelJob.hpp"
@@ -336,6 +338,52 @@ struct LayerDefinitionResult {
   std::string errorMessage;
 };
 
+// Identify mode mirrors the relevant subset of QgsMapToolIdentify::IdentifyMode.
+// We deliberately only ship the top-down modes (and we don't pull in qgis_gui).
+//   TopDownStopAtFirst = 0: walk visible layers top-down, return after the
+//                           first layer that yields any hits.
+//   TopDownAll         = 1: walk all visible layers top-down, return every hit.
+emscripten::val QgisApi_identify(const QgsRectangle &rect, std::string rectSrid, int mode) {
+  emscripten::val results = emscripten::val::array();
+
+  QgsCoordinateReferenceSystem rectCrs(QString::fromStdString(rectSrid));
+  const QgsCoordinateTransformContext &transformContext =
+    QgsProject::instance()->transformContext();
+
+  // QgisApi_visibleLayers() returns visible layers in render order; the first
+  // entry is the topmost layer in the layer tree.
+  const QList<QgsMapLayer *> layers = QgisApi_visibleLayers();
+
+  for (QgsMapLayer *layer : layers) {
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>(layer);
+    if (!vl) continue;
+
+    QgsFeatureRequest req;
+    req.setDestinationCrs(rectCrs, transformContext);
+    req.setFilterRect(rect);
+    req.setFlags(Qgis::FeatureRequestFlag::ExactIntersect);
+
+    emscripten::val featuresArr = emscripten::val::array();
+    QgsFeatureIterator it = vl->getFeatures(req);
+    QgsFeature f;
+    while (it.nextFeature(f)) {
+      featuresArr.call<void>("push", Feature(f));
+    }
+    it.close();
+
+    if (featuresArr["length"].as<int>() == 0) continue;
+
+    emscripten::val result = emscripten::val::object();
+    result.set("layer", wrapLayer(vl));
+    result.set("features", featuresArr);
+    results.call<void>("push", result);
+
+    if (mode == 0 /* TopDownStopAtFirst */) break;
+  }
+
+  return results;
+}
+
 LayerDefinitionResult
 QgisApi_loadLayerDefinition(std::string path, std::optional<LayerTreeGroup> targetGroup) {
   QString errorMessage;
@@ -372,4 +420,5 @@ EMSCRIPTEN_BINDINGS(QgisApi) {
   emscripten::function("setProjectVariables", &QgisApi_setProjectVariables);
   emscripten::function("renderLegend", &QgisApi_renderLegend);
   emscripten::function("loadLayerDefinition", &QgisApi_loadLayerDefinition);
+  emscripten::function("identify", &QgisApi_identify);
 }

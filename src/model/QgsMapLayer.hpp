@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <string>
 
 #include <qgsmaplayer.h>
@@ -7,6 +8,10 @@
 
 #include <emscripten/bind.h>
 #include <emscripten/val.h>
+
+#include "./QgsFeatureIterator.hpp"
+#include "./QgsFeatureRequest.hpp"
+#include "./QgsFields.hpp"
 
 class VectorLayer;
 
@@ -50,6 +55,11 @@ public:
     if (_layer) _layer->setOpacity(opacity);
   }
 
+  std::string crs() const {
+    if (!_layer) return "";
+    return _layer->crs().authid().toStdString();
+  }
+
 protected:
   QgsMapLayer *_layer;
 };
@@ -69,9 +79,29 @@ public:
     return false;
   }
 
+  double featureCount() const {
+    if (auto *vl = asVectorLayer()) return static_cast<double>(vl->featureCount());
+    return 0;
+  }
+
+  Fields fields() const {
+    if (auto *vl = asVectorLayer()) return Fields(vl->fields());
+    return Fields();
+  }
+
+  FeatureIterator getFeatures(std::optional<FeatureRequest> request) const {
+    auto *vl = asVectorLayer();
+    if (!vl) return FeatureIterator();
+    if (request.has_value()) {
+      return FeatureIterator(vl->getFeatures(request->nativeRequest()));
+    }
+    return FeatureIterator(vl->getFeatures());
+  }
+
 private:
   QgsVectorLayer *asVectorLayer() const {
-    Q_ASSERT(_layer && _layer->type() == Qgis::LayerType::Vector);
+    if (!_layer) return nullptr;
+    Q_ASSERT(_layer->type() == Qgis::LayerType::Vector);
     return static_cast<QgsVectorLayer *>(_layer);
   }
 };
@@ -89,10 +119,14 @@ EMSCRIPTEN_BINDINGS(QgsMapLayer) {
     .function("isValid", &MapLayer::isValid)
     .function("type", &MapLayer::type)
     .function("id", &MapLayer::id)
+    .function("crs", &MapLayer::crs)
     .property("name", &MapLayer::name, &MapLayer::setName)
     .property("opacity", &MapLayer::opacity, &MapLayer::setOpacity);
 
   emscripten::class_<VectorLayer, emscripten::base<MapLayer>>("QgsVectorLayer")
     .function("subsetString", &VectorLayer::subsetString)
-    .function("setSubsetString", &VectorLayer::setSubsetString);
+    .function("setSubsetString", &VectorLayer::setSubsetString)
+    .function("featureCount", &VectorLayer::featureCount)
+    .function("fields", &VectorLayer::fields)
+    .function("getFeatures", &VectorLayer::getFeatures);
 }

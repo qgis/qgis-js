@@ -1,3 +1,7 @@
+import type { QgsFeatureIterator } from "./QgsFeatureIterator";
+import type { QgsFeatureRequest } from "./QgsFeatureRequest";
+import type { QgsFields } from "./QgsFields";
+
 export enum LayerType {
   Vector = 0,
   Raster = 1,
@@ -17,9 +21,17 @@ export interface QgsMapLayer {
   isValid(): boolean;
   type(): LayerType;
   id(): string;
+  /**
+   * The authid of the layer's source CRS (e.g. `"EPSG:4326"`). Geometries
+   * returned by features are expressed in this CRS.
+   */
+  crs(): string;
 }
 
 export interface QgsVectorLayer extends QgsMapLayer {
   subsetString(): string;
   setSubsetString(subset: string): boolean;
+  featureCount(): number;
+  fields(): QgsFields;
+  getFeatures(request?: QgsFeatureRequest): QgsFeatureIterator;
 }
