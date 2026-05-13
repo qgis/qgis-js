@@ -23,7 +23,9 @@ export interface QgsMapLayer {
   id(): string;
   /**
    * The authid of the layer's source CRS (e.g. `"EPSG:4326"`). Geometries
-   * returned by features are expressed in this CRS.
+   * returned by features are expressed in this CRS unless the request used
+   * to fetch them sets a different destination CRS via
+   * `QgsFeatureRequest.setDestinationCrs()`.
    */
   crs(): string;
 }

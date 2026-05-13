@@ -162,9 +162,10 @@ export interface CommonQgisApi extends QgisModelConstructors {
    * The rect is interpreted in `rectSrid`; per-layer queries reproject it
    * into each layer's CRS. Returned feature geometries are in `rectSrid`.
    *
-   * Uses provider spatial indexes (`setFilterRect`) + exact geometry
-   * intersection (`Qgis::FeatureRequestFlag::ExactIntersect`) — no
-   * full-layer scans.
+   * Uses `setFilterRect` plus exact geometry intersection
+   * (`Qgis::FeatureRequestFlag::ExactIntersect`). When the data provider
+   * supports a spatial index, the rectangle hint lets it skip a full-layer
+   * scan; providers without an index will fall back to scanning.
    *
    * @param rect - The hit-box rectangle.
    * @param rectSrid - SRID of the rectangle (e.g. the map's project CRS).

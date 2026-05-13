@@ -22,5 +22,5 @@ export interface QgsFeature {
    * Single attribute value by field name or zero-based index. Returns null
    * when the field is unknown or the value is null.
    */
-  attribute(nameOrIndex: string | number): unknown;
+  attribute(nameOrIndex: string | number): unknown | null;
 }
