@@ -14,6 +14,16 @@ This document describes changes between tagged qgis-js versions
   - Enables rendering subsets of layers and composing multiple OL layers from different QGIS layer groups.
   - All three OL data sources (`QgisCanvasDataSource`, `QgisXYZDataSource`, `QgisJobDataSource`) accept `layerIds` in options.
 - Added `loadLayerDefinition()` to load .qlr files at runtime into the project layer tree. (#59)
+- Added feature inspection API faithful to the QGIS C++ API.
+  - `QgsFeature` with `id()`, `isValid()`, `hasGeometry()`, `geometry()`, `fields()`, `attributes()`, `attribute(name|index)`, `attributeCount()`.
+  - `QgsGeometry` with `isNull()`, `isEmpty()`, `wkbType()`, `asWkb()` (owned `Uint8Array`), `asWkt(precision)`, `asJson(precision)`.
+  - `QgsFields` / `QgsField` for layer schema introspection.
+  - `QgsFeatureIterator` with `nextFeature()` (returns the feature or `null`), `rewind()`, `close()`, `isClosed()`, `isValid()` for lazy iteration over large layers.
+  - `QgsFeatureRequest` with `setFilterRect`, `setFilterExpression`, `setFilterFid(s)`, `setLimit`, `setFlags`, `setSubsetOfAttributes`, `setDestinationCrs` — and a `FeatureRequestFlag` enum mirroring `Qgis::FeatureRequestFlag`.
+  - `QgsVectorLayer` extended with `featureCount()`, `fields()`, `getFeatures(request?)`.
+  - `QgsMapLayer.crs()` returns the layer's source SRID authid.
+- Added cross-layer identify: `api.identify(rect, rectSrid, mode)` plus an `IdentifyMode` enum (`TopDownStopAtFirst`, `TopDownAll`). Re-implements the core of `QgsMapToolIdentify::identifyVectorLayer` without pulling in `qgis_gui`.
+- Added `qgis-js-example-features` to `docs/examples/`: paginated feature table, attribute identify on map click, view-extent filter, and per-feature highlight on OpenLayers.
 
 ## 4.0.0 (16. March 2026)
 

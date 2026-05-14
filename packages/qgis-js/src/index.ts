@@ -24,8 +24,23 @@ export type {
   QgsLayerTreeLayer,
   QgsMapLayer,
   QgsVectorLayer,
+  QgsField,
+  QgsFields,
+  QgsGeometry,
+  QgsFeature,
+  QgsFeatureIterator,
+  QgsFeatureRequest,
+  QgsExpression,
+  QgsExpressionContext,
 } from "../../../src/api/QgisModel";
 
-export { LayerType, NodeType } from "../../../src/api/QgisModel";
+export {
+  LayerType,
+  NodeType,
+  FeatureRequestFlag,
+  IdentifyMode,
+} from "../../../src/api/QgisModel";
+
+export type { IdentifyResult } from "../../../src/api/QgisModel";
 
 export { qgis } from "./loader";
