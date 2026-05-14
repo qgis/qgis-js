@@ -28,6 +28,10 @@
         <div id="map"></div>
         <aside id="identify">
           <h3>Identify</h3>
+          <label class="inline">
+            Hit box (px):
+            <input id="hit-box" type="number" min="1" max="50" value="5" />
+          </label>
           <p id="identify-summary">Click the map to identify features</p>
           <div id="identify-list"></div>
         </aside>
@@ -35,9 +39,19 @@
       <div id="bottom">
         <h3>Features</h3>
         <div class="actions">
-          <button id="load-more">Load more (50)</button>
           <button id="filter-by-view">Filter by current view</button>
-          <button id="reset">Reset filter</button>
+          <button id="reset" disabled>Reset filter</button>
+          <label class="inline">
+            Page size:
+            <select id="page-size">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50" selected>50</option>
+              <option value="100">100</option>
+              <option value="200">200</option>
+            </select>
+          </label>
+          <nav id="pagination"></nav>
         </div>
         <div class="features-scroll">
           <table id="features-table">
@@ -49,10 +63,16 @@
         </div>
       </div>
     </div>
+    <div id="popup"></div>
     <template id="identify-card-template">
       <div class="identify-card">
-        <div class="identify-card-header"></div>
         <table>
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Value</th>
+            </tr>
+          </thead>
           <tbody></tbody>
         </table>
       </div>

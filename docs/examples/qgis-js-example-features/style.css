@@ -16,6 +16,16 @@
     var(--qgis) 40%,
     transparent
   );
+  --color-highlight-secondary-stroke: color-mix(
+    in srgb,
+    var(--qgis) 50%,
+    transparent
+  );
+  --color-highlight-secondary-fill: color-mix(
+    in srgb,
+    var(--qgis) 8%,
+    transparent
+  );
 
   --gap: 1rem;
   --pad: 0.75rem;
@@ -91,6 +101,7 @@ aside {
 
 table {
   border-collapse: collapse;
+  width: 100%;
   font-family: var(--font-mono);
   font-size: var(--font-size-table);
 }
@@ -128,11 +139,14 @@ tbody td {
   margin-bottom: 0.5em;
 }
 
-.identify-card-header {
-  font-weight: bold;
-  font-size: var(--font-size-table);
-  font-family: var(--font-mono);
-  margin-bottom: 0.25em;
+#popup {
+  background: white;
+  border: var(--hairline) solid var(--color-border);
+  border-radius: 0.25rem;
+  padding: var(--pad);
+  max-width: 20rem;
+  box-shadow: 0 0.1rem 0.3rem rgb(0 0 0 / 0.15);
+  font-size: var(--font-size-panel);
 }
 
 .actions {
@@ -143,10 +157,42 @@ tbody td {
   flex-wrap: wrap;
 }
 
+.inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+}
+
+input[type="number"] {
+  font: inherit;
+  width: 4em;
+  padding: 0.2em 0.4em;
+}
+
 button {
   font-size: var(--font-size-table);
   padding: 0.4em 0.8em;
   cursor: pointer;
+}
+
+#pagination {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25em;
+  margin-left: auto;
+}
+
+#pagination button {
+  min-width: 2em;
+}
+
+#pagination button.current {
+  background: var(--color-row-selected);
+  font-weight: bold;
+}
+
+.identify-card thead th {
+  position: static;
 }
 
 #features-table tbody tr {

@@ -23,6 +23,14 @@ import type {
   QgsFeatureRequestConstructors,
 } from "../model/QgsFeatureRequest";
 import { FeatureRequestFlag } from "../model/QgsFeatureRequest";
+import type {
+  QgsExpression,
+  QgsExpressionConstructors,
+} from "../model/QgsExpression";
+import type {
+  QgsExpressionContext,
+  QgsExpressionContextConstructors,
+} from "../model/QgsExpressionContext";
 
 export type {
   QgsMapRendererJob,
@@ -42,6 +50,8 @@ export type {
   QgsFeature,
   QgsFeatureIterator,
   QgsFeatureRequest,
+  QgsExpression,
+  QgsExpressionContext,
 };
 
 export type { LayerDefinitionResult } from "./QgisApi";
@@ -56,5 +66,7 @@ export interface QgisModelConstructors
   extends
     QgsPointXYConstructors,
     QgsRectangleConstructors,
-    QgsFeatureRequestConstructors
+    QgsFeatureRequestConstructors,
+    QgsExpressionConstructors,
+    QgsExpressionContextConstructors
   {}

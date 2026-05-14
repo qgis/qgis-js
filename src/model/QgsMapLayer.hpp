@@ -3,12 +3,16 @@
 #include <optional>
 #include <string>
 
+#include <qgsexpressioncontext.h>
+#include <qgsexpressioncontextutils.h>
 #include <qgsmaplayer.h>
+#include <qgsproject.h>
 #include <qgsvectorlayer.h>
 
 #include <emscripten/bind.h>
 #include <emscripten/val.h>
 
+#include "./QgsExpressionContext.hpp"
 #include "./QgsFeatureIterator.hpp"
 #include "./QgsFeatureRequest.hpp"
 #include "./QgsFields.hpp"
@@ -98,6 +102,25 @@ public:
     return FeatureIterator(vl->getFeatures());
   }
 
+  std::string displayExpression() const {
+    if (auto *vl = asVectorLayer()) return vl->displayExpression().toStdString();
+    return "";
+  }
+
+  std::string mapTipTemplate() const {
+    if (auto *vl = asVectorLayer()) return vl->mapTipTemplate().toStdString();
+    return "";
+  }
+
+  ExpressionContext createExpressionContext() const {
+    auto *vl = asVectorLayer();
+    if (!vl) return ExpressionContext();
+    QgsExpressionContext ctx = QgsProject::instance()->createExpressionContext();
+    ctx << QgsExpressionContextUtils::layerScope(vl);
+    ctx.setFields(vl->fields());
+    return ExpressionContext(ctx);
+  }
+
 private:
   QgsVectorLayer *asVectorLayer() const {
     if (!_layer) return nullptr;
@@ -128,5 +151,8 @@ EMSCRIPTEN_BINDINGS(QgsMapLayer) {
     .function("setSubsetString", &VectorLayer::setSubsetString)
     .function("featureCount", &VectorLayer::featureCount)
     .function("fields", &VectorLayer::fields)
-    .function("getFeatures", &VectorLayer::getFeatures);
+    .function("getFeatures", &VectorLayer::getFeatures)
+    .function("displayExpression", &VectorLayer::displayExpression)
+    .function("mapTipTemplate", &VectorLayer::mapTipTemplate)
+    .function("createExpressionContext", &VectorLayer::createExpressionContext);
 }

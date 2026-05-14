@@ -1,3 +1,4 @@
+import type { QgsExpressionContext } from "./QgsExpressionContext";
 import type { QgsFeatureIterator } from "./QgsFeatureIterator";
 import type { QgsFeatureRequest } from "./QgsFeatureRequest";
 import type { QgsFields } from "./QgsFields";
@@ -36,4 +37,14 @@ export interface QgsVectorLayer extends QgsMapLayer {
   featureCount(): number;
   fields(): QgsFields;
   getFeatures(request?: QgsFeatureRequest): QgsFeatureIterator;
+  /** The configured display expression (e.g. `"name"`). Empty if none. */
+  displayExpression(): string;
+  /** The HTML map-tip template, which may contain `[% expr %]` placeholders. Empty if none. */
+  mapTipTemplate(): string;
+  /**
+   * Builds an expression context with the standard scopes stacked
+   * (global → project → layer) and the layer's fields set. Call
+   * `setFeature(feature)` on the result before passing to an expression.
+   */
+  createExpressionContext(): QgsExpressionContext;
 }

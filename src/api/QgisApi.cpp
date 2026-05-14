@@ -17,6 +17,8 @@
 #include <QString>
 #include <QtConcurrent/QtConcurrent>
 
+#include "../model/QgsExpression.hpp"
+#include "../model/QgsExpressionContext.hpp"
 #include "../model/QgsFeature.hpp"
 #include "../model/QgsFeatureRequest.hpp"
 #include "../model/QgsLayerTreeLayer.hpp"

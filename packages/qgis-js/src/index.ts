@@ -30,6 +30,8 @@ export type {
   QgsFeature,
   QgsFeatureIterator,
   QgsFeatureRequest,
+  QgsExpression,
+  QgsExpressionContext,
 } from "../../../src/api/QgisModel";
 
 export {

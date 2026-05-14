@@ -49,6 +49,10 @@ public:
     return result;
   }
 
+  const QgsFeature &nativeFeature() const {
+    return _feature;
+  }
+
   emscripten::val attribute(emscripten::val nameOrIndex) const {
     if (nameOrIndex.isNumber()) {
       int idx = nameOrIndex.as<int>();
