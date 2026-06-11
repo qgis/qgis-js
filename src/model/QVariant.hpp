@@ -57,6 +57,8 @@ inline QVariant valToQVariant(const emscripten::val &v) {
   std::string t = v.typeOf().as<std::string>();
   if (t == "boolean") return QVariant(v.as<bool>());
   if (t == "number") return QVariant(v.as<double>());
+  if (t == "bigint")
+    return QVariant(QString::fromStdString(v.call<emscripten::val>("toString").as<std::string>()));
   if (t == "string") return QVariant(QString::fromStdString(v.as<std::string>()));
   if (t == "object") {
     emscripten::val u8 = emscripten::val::global("Uint8Array");

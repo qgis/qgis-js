@@ -1,7 +1,7 @@
 #pragma once
 
+#include <memory>
 #include <string>
-
 #include <qgspoint.h>
 #include <qgspolygon.h>
 #include <qgsregularpolygon.h>
