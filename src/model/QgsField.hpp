@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include <QMetaType>
 #include <qgsfield.h>
 
 #include <emscripten/bind.h>
@@ -10,6 +11,8 @@ class Field {
 public:
   Field() = default;
   Field(const QgsField &field) : _field(field) {}
+  Field(std::string name, int type) :
+    _field(QString::fromStdString(name), static_cast<QMetaType::Type>(type)) {}
 
   std::string name() const {
     return _field.name().toStdString();
@@ -46,6 +49,7 @@ private:
 EMSCRIPTEN_BINDINGS(QgsField) {
   emscripten::class_<Field>("QgsField")
     .constructor<>()
+    .constructor<std::string, int>()
     .function("name", &Field::name)
     .function("typeName", &Field::typeName)
     .function("type", &Field::type)

@@ -1,0 +1,171 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f6f6f6;
+  --panel: #ffffff;
+  --border: #d8d8d8;
+  --accent: #2b7a3f;
+  --accent-fg: #ffffff;
+  --muted: #666;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1a1a1a;
+    --panel: #242424;
+    --border: #383838;
+    --accent: #4eb56a;
+    --accent-fg: #0c1f12;
+    --muted: #999;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: inherit;
+}
+
+#app {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+}
+
+#sidebar {
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  padding: 16px 18px;
+  overflow-y: auto;
+  font-size: 14px;
+}
+
+#sidebar h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+#sidebar h3 {
+  margin: 18px 0 6px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.4;
+  margin: 0 0 14px;
+}
+
+.tools {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.tools button {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: inherit;
+  border-radius: 4px;
+  cursor: pointer;
+  font: inherit;
+}
+.tools button:hover {
+  border-color: var(--accent);
+}
+.tools button.active {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: var(--accent);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.actions button {
+  flex: 1;
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: inherit;
+  border-radius: 4px;
+  cursor: pointer;
+  font: inherit;
+}
+.actions button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+dl#metrics {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 12px;
+  margin: 0;
+}
+dl#metrics dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+dl#metrics dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  word-break: break-word;
+}
+
+#m-valid.valid {
+  color: var(--accent);
+}
+#m-valid.invalid {
+  color: #c44;
+}
+
+.collapsed-toggle {
+  cursor: pointer;
+  user-select: none;
+}
+
+pre#m-wkt {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px;
+  font-size: 11px;
+  max-height: 160px;
+  overflow: auto;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+pre.hidden {
+  display: none;
+}
+
+.footnote {
+  color: var(--muted);
+  font-size: 11.5px;
+  margin-top: 16px;
+  line-height: 1.4;
+}
+
+#map {
+  height: 100%;
+}

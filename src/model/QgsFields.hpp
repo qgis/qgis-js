@@ -29,6 +29,15 @@ public:
     return emscripten::val(Field(_fields.at(idx)));
   }
 
+  /**
+   * Append a copy of `f`. Returns true if the field was added (its name is
+   * not already in use), false otherwise — matches the underlying
+   * QgsFields::append return semantics.
+   */
+  bool append(const Field &f) {
+    return _fields.append(f.nativeField());
+  }
+
   const QgsFields &nativeFields() const {
     return _fields;
   }
@@ -42,5 +51,6 @@ EMSCRIPTEN_BINDINGS(QgsFields) {
     .constructor<>()
     .function("count", &Fields::count)
     .function("at", &Fields::at)
-    .function("field", &Fields::field);
+    .function("field", &Fields::field)
+    .function("append", &Fields::append);
 }

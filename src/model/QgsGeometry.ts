@@ -1,3 +1,5 @@
+import type { QgsRectangle } from "./QgsRectangle";
+
 /**
  * A geometry, mirroring the QGIS QgsGeometry value type. Use {@link asWkb},
  * {@link asWkt}, or {@link asJson} to serialize for consumption in JS (e.g.
@@ -9,7 +11,7 @@ export interface QgsGeometry {
   isNull(): boolean;
   isEmpty(): boolean;
   /**
-   * The Qgis::WkbType enum value of the geometry.
+   * The Qgis::WkbType enum value of the geometry. See {@link WkbType}.
    */
   wkbType(): number;
   /**
@@ -27,4 +29,38 @@ export interface QgsGeometry {
    * @param precision number of decimal places for coordinate values (QGIS default is 17).
    */
   asJson(precision: number): string;
+  /**
+   * Planar area in the geometry's units. Always 0 for non-areal geometries.
+   * For ellipsoidal area use a `QgsDistanceArea` (not yet bound).
+   */
+  area(): number;
+  /**
+   * Planar length: line length for curves, perimeter for polygons, 0 for points.
+   */
+  length(): number;
+  /**
+   * The geometric centroid. Always a single point even for collections.
+   */
+  centroid(): QgsGeometry;
+  /**
+   * Axis-aligned bounding box of the geometry.
+   */
+  boundingBox(): QgsRectangle;
+  /**
+   * Validity according to GEOS. Cheap; uses the same checks the QGIS validator
+   * tool surfaces. For the list of errors use {@link validationErrors}.
+   */
+  isGeosValid(): boolean;
+  /**
+   * Human-readable validation messages. Empty array when the geometry is valid.
+   */
+  validationErrors(): string[];
+}
+
+export interface QgsGeometryConstructors {
+  QgsGeometry: {
+    new (): QgsGeometry;
+    fromWkt(wkt: string): QgsGeometry;
+    fromWkb(wkb: Uint8Array): QgsGeometry;
+  };
 }

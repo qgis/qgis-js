@@ -24,6 +24,22 @@ This document describes changes between tagged qgis-js versions
   - `QgsMapLayer.crs()` returns the layer's source SRID authid.
 - Added cross-layer identify: `api.identify(rect, rectSrid, mode)` plus an `IdentifyMode` enum (`TopDownStopAtFirst`, `TopDownAll`). Re-implements the core of `QgsMapToolIdentify::identifyVectorLayer` without pulling in `qgis_gui`.
 - Added `qgis-js-example-features` to `docs/examples/`: paginated feature table, attribute identify on map click, view-extent filter, and per-feature highlight on OpenLayers.
+- Added the full 2D `QgsAbstractGeometry` hierarchy as JS-constructable wrappers, so geometries can be created and inspected from JS without going through `QgsVectorLayer`:
+  - Primitives: `QgsPoint` (XY/Z/M-aware, distinct from `QgsPointXY`), `QgsLineString`, `QgsPolygon`.
+  - Curves: `QgsCircularString`, `QgsCompoundCurve`, `QgsCurvePolygon`.
+  - Collections: `QgsGeometryCollection`, `QgsMultiPoint`, `QgsMultiLineString`, `QgsMultiCurve`, `QgsMultiPolygon`, `QgsMultiSurface`.
+  - Shape constructors: `QgsTriangle`, `QgsCircle`, `QgsEllipse`, `QgsRegularPolygon`, `QgsQuadrilateral` (convert to polygon/curve via `toPolygon(segments)` or `toCircularString()`).
+  - 3D bounds: `QgsBox3D` (companion of `QgsRectangle`).
+- Extended `QgsGeometry` with `fromWkt(wkt)` / `fromWkb(uint8array)` static factories so JS can construct geometries from OL/Mapbox/GeoJSON output, plus `area()`, `length()`, `centroid()`, `boundingBox()`, `isGeosValid()` and `validationErrors()` for analysis.
+- Added `QgsWkbTypes` with class-function helpers (`displayString`, `geometryType`, `flatType`, `singleType`, `multiType`, `hasZ`, `hasM`, `isSingleType`, `isMultiType`) and the `WkbType` / `GeometryType` TS enums.
+- Each concrete geometry type exposes a `fromGeometry(geom)` static factory that returns a typed wrapper (or `null` when the WKB types don't match) — pattern lets JS code unwrap a `QgsGeometry` into the concrete subclass for type-specific accessors.
+- Added dynamic-project / dynamic-layer surface for building QGIS state from JS without loading a `.qgz` / `.gpkg`:
+  - `api.clearProject()` and `api.addMapLayer(layer)` for project lifecycle.
+  - `QgsVectorLayer.createMemoryLayer(name, wkbType, crs, fields)` factory (backed by `QgsMemoryProviderUtils`).
+  - `QgsVectorLayer.addFeature(feature)` — appends to the data provider and triggers a repaint; works on memory layers without `startEditing()`.
+  - `new QgsField(name, type)` + `QgsFields.append(field)` for building schemas in JS, plus a `FieldType` TS enum mirroring the relevant `QMetaType::Type` values.
+  - `new QgsFeature(fields)`, `feature.setGeometry(geom)`, and `feature.setAttribute(nameOrIndex, value)` for constructing features in JS. Attribute values marshal automatically from JS booleans/numbers/strings/`Uint8Array`/null via a new `valToQVariant` helper.
+- Added `qgis-js-example-digitize` to `docs/examples/`: builds a QGIS project entirely in JS (three memory layers — Point, LineString, Polygon — with their own schemas), commits each OpenLayers sketch as a real `QgsFeature`, and renders the result through `QgisCanvasDataSource` so the visible map is being drawn by QGIS itself. Sidebar shows live per-layer feature counts plus the analysis of the last sketch (WKT, area, length, centroid, GEOS validity).
 
 ## 4.0.0 (16. March 2026)
 

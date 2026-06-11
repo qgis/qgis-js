@@ -15,6 +15,29 @@ class Feature {
 public:
   Feature() = default;
   Feature(const QgsFeature &feature) : _feature(feature) {}
+  Feature(const Fields &fields) : _feature(fields.nativeFields()) {
+    _feature.initAttributes(fields.nativeFields().count());
+  }
+
+  void setGeometry(const Geometry &geom) {
+    _feature.setGeometry(geom.nativeGeometry());
+  }
+
+  /**
+   * Set an attribute by field name or zero-based index. JS values are
+   * marshalled to QVariant via valToQVariant (see QVariant.hpp). Returns
+   * false if the field name/index is unknown.
+   */
+  bool setAttribute(emscripten::val nameOrIndex, emscripten::val value) {
+    QVariant v = valToQVariant(value);
+    if (nameOrIndex.isNumber()) {
+      return _feature.setAttribute(nameOrIndex.as<int>(), v);
+    }
+    if (nameOrIndex.isString()) {
+      return _feature.setAttribute(QString::fromStdString(nameOrIndex.as<std::string>()), v);
+    }
+    return false;
+  }
 
   double id() const {
     return static_cast<double>(_feature.id());
@@ -74,6 +97,7 @@ private:
 EMSCRIPTEN_BINDINGS(QgsFeature) {
   emscripten::class_<Feature>("QgsFeature")
     .constructor<>()
+    .constructor<const Fields &>()
     .function("id", &Feature::id)
     .function("isValid", &Feature::isValid)
     .function("hasGeometry", &Feature::hasGeometry)
@@ -81,5 +105,7 @@ EMSCRIPTEN_BINDINGS(QgsFeature) {
     .function("fields", &Feature::fields)
     .function("attributeCount", &Feature::attributeCount)
     .function("attributes", &Feature::attributes)
-    .function("attribute", &Feature::attribute);
+    .function("attribute", &Feature::attribute)
+    .function("setGeometry", &Feature::setGeometry)
+    .function("setAttribute", &Feature::setAttribute);
 }
