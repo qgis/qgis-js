@@ -1,6 +1,8 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
+#include <vector>
 
 #include <QByteArray>
 #include <QDate>
@@ -35,6 +37,40 @@ inline emscripten::val makeIntegerVal(unsigned long long value) {
   constexpr unsigned long long SAFE = 1ULL << 53;
   if (value <= SAFE) return emscripten::val(static_cast<double>(value));
   return emscripten::val::global("BigInt")(emscripten::val(std::to_string(value)));
+}
+
+/**
+ * Convert a JS value to a QVariant for round-trip storage as a feature
+ * attribute or expression value. The mapping is:
+ *  - null / undefined        -> invalid QVariant (NULL)
+ *  - boolean                 -> bool
+ *  - number                  -> double (QGIS coerces to the field's declared type on write)
+ *  - string                  -> QString
+ *  - Uint8Array              -> QByteArray
+ *  - anything else           -> QString via JSON.stringify
+ *
+ * Numeric precision: integers up to 2^53 round-trip cleanly through double.
+ * Use a string for larger integers.
+ */
+inline QVariant valToQVariant(const emscripten::val &v) {
+  if (v.isNull() || v.isUndefined()) return QVariant();
+  std::string t = v.typeOf().as<std::string>();
+  if (t == "boolean") return QVariant(v.as<bool>());
+  if (t == "number") return QVariant(v.as<double>());
+  if (t == "bigint")
+    return QVariant(QString::fromStdString(v.call<emscripten::val>("toString").as<std::string>()));
+  if (t == "string") return QVariant(QString::fromStdString(v.as<std::string>()));
+  if (t == "object") {
+    emscripten::val u8 = emscripten::val::global("Uint8Array");
+    if (!u8.isUndefined() && v.instanceof (u8)) {
+      std::vector<uint8_t> bytes = emscripten::convertJSArrayToNumberVector<uint8_t>(v);
+      return QVariant(
+        QByteArray(reinterpret_cast<const char *>(bytes.data()), static_cast<int>(bytes.size())));
+    }
+    emscripten::val json = emscripten::val::global("JSON").call<emscripten::val>("stringify", v);
+    return QVariant(QString::fromStdString(json.as<std::string>()));
+  }
+  return QVariant();
 }
 
 inline emscripten::val qvariantToVal(const QVariant &v) {

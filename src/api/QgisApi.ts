@@ -3,6 +3,7 @@ import {
   QgsMapRendererParallelJob,
   QgsRectangle,
   QgsLayerTreeGroup,
+  QgsVectorLayer,
 } from "./QgisModel";
 
 import type { IdentifyMode, IdentifyResult } from "./QgisIdentify";
@@ -23,6 +24,24 @@ export interface CommonQgisApi extends QgisModelConstructors {
    * @returns true if the project was loaded successfully, false otherwise.
    */
   loadProject(filename: string): boolean;
+
+  /**
+   * Drops all layers, layouts and variables from the current project,
+   * leaving an empty project ready to be populated from JS — useful when
+   * building a project dynamically with `QgsVectorLayer.createMemoryLayer`
+   * and `addMapLayer`.
+   */
+  clearProject(): void;
+
+  /**
+   * Register a layer (typically created by
+   * `QgsVectorLayer.createMemoryLayer`) with the current project. The
+   * project takes ownership of the underlying QGIS layer — do NOT call
+   * `addMapLayer` twice with the same wrapper.
+   *
+   * @returns true if the layer was added.
+   */
+  addMapLayer(layer: QgsVectorLayer): boolean;
 
   /**
    * Loads a QGIS Layer Definition (.qlr) file into the project.

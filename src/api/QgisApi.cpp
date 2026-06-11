@@ -17,16 +17,35 @@
 #include <QString>
 #include <QtConcurrent/QtConcurrent>
 
+#include "../model/QgsBox3D.hpp"
+#include "../model/QgsCircle.hpp"
+#include "../model/QgsCircularString.hpp"
+#include "../model/QgsCompoundCurve.hpp"
+#include "../model/QgsCurvePolygon.hpp"
+#include "../model/QgsEllipse.hpp"
 #include "../model/QgsExpression.hpp"
 #include "../model/QgsExpressionContext.hpp"
 #include "../model/QgsFeature.hpp"
 #include "../model/QgsFeatureRequest.hpp"
+#include "../model/QgsGeometryCollection.hpp"
 #include "../model/QgsLayerTreeLayer.hpp"
+#include "../model/QgsLineString.hpp"
 #include "../model/QgsMapRendererJob.hpp"
 #include "../model/QgsMapRendererParallelJob.hpp"
 #include "../model/QgsMapRendererQImageJob.hpp"
+#include "../model/QgsMultiCurve.hpp"
+#include "../model/QgsMultiLineString.hpp"
+#include "../model/QgsMultiPoint.hpp"
+#include "../model/QgsMultiPolygon.hpp"
+#include "../model/QgsMultiSurface.hpp"
+#include "../model/QgsPoint.hpp"
 #include "../model/QgsPointXY.hpp"
+#include "../model/QgsPolygon.hpp"
+#include "../model/QgsQuadrilateral.hpp"
 #include "../model/QgsRectangle.hpp"
+#include "../model/QgsRegularPolygon.hpp"
+#include "../model/QgsTriangle.hpp"
+#include "../model/QgsWkbTypes.hpp"
 
 #include <emscripten/bind.h>
 #include <emscripten/val.h>
@@ -386,6 +405,22 @@ emscripten::val QgisApi_identify(const QgsRectangle &rect, std::string rectSrid,
   return results;
 }
 
+// Add a JS-constructed (typically memory) layer to the current project.
+// Ownership of the underlying QgsVectorLayer pointer is transferred to
+// QgsProject — the caller's wrapper must not be used to free it.
+bool QgisApi_addMapLayer(const VectorLayer &layer) {
+  QgsVectorLayer *vl = layer.nativeVectorLayer();
+  if (!vl) return false;
+  return QgsProject::instance()->addMapLayer(vl) != nullptr;
+}
+
+// Wipe the current project — drops layers, layouts, variables. The global
+// QgsProject::instance() singleton is reset to an empty state ready to
+// build a fresh project on top of.
+void QgisApi_clearProject() {
+  QgsProject::instance()->clear();
+}
+
 LayerDefinitionResult
 QgisApi_loadLayerDefinition(std::string path, std::optional<LayerTreeGroup> targetGroup) {
   QString errorMessage;
@@ -423,4 +458,6 @@ EMSCRIPTEN_BINDINGS(QgisApi) {
   emscripten::function("renderLegend", &QgisApi_renderLegend);
   emscripten::function("loadLayerDefinition", &QgisApi_loadLayerDefinition);
   emscripten::function("identify", &QgisApi_identify);
+  emscripten::function("addMapLayer", &QgisApi_addMapLayer);
+  emscripten::function("clearProject", &QgisApi_clearProject);
 }

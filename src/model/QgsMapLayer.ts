@@ -1,4 +1,5 @@
 import type { QgsExpressionContext } from "./QgsExpressionContext";
+import type { QgsFeature } from "./QgsFeature";
 import type { QgsFeatureIterator } from "./QgsFeatureIterator";
 import type { QgsFeatureRequest } from "./QgsFeatureRequest";
 import type { QgsFields } from "./QgsFields";
@@ -47,4 +48,31 @@ export interface QgsVectorLayer extends QgsMapLayer {
    * `setFeature(feature)` on the result before passing to an expression.
    */
   createExpressionContext(): QgsExpressionContext;
+  /**
+   * Append a feature to the layer's data provider and trigger a repaint.
+   * For memory-provider layers this works without `startEditing()`. Returns
+   * false if the provider rejected the feature.
+   */
+  addFeature(feature: QgsFeature): boolean;
+}
+
+export interface QgsVectorLayerConstructors {
+  QgsVectorLayer: {
+    /**
+     * Create an in-memory vector layer with the given schema. The layer is
+     * heap-allocated; call `api.addMapLayer(layer)` to transfer ownership
+     * to the project, otherwise it leaks.
+     *
+     * @param name human-readable layer name
+     * @param wkbType a {@link WkbType} value matching the geometry shape
+     * @param crs authid like `"EPSG:3857"`
+     * @param fields the field schema (build via `new QgsFields()` + `append`)
+     */
+    createMemoryLayer(
+      name: string,
+      wkbType: number,
+      crs: string,
+      fields: QgsFields,
+    ): QgsVectorLayer;
+  };
 }

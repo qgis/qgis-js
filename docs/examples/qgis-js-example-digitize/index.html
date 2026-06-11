@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>qgis-js-example-digitize</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <aside id="sidebar">
+        <h2>Dynamic project</h2>
+        <p class="hint">
+          A QGIS project is built entirely in JS — three memory-provider
+          <code>QgsVectorLayer</code>s with their own schemas. Sketches are
+          pushed in as real <code>QgsFeature</code>s and rendered by QGIS, not
+          by OpenLayers.
+        </p>
+
+        <h3>Active layer</h3>
+        <div class="tools">
+          <button data-type="Point" class="active">Point</button>
+          <button data-type="LineString">LineString</button>
+          <button data-type="Polygon">Polygon</button>
+        </div>
+
+        <div class="actions">
+          <button id="undo" disabled>Undo last vertex</button>
+          <button id="clear">Reset project</button>
+        </div>
+
+        <h3>Project layers</h3>
+        <dl id="layer-counts">
+          <dt>Points</dt>
+          <dd id="c-Point">0</dd>
+          <dt>Lines</dt>
+          <dd id="c-LineString">0</dd>
+          <dt>Polygons</dt>
+          <dd id="c-Polygon">0</dd>
+        </dl>
+
+        <h3>Last sketch</h3>
+        <dl id="metrics">
+          <dt>Type</dt>
+          <dd id="m-type">—</dd>
+          <dt>Vertices</dt>
+          <dd id="m-vertices">—</dd>
+          <dt>Area (m²)</dt>
+          <dd id="m-area">—</dd>
+          <dt>Length / perimeter (m)</dt>
+          <dd id="m-length">—</dd>
+          <dt>Centroid</dt>
+          <dd id="m-centroid">—</dd>
+          <dt>Valid</dt>
+          <dd id="m-valid">—</dd>
+        </dl>
+
+        <h3 class="collapsed-toggle" id="wkt-toggle">WKT ▸</h3>
+        <pre id="m-wkt" class="hidden"></pre>
+
+        <p class="footnote">
+          The features become real entries in
+          <code>QgsProject::instance()</code> — the map you see is rendered by
+          QGIS itself, not by OL. Switching draw type only changes which memory
+          layer receives the next sketch; everything you drew before stays in
+          its layer.
+        </p>
+      </aside>
+      <div id="map"></div>
+    </div>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>
