@@ -1,10 +1,10 @@
 #pragma once
 
 #include <memory>
-#include <string>
 #include <qgspoint.h>
 #include <qgspolygon.h>
 #include <qgsquadrilateral.h>
+#include <string>
 
 #include <emscripten/bind.h>
 #include <emscripten/val.h>

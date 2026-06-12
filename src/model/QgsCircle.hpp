@@ -1,11 +1,11 @@
 #pragma once
 
 #include <memory>
-#include <string>
 #include <qgscircle.h>
 #include <qgscircularstring.h>
 #include <qgspoint.h>
 #include <qgspolygon.h>
+#include <string>
 
 #include <emscripten/bind.h>
 #include <emscripten/val.h>
