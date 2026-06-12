@@ -3,7 +3,3 @@ packages:
   - sites/*
 allowBuilds:
   esbuild: true
-overrides:
-  # Temporary: keep the transitive acorn on the newest version older than the
-  # 24h minimumReleaseAge window. Remove once 8.17.0 (2026-06-11) has aged out.
-  acorn: "8.16.0"
