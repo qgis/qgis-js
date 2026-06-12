@@ -1,0 +1,119 @@
+name: Update Engines
+
+# Nightly check of all "engines" in package.json. For each engine with a newer
+# in-track version, a dedicated PR is created/updated on branch `update/<engine>`
+# and a full compile is dispatched on that branch (see docs/engine-updates.md).
+#
+# Merging stays manual for now.
+
+on:
+  schedule:
+    - cron: "17 3 * * *" # nightly, off-peak
+  workflow_dispatch:
+    inputs:
+      engine:
+        description: "Only check a single engine (empty = all)"
+        required: false
+        type: choice
+        options: ["", "node", "pnpm", "emsdk", "vcpkg", "qgis"]
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write # to dispatch the Build workflow on the update branch
+
+concurrency:
+  group: update-engines
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      max-parallel: 1 # avoid racing pushes / PR creation
+      matrix:
+        engine: [node, pnpm, emsdk, vcpkg, qgis]
+    steps:
+      - name: Skip if filtered by input
+        id: filter
+        run: |
+          if [ -n "${{ inputs.engine }}" ] && [ "${{ inputs.engine }}" != "${{ matrix.engine }}" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.filter.outputs.skip == 'false'
+        # submodules are NOT checked out here; apply.mjs shallow-inits the
+        # affected submodule itself when needed (emsdk / vcpkg)
+
+      - name: Setup node from package.json
+        if: steps.filter.outputs.skip == 'false'
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: "package.json"
+
+      - name: Check for update
+        if: steps.filter.outputs.skip == 'false'
+        id: check
+        run: node build/update/check.mjs ${{ matrix.engine }}
+
+      - name: Apply update
+        if: steps.filter.outputs.skip == 'false' && steps.check.outputs.needs_update == 'true'
+        run: |
+          node build/update/apply.mjs ${{ matrix.engine }} '${{ steps.check.outputs.result }}'
+
+      - name: Refresh lockfile (pnpm only)
+        if: steps.filter.outputs.skip == 'false' && steps.check.outputs.needs_update == 'true' && matrix.engine == 'pnpm'
+        # COREPACK_INTEGRITY_KEYS=0: an old bundled corepack can't verify a newer
+        # pnpm. --config.minimumReleaseAge=0: pnpm 11's 24h supply-chain delay is
+        # verify-only and would reject a same-day transitive dep; bypassing it
+        # here does not change the lockfile content, and the contributor/CI
+        # install still enforces the policy. In-track 10.x bumps ignore both.
+        # A major track bump (e.g. 10 -> 11) additionally needs the
+        # onlyBuiltDependencies -> allowBuilds migration in pnpm-workspace.yaml
+        # (pnpm-v10-to-v11 codemod) — done in the manual track-bump PR.
+        env:
+          COREPACK_INTEGRITY_KEYS: "0"
+        run: |
+          corepack enable
+          pnpm install --lockfile-only --ignore-scripts --config.minimumReleaseAge=0
+
+      - name: Create / update pull request
+        if: steps.filter.outputs.skip == 'false' && steps.check.outputs.needs_update == 'true'
+        id: pr
+        uses: peter-evans/create-pull-request@v7
+        with:
+          # IMPORTANT: use a PAT / GitHub App token so the Build workflow can
+          # run on the PR. PRs created with the default GITHUB_TOKEN do not
+          # trigger other workflows. Falls back to GITHUB_TOKEN if unset.
+          token: ${{ secrets.UPDATE_BOT_TOKEN || secrets.GITHUB_TOKEN }}
+          branch: update/${{ matrix.engine }}
+          delete-branch: true
+          commit-message: |
+            chore(engines): update ${{ matrix.engine }} to ${{ steps.check.outputs.latest }}
+          title: "chore(engines): update ${{ matrix.engine }} to ${{ steps.check.outputs.latest }}"
+          labels: |
+            engine-update
+            engine:${{ matrix.engine }}
+          body: |
+            Automated engine update (isolated, one engine per PR).
+
+            ```json
+            ${{ steps.check.outputs.result }}
+            ```
+
+            - [ ] full Release compile passed (several hours — see dispatched Build run on this branch)
+            - [ ] dev site / packages build passed
+            - [ ] (vcpkg PRs) README dependency tables regenerated with `./qgis-js.ts libs -o markdown` after the build
+
+            Merging is manual for now.
+
+      - name: Dispatch full build on the update branch
+        if: steps.filter.outputs.skip == 'false' && steps.pr.outputs.pull-request-operation == 'created' || steps.pr.outputs.pull-request-operation == 'updated'
+        env:
+          GH_TOKEN: ${{ secrets.UPDATE_BOT_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run build.yml --ref update/${{ matrix.engine }} --repo ${{ github.repository }}

@@ -1,0 +1,36 @@
+{
+  "$comment": "Declarative config for nightly engine update checks. 'track' constrains updates to a version line (in-place updates only); major bumps are intentionally manual. Bump 'track' here to opt into a new major.",
+  "node": {
+    "strategy": "node-dist",
+    "track": "24"
+  },
+  "pnpm": {
+    "$comment": "Major pnpm bumps are not just a version edit: pnpm 11 renamed onlyBuiltDependencies -> allowBuilds (pnpm-workspace.yaml) and turns minimumReleaseAge (24h supply-chain delay) on by default, which can reject the lockfile refresh below. See docs/engine-updates.md.",
+    "strategy": "npm-dist-tag",
+    "package": "pnpm",
+    "track": "11"
+  },
+  "emsdk": {
+    "$comment": "A newer emsdk ships a newer Clang that can fail third-party vcpkg ports built with -Werror (the 5.0.7 bump broke json-c on -Wunused-but-set-global). Such breaks surface only in the full compile and are fixed with an overlay port in build/vcpkg-ports/, not here.",
+    "strategy": "github-semver-tag",
+    "repo": "emscripten-core/emsdk",
+    "track": "5",
+    "submodule": "build/emsdk"
+  },
+  "vcpkg": {
+    "$comment": "Updating vcpkg also updates Qt (and all other vcpkg-managed C++ deps): the Qt version is whatever ports/qtbase ships at the new baseline. engines.qt is derived, not independently pinnable.",
+    "strategy": "vcpkg-release-tag",
+    "repo": "microsoft/vcpkg",
+    "submodule": "build/vcpkg",
+    "derives": {
+      "qt": "ports/qtbase/vcpkg.json"
+    }
+  },
+  "qgis": {
+    "$comment": "qgis-js tracks QGIS *master*, NOT a final-X_Y_Z release tag. The WASM build fixes (e.g. PR #64469 boardend/wasm-followup) are merged to master and are NOT backported to the release-X_Y branches, so a release tag would drop them. The port pins the master HEAD commit; needsUpdate compares that commit, not the (slow-moving) declared version. Re-pins on the same declared version must bump port-version instead of resetting it.",
+    "strategy": "qgis-master-commit",
+    "repo": "qgis/QGIS",
+    "branch": "master",
+    "port": "build/vcpkg-ports/qgis"
+  }
+}

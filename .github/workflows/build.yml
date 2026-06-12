@@ -1,11 +1,16 @@
 name: Build
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    # compile automated engine-update PRs (branches are `update/<engine>`).
+    # NOTE: this only fires if the PR was created with a PAT / GitHub App
+    # token (UPDATE_BOT_TOKEN) — the default GITHUB_TOKEN does not trigger
+    # workflows. The Update Engines workflow additionally dispatches this
+    # workflow explicitly as a fallback.
   # push:
-  #   branches:
-  #     - main
-  # pull_request:
   #   branches:
   #     - main
 
@@ -14,18 +19,23 @@ permissions:
   pages: write
   id-token: write
 
+# one build per ref; engine-update branches must not cancel each other
 concurrency:
-  group: "pages"
+  group: "build-${{ github.ref }}"
   cancel-in-progress: true
 
 jobs:
   build-qgis-js:
+    if: github.ref == 'refs/heads/main' || startsWith(github.head_ref || github.ref_name, 'update/') || github.event_name == 'workflow_dispatch'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-24.04
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
       - name: Set Swap Space
         if: ${{ !env.ACT }}
         uses: pierotofy/set-swap-space@master
@@ -56,6 +66,17 @@ jobs:
         with:
           node-version-file: "package.json"
       - uses: pnpm/action-setup@v2
+      # vcpkg binary caching via the GitHub Actions cache: turns multi-hour
+      # rebuilds into minutes when only qgis-js sources (or a single port)
+      # changed. Engine updates that bump the vcpkg baseline naturally
+      # invalidate the affected ports.
+      - name: Enable vcpkg binary caching (GitHub Actions cache)
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+            core.exportVariable('VCPKG_BINARY_SOURCES', 'clear;x-gha,readwrite');
       - name: Install dependencies
         run: pnpm install
       - name: Compile qgis-js
@@ -92,11 +113,14 @@ jobs:
       - name: Build site
         run: pnpm run dev:build
       - name: Setup Pages
+        if: github.ref == 'refs/heads/main'
         uses: actions/configure-pages@v4
       - name: Upload artifact
+        if: github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v3
         with:
           path: "./sites/dev/dist"
       - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main'
         id: deployment
         uses: actions/deploy-pages@v4
