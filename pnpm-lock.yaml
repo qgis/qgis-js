@@ -48,7 +48,7 @@ importers:
   docs/examples/qgis-js-example-api:
     dependencies:
       qgis-js:
-        specifier: 4.1.0
+        specifier: 4.0.0
         version: link:../../../packages/qgis-js
     devDependencies:
       vite:
@@ -58,13 +58,13 @@ importers:
   docs/examples/qgis-js-example-digitize:
     dependencies:
       '@qgis-js/ol':
-        specifier: 4.1.0
+        specifier: 4.0.0
         version: link:../../../packages/qgis-js-ol
       ol:
         specifier: ^10.9.0
         version: 10.9.0
       qgis-js:
-        specifier: 4.1.0
+        specifier: 4.0.0
         version: link:../../../packages/qgis-js
     devDependencies:
       vite:
@@ -77,13 +77,13 @@ importers:
   docs/examples/qgis-js-example-features:
     dependencies:
       '@qgis-js/ol':
-        specifier: 4.1.0
+        specifier: 4.0.0
         version: link:../../../packages/qgis-js-ol
       ol:
         specifier: ^10.9.0
         version: 10.9.0
       qgis-js:
-        specifier: 4.1.0
+        specifier: 4.0.0
         version: link:../../../packages/qgis-js
     devDependencies:
       vite:
@@ -96,13 +96,13 @@ importers:
   docs/examples/qgis-js-example-ol:
     dependencies:
       '@qgis-js/ol':
-        specifier: 4.1.0
+        specifier: 4.0.0
         version: link:../../../packages/qgis-js-ol
       ol:
         specifier: ^10.9.0
         version: 10.9.0
       qgis-js:
-        specifier: 4.1.0
+        specifier: 4.0.0
         version: link:../../../packages/qgis-js
     devDependencies:
       vite:
