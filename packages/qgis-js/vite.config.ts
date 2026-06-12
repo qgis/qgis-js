@@ -25,14 +25,15 @@ export default defineConfig({
         declarationMap: true,
       },
 
-      rollupTypes: true,
-      entryRoot: "src",
-      rollupConfig: {
-        docModel: {
-          enabled: true,
-          apiJsonFilePath: resolve(__dirname, "etc/qgis-js.api.json"),
+      bundleTypes: {
+        extractorConfig: {
+          docModel: {
+            enabled: true,
+            apiJsonFilePath: resolve(__dirname, "etc/qgis-js.api.json"),
+          },
         },
       },
+      entryRoot: "src",
       async afterBuild() {
         // remove empty export statement
         const fs = await import("fs");

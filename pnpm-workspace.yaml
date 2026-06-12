@@ -1,5 +1,7 @@
 packages:
   - packages/*
   - sites/*
-onlyBuiltDependencies:
-  - esbuild
+  - docs/examples/*
+linkWorkspacePackages: true
+allowBuilds:
+  esbuild: true

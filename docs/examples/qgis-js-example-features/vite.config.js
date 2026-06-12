@@ -29,6 +29,7 @@ export default defineConfig({
         {
           src: "node_modules/qgis-js/dist/assets/wasm/**",
           dest: "assets/wasm",
+          rename: { stripBase: true },
         },
       ],
     }),

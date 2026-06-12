@@ -26,10 +26,10 @@
     "p-limit": "7.3.0"
   },
   "devDependencies": {
-    "@types/node": "^22.19.15",
-    "typescript": "5.8.2",
-    "vite": "8.0.0",
-    "vite-plugin-dts": "4.5.4"
+    "@types/node": "^24.13.2",
+    "typescript": "5.9.3",
+    "vite": "8.0.16",
+    "vite-plugin-dts": "5.0.2"
   },
   "keywords": [
     "qgis",
