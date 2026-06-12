@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "ol": "^10.9.0",
-    "@qgis-js/ol": "file:../../../packages/qgis-js-ol",
-    "qgis-js": "file:../../../packages/qgis-js"
+    "@qgis-js/ol": "4.1.0",
+    "qgis-js": "4.1.0"
   },
   "devDependencies": {
     "vite": "^8.0.16",

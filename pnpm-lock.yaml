@@ -45,6 +45,73 @@ importers:
         specifier: 8.8.5
         version: 8.8.5
 
+  docs/examples/qgis-js-example-api:
+    dependencies:
+      qgis-js:
+        specifier: 4.1.0
+        version: link:../../../packages/qgis-js
+    devDependencies:
+      vite:
+        specifier: ^8.0.16
+        version: 8.0.16(@types/node@24.13.2)(esbuild@0.27.4)(yaml@2.9.0)
+
+  docs/examples/qgis-js-example-digitize:
+    dependencies:
+      '@qgis-js/ol':
+        specifier: 4.1.0
+        version: link:../../../packages/qgis-js-ol
+      ol:
+        specifier: ^10.9.0
+        version: 10.9.0
+      qgis-js:
+        specifier: 4.1.0
+        version: link:../../../packages/qgis-js
+    devDependencies:
+      vite:
+        specifier: ^8.0.16
+        version: 8.0.16(@types/node@24.13.2)(esbuild@0.27.4)(yaml@2.9.0)
+      vite-plugin-static-copy:
+        specifier: ^4.1.1
+        version: 4.1.1(vite@8.0.16(@types/node@24.13.2)(esbuild@0.27.4)(yaml@2.9.0))
+
+  docs/examples/qgis-js-example-features:
+    dependencies:
+      '@qgis-js/ol':
+        specifier: 4.1.0
+        version: link:../../../packages/qgis-js-ol
+      ol:
+        specifier: ^10.9.0
+        version: 10.9.0
+      qgis-js:
+        specifier: 4.1.0
+        version: link:../../../packages/qgis-js
+    devDependencies:
+      vite:
+        specifier: ^8.0.16
+        version: 8.0.16(@types/node@24.13.2)(esbuild@0.27.4)(yaml@2.9.0)
+      vite-plugin-static-copy:
+        specifier: ^4.1.1
+        version: 4.1.1(vite@8.0.16(@types/node@24.13.2)(esbuild@0.27.4)(yaml@2.9.0))
+
+  docs/examples/qgis-js-example-ol:
+    dependencies:
+      '@qgis-js/ol':
+        specifier: 4.1.0
+        version: link:../../../packages/qgis-js-ol
+      ol:
+        specifier: ^10.9.0
+        version: 10.9.0
+      qgis-js:
+        specifier: 4.1.0
+        version: link:../../../packages/qgis-js
+    devDependencies:
+      vite:
+        specifier: ^8.0.16
+        version: 8.0.16(@types/node@24.13.2)(esbuild@0.27.4)(yaml@2.9.0)
+      vite-plugin-static-copy:
+        specifier: ^4.1.1
+        version: 4.1.1(vite@8.0.16(@types/node@24.13.2)(esbuild@0.27.4)(yaml@2.9.0))
+
   packages/qgis-js:
     dependencies:
       '@types/emscripten':

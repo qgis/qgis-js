@@ -1,5 +1,7 @@
 packages:
   - packages/*
   - sites/*
+  - docs/examples/*
+linkWorkspacePackages: true
 allowBuilds:
   esbuild: true
