@@ -1,7 +1,7 @@
 {
   "name": "qgis-js-repo",
   "private": true,
-  "version": "4.0.0",
+  "version": "4.2.0",
   "license": "GPL-2.0-or-later",
   "homepage": "https://qgis.github.io/qgis-js/",
   "repository": "github:qgis/qgis-js",
@@ -15,7 +15,7 @@
     "emsdk": "5.0.7",
     "vcpkg": "2026.06.01",
     "qt": "6.11.1",
-    "qgis": "4.1.0"
+    "qgis": "4.2.0"
   },
   "type": "module",
   "scripts": {
