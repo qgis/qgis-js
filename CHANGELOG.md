@@ -1,5 +1,9 @@
 This document describes changes between tagged qgis-js versions
 
+## 4.2.1 (In development)
+
+- Support strict Content Security Policy without unsafe-eval (#65)
+
 ## 4.2.0 (6. July 2026)
 
 - Update to QGIS 4.2.0
