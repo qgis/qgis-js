@@ -1,10 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
-
-# CXX_LINKER_LAUNCHER (which wraps the link step, see below) would be ignored silently by
-# older versions of CMake (checked here, so that this fails before anything else is done)
-if (CMAKE_VERSION VERSION_LESS 3.21)
-  message(FATAL_ERROR "CMake 3.21 or newer is required (for CXX_LINKER_LAUNCHER)")
-endif()
+cmake_minimum_required(VERSION 3.21)
 
 project(qgis-js CXX)
 
