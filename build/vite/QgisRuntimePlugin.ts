@@ -4,6 +4,7 @@ import { dirname } from "path";
 import { fileURLToPath } from "url";
 
 import { CrossOriginIsolationResponseHeaders } from "./CrossOriginIsolationPlugin";
+import { ContentSecurityPolicyResponseHeaders } from "./ContentSecurityPolicyPlugin";
 
 import type { Plugin, ResolvedConfig } from "vite";
 
@@ -76,19 +77,22 @@ export default function QgisRuntimePlugin(_runtime: Runtime | null): Plugin {
           `${config.base}${filesRuntimeDir ? filesRuntimeDir + "/" : ""}${id}`,
       );
       server.middlewares.use((req, res, next) => {
-        if (
-          req.url &&
-          runtimeFiles.some((runtimefile) => runtimefile === req.url)
-        ) {
-          const filePath = join(repoRoot, runtime.outputDir, basename(req.url));
+        // ignore the query, because Vite appends one to the runtime import (e.g. "?import")
+        const url = req.url?.split("?")[0];
+        if (url && runtimeFiles.some((runtimefile) => runtimefile === url)) {
+          const filePath = join(repoRoot, runtime.outputDir, basename(url));
           if (existsSync(filePath)) {
             const raw = readFileSync(filePath);
             res.statusCode = 200;
-            Object.entries(CrossOriginIsolationResponseHeaders).forEach(
-              ([key, value]) => {
-                res.setHeader(key, value);
-              },
-            );
+            // the runtime files are served here, so the headers of the other plugins have
+            // to be set as well (a worker inherits the CSP of its own response, not the one
+            // of the document, so the CSP is what enforces the strict CSP inside the runtime)
+            Object.entries({
+              ...CrossOriginIsolationResponseHeaders,
+              ...ContentSecurityPolicyResponseHeaders,
+            }).forEach(([key, value]) => {
+              res.setHeader(key, value);
+            });
             if (
               filePath.endsWith("." + RUNTIME_WASM) ||
               filePath.endsWith("." + RUNTIME_DATA)

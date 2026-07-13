@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.15)
 
+# CXX_LINKER_LAUNCHER (which wraps the link step, see below) would be ignored silently by
+# older versions of CMake (checked here, so that this fails before anything else is done)
+if (CMAKE_VERSION VERSION_LESS 3.21)
+  message(FATAL_ERROR "CMake 3.21 or newer is required (for CXX_LINKER_LAUNCHER)")
+endif()
+
 project(qgis-js CXX)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -143,6 +149,21 @@ qt_finalize_executable(qgis-js)
 # Emscripten Runtime
 target_link_options(qgis-js PRIVATE "SHELL: \
 -s EXPORT_ES6"
+)
+
+# Strict CSP: emit no eval()/new Function() in the glue code, so that qgis-js can run
+# without "unsafe-eval" (EMBIND_AOT generates the embind invokers at compile time,
+# which otherwise would be JITed with new Function() at runtime)
+target_link_options(qgis-js PRIVATE "SHELL: \
+-s DYNAMIC_EXECUTION=0 \
+-s EMBIND_AOT=1"
+)
+
+# For EMBIND_AOT emcc runs the linked module in Node.js, which has to be done with a V8 flag
+# that can only be passed on the command line (see node.sh). Wrapping the link step makes
+# sure this also applies when CMake is invoked directly (and not through the build scripts).
+set_property(TARGET qgis-js PROPERTY CXX_LINKER_LAUNCHER
+  ${CMAKE_COMMAND} -E env EM_NODE_JS=${CMAKE_CURRENT_SOURCE_DIR}/build/scripts/node.sh
 )
 
 # FS (see https://emscripten.org/docs/api_reference/Filesystem-API.html)
