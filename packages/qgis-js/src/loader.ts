@@ -30,9 +30,18 @@ interface QtRuntimeFactory {
 function loadModule(mainScriptPath: string): Promise<QtRuntimeFactory> {
   return new Promise(async (resolve, reject) => {
     try {
-      // hack to import es module without vite knowing about it
+      // resolve the path against the document, because a dynamic import would resolve it
+      // against this module instead (which would break a relative "prefix", since this
+      // module usually does not live in the same directory as the document)
+      const mainScriptUrl = new URL(
+        mainScriptPath,
+        typeof document !== "undefined" ? document.baseURI : import.meta.url,
+      ).href;
+
+      // the magic comments prevent bundlers from processing the runtime
+      // (importing it with an eval-based hack would be blocked by a strict CSP, see #65)
       const createQtAppInstance = (
-        await new Function(`return import("${mainScriptPath}")`)()
+        await import(/* @vite-ignore */ /* webpackIgnore: true */ mainScriptUrl)
       ).default;
       resolve({
         createQtAppInstance,

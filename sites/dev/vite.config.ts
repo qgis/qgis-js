@@ -6,6 +6,9 @@ import DirectoryListingPlugin from "../../build/vite/DirectoryListingPlugin";
 import CrossOriginIsolationPlugin, {
   CrossOriginIsolationResponseHeaders,
 } from "../../build/vite/CrossOriginIsolationPlugin";
+import ContentSecurityPolicyPlugin, {
+  ContentSecurityPolicyResponseHeaders,
+} from "../../build/vite/ContentSecurityPolicyPlugin";
 
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
@@ -42,9 +45,11 @@ export default defineConfig({
   preview: {
     headers: {
       ...CrossOriginIsolationResponseHeaders,
+      ...ContentSecurityPolicyResponseHeaders,
     },
   },
   plugins: [
+    ContentSecurityPolicyPlugin(),
     QgisRuntimePlugin({
       name: "qgis-js",
       outputDir: "build/wasm",

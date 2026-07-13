@@ -2,6 +2,7 @@ import { resolve } from "path";
 import { defineConfig } from "vite";
 
 import QgisRuntimePlugin from "../../build/vite/QgisRuntimePlugin";
+import { ContentSecurityPolicyCheckPlugin } from "../../build/vite/ContentSecurityPolicyPlugin";
 
 import dts from "vite-plugin-dts";
 
@@ -16,6 +17,7 @@ export default defineConfig({
       name: "qgis-js",
       outputDir: "build/wasm",
     }),
+    ContentSecurityPolicyCheckPlugin(),
     dts({
       copyDtsFiles: true,
 
