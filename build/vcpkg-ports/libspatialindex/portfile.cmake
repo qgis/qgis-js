@@ -1,3 +1,6 @@
+# Pinned below vcpkg's registry version (2.1+) because QGIS's own
+# CMakeLists.txt hard-rejects it: "Cannot build QGIS using libspatialindex >=
+# 2.1, see https://github.com/libspatialindex/libspatialindex/issues/276".
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO libspatialindex/libspatialindex
