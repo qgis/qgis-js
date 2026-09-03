@@ -22,14 +22,14 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@types/emscripten": "1.41.5",
+    "@types/emscripten": "1.41.6",
     "browser-fs-access": "0.38.0",
     "qgis-js": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^24.13.3",
+    "@types/node": "^26.4.1",
     "typescript": "5.9.3",
-    "vite": "8.0.16",
-    "vite-plugin-dts": "5.0.2"
+    "vite": "8.2.2",
+    "vite-plugin-dts": "5.1.0"
   }
 }

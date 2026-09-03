@@ -78,7 +78,17 @@ jobs:
             core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
             core.exportVariable('VCPKG_BINARY_SOURCES', 'clear;x-gha,readwrite');
       - name: Install dependencies
-        run: pnpm install
+        # update/npm-deps carries same-day --latest resolutions by design
+        # (see docs/dependency-updates.md) -- minimumReleaseAge would then
+        # reject its own lockfile on almost every nightly run. Every other
+        # ref (main, update/<engine>, manual dispatch) keeps the policy
+        # enforced.
+        run: |
+          if [ "${{ github.head_ref || github.ref_name }}" = "update/npm-deps" ]; then
+            pnpm install --config.minimumReleaseAge=0
+          else
+            pnpm install
+          fi
       - name: Compile qgis-js
         run: pnpm run compile:release
       - name: Save logs on failure

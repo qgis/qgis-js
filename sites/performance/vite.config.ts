@@ -1,12 +1,12 @@
 import { defineConfig } from "vite";
 
-import QgisRuntimePlugin from "../../build/vite/QgisRuntimePlugin";
-import DirectoryListingPlugin from "../../build/vite/DirectoryListingPlugin";
+import QgisRuntimePlugin from "../../build/vite/QgisRuntimePlugin.ts";
+import DirectoryListingPlugin from "../../build/vite/DirectoryListingPlugin.ts";
 import CrossOriginIsolationPlugin, {
   CrossOriginIsolationResponseHeaders,
-} from "../../build/vite/CrossOriginIsolationPlugin";
+} from "../../build/vite/CrossOriginIsolationPlugin.ts";
 
-import packageJson from "./package.json";
+import packageJson from "./package.json" with { type: "json" };
 
 export default defineConfig({
   define: {

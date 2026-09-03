@@ -1,6 +1,6 @@
 import type { Plugin } from "vite";
 
-import ResponseHeadersPlugin from "./ResponseHeadersPlugin";
+import ResponseHeadersPlugin from "./ResponseHeadersPlugin.ts";
 
 export const CrossOriginIsolationResponseHeaders = {
   "Cross-Origin-Opener-Policy": "same-origin",
