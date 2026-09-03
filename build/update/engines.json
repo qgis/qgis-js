@@ -27,10 +27,10 @@
     }
   },
   "qgis": {
-    "$comment": "qgis-js tracks QGIS *master*, NOT a final-X_Y_Z release tag. The WASM build fixes (e.g. PR #64469 boardend/wasm-followup) are merged to master and are NOT backported to the release-X_Y branches, so a release tag would drop them. The port pins the master HEAD commit; needsUpdate compares that commit, not the (slow-moving) declared version. Re-pins on the same declared version must bump port-version instead of resetting it.",
-    "strategy": "qgis-master-commit",
+    "$comment": "Tracks the latest final-X_Y_Z release tag. This used to track master HEAD instead (see docs/engine-updates.md): release-4_0 branched before PR #64469 (the WASM build fixes for qgis-js) merged and never got it, so a tag-based strategy would have silently dropped it -- release-4_2 branched after, so 4.2.x+ carries it natively. check.mjs only ever proposes a version strictly newer than the pinned one (or an equal-version re-pin, if a tag ever gets force-moved to a new commit) -- never a downgrade, even if a backport tag for an older line appears.",
+    "strategy": "qgis-release-tag",
     "repo": "qgis/QGIS",
-    "branch": "master",
+    "tagPattern": "final-(\\d+)_(\\d+)_(\\d+)",
     "port": "build/vcpkg-ports/qgis"
   }
 }

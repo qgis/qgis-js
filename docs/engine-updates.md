@@ -13,7 +13,7 @@ config files fit together.
 | `emsdk` | `engines.emsdk`, read at install time by `build/actions/install.ts`                                                                                                          | `package.json`, `build/scripts/install.sh`, `build/emsdk` submodule (pinned to the release tag)                                                                                                   |
 | `vcpkg` | `build/vcpkg` submodule commit (= release tag)                                                                                                                               | `package.json` (`engines.vcpkg` **and** `engines.qt`), `build/vcpkg` submodule, README tables                                                                                                     |
 | `qt`    | **derived** — whatever `ports/qtbase` ships at the vcpkg baseline                                                                                                            | updated as part of a vcpkg update; not independently pinnable without an overlay port                                                                                                             |
-| `qgis`  | overlay port `build/vcpkg-ports/qgis` — pinned to **QGIS `master` HEAD** (`REF` commit + `SHA512`), _not_ a release tag (see [insights](#insights-from-the-2026-06-upgrade)) | `package.json`, `build/vcpkg-ports/qgis/vcpkg.json` (version; port-version **bumped** on a same-version re-pin, reset only on a version change), `build/vcpkg-ports/qgis/portfile.cmake`, READMEs |
+| `qgis`  | overlay port `build/vcpkg-ports/qgis` — pinned to the latest `final-X_Y_Z` **release tag** (`REF` = tag's peeled commit + `SHA512`), guarded by a required-ancestor check (see [insights](#insights-from-the-2026-06-upgrade)) | `package.json`, `build/vcpkg-ports/qgis/vcpkg.json` (version; port-version **bumped** on a same-version re-pin, reset only on a version change), `build/vcpkg-ports/qgis/portfile.cmake`, READMEs |
 
 There are therefore **5 independent update units**, not 6: a vcpkg baseline
 bump implies a Qt bump (and bumps of GDAL, PROJ, GEOS, … as well — those are
@@ -23,8 +23,9 @@ Major version bumps are **deliberately not automated**. The `track` field in
 `build/update/engines.json` constrains automation to in-track updates; bumping
 the track is a manual, reviewed decision. As of the 2026-06 upgrade the tracks
 are **node 24**, **pnpm 11**, **emsdk 5**, **vcpkg** (rolling baseline); the next
-majors (pnpm 12, Emscripten 6, Node 26, …) stay manual. `qgis` has **no track** —
-it follows `master` HEAD (see [insights](#insights-from-the-2026-06-upgrade)).
+majors (pnpm 12, Emscripten 6, Node 26, …) stay manual. `qgis` has **no track**
+— it follows the latest `final-X_Y_Z` release tag, guarded by a
+required-ancestor check (see [insights](#insights-from-the-2026-06-upgrade)).
 
 ## Insights from the 2026-06 upgrade
 
@@ -32,21 +33,40 @@ The first full manual run of this upgrade (node 22→24, pnpm 10→11, emsdk
 5.0.2→5.0.7, vcpkg 2025.12.12→2026.06.01 / Qt 6.10→6.11, QGIS → `master` 4.1)
 surfaced things the automation has to account for.
 
-### qgis tracks `master`, not release tags
+### qgis: release tags, never a downgrade
 
-The previous port pinned a `master` commit that was **ahead** of the `4.0.0`
-tag because it carried WASM build fixes (PR #64469, `boardend/wasm-followup`)
-merged to `master` only and **never backported** to `release-4_0`. A naïve
-"latest `final-X_Y_Z` tag" strategy (the original `qgis-final-tag`) would have
-pinned `final-4_0_3` and silently dropped those fixes — the wasm build then
-fails to link.
+QGIS PR #64469 ("wasm fixes for qgis-js") merged to `master` on 2026-03-13,
+carrying build fixes with no equivalent anywhere else. At the time,
+`release-4_0` had already branched off `master` **before** that merge, so
+`4.0.x` tags never got it and never will — a naïve "latest `final-X_Y_Z` tag"
+strategy would have silently pinned a broken build. That's why this port
+originally tracked `master` HEAD instead of a tag (`qgis-master-commit`
+strategy, since removed): correct, but it meant riding master's instability
+and losing the "pin a released version" property entirely.
 
-So `engines.json` uses **`qgis-master-commit`**: pin `master` HEAD, derive the
-declared version from `master`'s `CMakeLists.txt`, and detect updates by
-comparing the **commit** (the version sits at dev `4.1.0` for many commits).
-Because re-pins land on the same declared version, `apply.mjs` **increments
-`port-version`** instead of resetting it. If the WASM fixes ever land on a
-stable release branch, switch back to a tag-based strategy.
+`release-4_2` branched off `master` **after** PR #64469 merged, so `4.2.x`
+tags carry the fix natively — confirmed via `gh api
+repos/qgis/QGIS/compare/final-4_2_2...1a63925...` (`ahead_by: 0`, i.e. the fix
+commit is an ancestor of the tag). Since that fix is on `master` permanently,
+every `final-X_Y_Z` tag cut from here on inherits it automatically — there's
+nothing left to keep re-verifying for this specific commit. A **new**
+master-only fix landing later (the same situation #64469 once was) wouldn't
+be caught by `check`/`apply` at all; the full compile is what would surface
+it (wasm build fails to link), the same way it did originally. `engines.json`
+now uses **`qgis-release-tag`**: pin the latest `final-X_Y_Z` tag's peeled
+commit. `apply.mjs` needed no changes — it only ever consumed
+`latest`/`details.commit`, regardless of how `check.mjs` derived them.
+
+`needsUpdate` compares **versions**, not just commits (`commit !== currentRef
+&& cmp(latest, current) >= 0`): a backport tag for an older line (e.g. a
+hypothetical `final-4_1_6` appearing after `4.2.x` is already pinned) has a
+different commit but a lower version, so it's ignored rather than proposed as
+an "update." Every other strategy in `check.mjs` gets this for free from the
+default `cmp(latest, current) > 0` fallback; `qgis-release-tag` sets it
+explicitly because it also needs to allow the equal-version case (a tag
+force-moved to a new commit), which the plain `> 0` default would reject. On
+that same-version re-pin, `apply.mjs` **increments `port-version`** instead
+of resetting it — that logic is strategy-agnostic and unchanged.
 
 ### pnpm major bumps are more than a version edit
 
@@ -180,9 +200,11 @@ locally.
   the PR branch (a checklist item in the PR body reminds about this — can be
   automated later as a follow-up commit step in `build.yml`).
 - **QGIS REF vs. tag**: the port pins an exact commit (the peeled commit of
-  the `final-X_Y_Z` tag). If the currently pinned commit carries WASM-specific
-  fixes that are newer than the latest release tag, review whether they have
-  landed in the new release before merging.
+  the `final-X_Y_Z` tag). `check.mjs` verifies every commit in
+  `engines.json`'s `qgis.requiredAncestors` (currently PR #64469) is reachable
+  from the candidate tag before proposing it, so a release line missing a
+  required wasm fix fails the check step instead of silently shipping a
+  broken build — no manual review needed for that specific risk.
 - **Future: auto-merge** — once trusted, add
   `gh pr merge --auto --squash` after PR creation and let branch protection
   (required `build-qgis-js` check) gate the merge.

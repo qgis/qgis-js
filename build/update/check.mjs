@@ -136,44 +136,40 @@ async function check() {
       return { latest, details };
     }
 
-    case "qgis-master-commit": {
-      // qgis-js tracks QGIS *master*, not a final-X_Y_Z release tag: the WASM
-      // build fixes (e.g. PR #64469) are merged to master and are NOT
-      // backported to the release branches, so a release tag would drop them.
-      // We therefore pin the master HEAD commit and detect updates by comparing
-      // that commit to the one currently pinned in the overlay portfile —
-      // master's declared version (e.g. 4.1.0) barely moves between commits.
-      const branch = cfg.branch ?? "master";
-      const out = execFileSync(
-        "git",
-        [
-          "ls-remote",
-          `https://github.com/${cfg.repo}.git`,
-          `refs/heads/${branch}`,
-        ],
-        { encoding: "utf-8" },
-      );
-      const commit = out.split("\t")[0]?.trim();
-      if (!commit || !/^[0-9a-f]{40}$/.test(commit)) {
-        throw new Error(`could not resolve ${branch} HEAD for ${cfg.repo}`);
+    case "qgis-release-tag": {
+      // qgis-js tracks the latest final-X_Y_Z release tag (see
+      // docs/engine-updates.md for why it doesn't track master anymore).
+      const tags = lsRemoteTags(cfg.repo);
+      const tagRe = new RegExp(`^${cfg.tagPattern}$`);
+      const candidates = [...tags.keys()]
+        .map((tag) => {
+          const m = tag.match(tagRe);
+          return m ? { tag, version: `${m[1]}.${m[2]}.${m[3]}` } : null;
+        })
+        .filter(Boolean)
+        .filter((c) => inTrack(c.version, cfg.track));
+      candidates.sort((a, b) => cmp(a.version, b.version));
+      const best = candidates.at(-1);
+      if (!best) {
+        throw new Error(
+          `no tags matching /${cfg.tagPattern}/ found for ${cfg.repo}`,
+        );
       }
-      // declared version on master -> engines.qgis + README "based on QGIS x"
-      const cmlRes = await fetch(
-        `https://raw.githubusercontent.com/${cfg.repo}/${commit}/CMakeLists.txt`,
-      );
-      const cml = await cmlRes.text();
-      const ver = ["MAJOR", "MINOR", "PATCH"].map(
-        (k) =>
-          cml.match(new RegExp(`CPACK_PACKAGE_VERSION_${k} "(\\d+)"`))?.[1],
-      );
-      const version = ver.every(Boolean) ? ver.join(".") : current;
+      const entry = tags.get(best.tag);
+      const commit = entry.peeled ?? entry.sha;
+
       // the currently pinned commit lives in the overlay portfile, not in engines
       const portfile = readFileSync(`${cfg.port}/portfile.cmake`, "utf-8");
       const currentRef = portfile.match(/REF\s+([0-9a-f]{40})/)?.[1];
+      // Never propose a downgrade: only a strictly newer version, or a
+      // same-version re-pin (a tag force-moved to a new commit) counts as an
+      // update. A backport tag for an older line (e.g. final-4_1_6 appearing
+      // after 4.2.x is already pinned) compares lower and is ignored, even
+      // though its commit necessarily differs from currentRef.
       return {
-        latest: version,
-        needsUpdate: commit !== currentRef,
-        details: { branch, commit, currentRef },
+        latest: best.version,
+        needsUpdate: commit !== currentRef && cmp(best.version, current) >= 0,
+        details: { tag: best.tag, commit, currentRef },
       };
     }
 
