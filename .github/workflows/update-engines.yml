@@ -7,8 +7,12 @@ name: Update Engines
 # Merging stays manual for now.
 
 on:
-  schedule:
-    - cron: "17 3 * * *" # nightly, off-peak
+  # Nightly cron disabled until UPDATE_BOT_TOKEN is set up (pending an org
+  # admin conversation -- see docs/engine-updates.md#required-repository-setup).
+  # Without it, PRs would be created as github-actions[bot] and wouldn't
+  # trigger CI. Re-enable by uncommenting once the token exists.
+  # schedule:
+  #   - cron: "17 3 * * *" # nightly, off-peak
   workflow_dispatch:
     inputs:
       engine:

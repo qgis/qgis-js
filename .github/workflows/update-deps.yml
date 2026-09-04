@@ -8,8 +8,12 @@ name: Update Dependencies
 # same as engine updates (see docs/dependency-updates.md).
 
 on:
-  schedule:
-    - cron: "37 3 * * *" # nightly, offset from Update Engines (17 3 * * *)
+  # Nightly cron disabled until UPDATE_BOT_TOKEN is set up (pending an org
+  # admin conversation -- see docs/dependency-updates.md). Without it, PRs
+  # would be created as github-actions[bot] and wouldn't trigger CI.
+  # Re-enable by uncommenting once the token exists.
+  # schedule:
+  #   - cron: "37 3 * * *" # nightly, offset from Update Engines (17 3 * * *)
   workflow_dispatch:
 
 permissions:
