@@ -40,13 +40,22 @@ if (!update.needsUpdate) {
 const { current, latest, details } = update;
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-function editFile(path, edits) {
+// `optional: true` is for best-effort edits (README mentions regenerated
+// properly later by `./qgis-js.ts libs -o markdown`) where a missing pattern
+// just means the wording moved and isn't worth failing the update over.
+// Every other edit is required: a missing pattern there means something we
+// actually depend on (engines, packageManager, an emsdk command, the QGIS
+// REF/SHA) didn't get updated, so silently reporting success would be wrong.
+function editFile(path, edits, { optional = false } = {}) {
   let text = readFileSync(path, "utf-8");
   for (const [pattern, replacement] of edits) {
     const re = new RegExp(pattern, "g");
     if (!re.test(text)) {
-      console.warn(`WARN: pattern not found in ${path}: ${pattern}`);
-      continue;
+      if (optional) {
+        console.warn(`WARN: pattern not found in ${path}: ${pattern}`);
+        continue;
+      }
+      throw new Error(`required pattern not found in ${path}: ${pattern}`);
     }
     text = text.replace(re, replacement);
   }
@@ -126,9 +135,11 @@ switch (engine) {
         // the canonical table is regenerated after a successful build with
         // `./qgis-js.ts libs -o markdown`
         for (const readme of readmes) {
-          editFile(readme, [
-            [`\\(${esc(info.current)}\\)`, `(${info.latest})`],
-          ]);
+          editFile(
+            readme,
+            [[`\\(${esc(info.current)}\\)`, `(${info.latest})`]],
+            { optional: true },
+          );
         }
       }
     }
@@ -139,9 +150,9 @@ switch (engine) {
     setEngine("qgis", latest);
 
     // port manifest: when the declared version changes, set it and reset
-    // port-version; when it is unchanged (a same-version master re-pin, since
-    // qgis tracks master HEAD, not a release tag) bump port-version instead so
-    // vcpkg treats it as a new port revision.
+    // port-version; when it is unchanged (a force-moved release-tag re-pin --
+    // the same final-X_Y_Z tag re-pointed at a different commit) bump
+    // port-version instead so vcpkg treats it as a new port revision.
     const portManifestPath = "build/vcpkg-ports/qgis/vcpkg.json";
     const portManifest = JSON.parse(readFileSync(portManifestPath, "utf-8"));
     if (portManifest.version === latest) {
@@ -156,7 +167,7 @@ switch (engine) {
     );
     console.log(`updated ${portManifestPath}`);
 
-    // portfile: new REF (master HEAD commit) + SHA512 of the source tarball
+    // portfile: new REF (peeled release-tag commit) + SHA512 of the source tarball
     console.log(
       `downloading QGIS source tarball for ${details.commit} to compute SHA512 ...`,
     );

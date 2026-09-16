@@ -42,7 +42,7 @@
     "@microsoft/api-documenter": "7.30.13",
     "@microsoft/api-extractor": "7.59.0",
     "@rushstack/ts-command-line": "5.3.13",
-    "@types/node": "^26.4.1",
+    "@types/node": "^24.13.3",
     "clang-format": "1.8.0",
     "pnpm": "11.25.0",
     "prettier": "3.9.6",

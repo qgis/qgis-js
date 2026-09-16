@@ -16,20 +16,19 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
-# one build per ref; engine-update branches must not cancel each other
+# one build per branch/PR; normalize pull_request's `refs/pull/<n>/merge` and
+# workflow_dispatch's `refs/heads/<branch>` to the same key (github.ref alone
+# would put the PR-triggered run and the update-workflow's explicit dispatch
+# in different groups, so a PAT-created update PR could kick off two parallel
+# multi-hour builds instead of one superseding the other).
 concurrency:
-  group: "build-${{ github.ref }}"
+  group: "build-${{ github.head_ref || github.ref_name }}"
   cancel-in-progress: true
 
 jobs:
   build-qgis-js:
     if: github.ref == 'refs/heads/main' || startsWith(github.head_ref || github.ref_name, 'update/') || github.event_name == 'workflow_dispatch'
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-24.04
     timeout-minutes: 350
     steps:
@@ -130,7 +129,21 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: "./sites/dev/dist"
+
+  # Separate from build-qgis-js so PR-triggered runs (main-bound PRs, and
+  # update/** branches building freshly-resolved, arbitrary dependency code)
+  # never hold Pages-deploy/OIDC credentials -- only this main-only job does.
+  deploy:
+    needs: build-qgis-js
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-24.04
+    steps:
       - name: Deploy to GitHub Pages
-        if: github.ref == 'refs/heads/main'
         id: deployment
         uses: actions/deploy-pages@v4

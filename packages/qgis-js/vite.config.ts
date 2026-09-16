@@ -31,7 +31,10 @@ export default defineConfig({
         extractorConfig: {
           docModel: {
             enabled: true,
-            apiJsonFilePath: resolve(import.meta.dirname, "etc/qgis-js.api.json"),
+            apiJsonFilePath: resolve(
+              import.meta.dirname,
+              "etc/qgis-js.api.json",
+            ),
           },
         },
       },

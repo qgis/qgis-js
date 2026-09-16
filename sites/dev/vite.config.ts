@@ -24,7 +24,10 @@ export default defineConfig({
       // don't use the bundlet version of qgis-js and qgis-js-ol to enable HMR
       {
         find: /^qgis-js$/,
-        replacement: resolve(import.meta.dirname, "../../packages/qgis-js/src/index.ts"),
+        replacement: resolve(
+          import.meta.dirname,
+          "../../packages/qgis-js/src/index.ts",
+        ),
       },
       {
         find: /^@qgis-js\/ol$/,

@@ -16,7 +16,7 @@
     "qgis-js": "workspace:*"
   },
   "devDependencies": {
-    "@types/node": "^26.4.1",
+    "@types/node": "^24.13.3",
     "coi-serviceworker": "0.1.7",
     "ol": "^10.10.0",
     "typescript": "5.9.3",

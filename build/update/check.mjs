@@ -184,8 +184,8 @@ const result = {
   engine,
   current,
   latest,
-  // most engines update by version; commit-pinned engines (qgis = master HEAD)
-  // provide their own needsUpdate since the declared version barely moves
+  // most engines update by version; qgis provides its own needsUpdate to
+  // additionally guard against downgrades (see the qgis-release-tag case)
   needsUpdate: checked.needsUpdate ?? cmp(latest, current) > 0,
   details,
 };

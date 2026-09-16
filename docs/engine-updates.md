@@ -6,14 +6,14 @@ config files fit together.
 
 ## The engines and where they live
 
-| Engine  | What pins it                                                                                                                                                                 | Files touched on update                                                                                                                                                                           |
-| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `node`  | `engines.node` (consumed by `actions/setup-node` via `node-version-file`)                                                                                                    | `package.json`, `.nvmrc`                                                                                                                                                                          |
-| `pnpm`  | `packageManager` field (consumed by corepack / `pnpm/action-setup`)                                                                                                          | `package.json` (`engines.pnpm`, `packageManager`, `devDependencies.pnpm`), `pnpm-lock.yaml`                                                                                                       |
-| `emsdk` | `engines.emsdk`, read at install time by `build/actions/install.ts`                                                                                                          | `package.json`, `build/scripts/install.sh`, `build/emsdk` submodule (pinned to the release tag)                                                                                                   |
-| `vcpkg` | `build/vcpkg` submodule commit (= release tag)                                                                                                                               | `package.json` (`engines.vcpkg` **and** `engines.qt`), `build/vcpkg` submodule, README tables                                                                                                     |
-| `qt`    | **derived** — whatever `ports/qtbase` ships at the vcpkg baseline                                                                                                            | updated as part of a vcpkg update; not independently pinnable without an overlay port                                                                                                             |
-| `qgis`  | overlay port `build/vcpkg-ports/qgis` — pinned to the latest `final-X_Y_Z` **release tag** (`REF` = tag's peeled commit + `SHA512`), guarded by a required-ancestor check (see [insights](#insights-from-the-2026-06-upgrade)) | `package.json`, `build/vcpkg-ports/qgis/vcpkg.json` (version; port-version **bumped** on a same-version re-pin, reset only on a version change), `build/vcpkg-ports/qgis/portfile.cmake`, READMEs |
+| Engine  | What pins it                                                                                                                                                                                                  | Files touched on update                                                                                                                                                                           |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `node`  | `engines.node` (consumed by `actions/setup-node` via `node-version-file`)                                                                                                                                     | `package.json`, `.nvmrc`                                                                                                                                                                          |
+| `pnpm`  | `packageManager` field (consumed by corepack / `pnpm/action-setup`)                                                                                                                                           | `package.json` (`engines.pnpm`, `packageManager`, `devDependencies.pnpm`), `pnpm-lock.yaml`                                                                                                       |
+| `emsdk` | `engines.emsdk`, read at install time by `build/actions/install.ts`                                                                                                                                           | `package.json`, `build/scripts/install.sh`, `build/emsdk` submodule (pinned to the release tag)                                                                                                   |
+| `vcpkg` | `build/vcpkg` submodule commit (= release tag)                                                                                                                                                                | `package.json` (`engines.vcpkg` **and** `engines.qt`), `build/vcpkg` submodule, README tables                                                                                                     |
+| `qt`    | **derived** — whatever `ports/qtbase` ships at the vcpkg baseline                                                                                                                                             | updated as part of a vcpkg update; not independently pinnable without an overlay port                                                                                                             |
+| `qgis`  | overlay port `build/vcpkg-ports/qgis` — pinned to the latest `final-X_Y_Z` **release tag** (`REF` = tag's peeled commit + `SHA512`), never a downgrade (see [insights](#qgis-release-tags-never-a-downgrade)) | `package.json`, `build/vcpkg-ports/qgis/vcpkg.json` (version; port-version **bumped** on a same-version re-pin, reset only on a version change), `build/vcpkg-ports/qgis/portfile.cmake`, READMEs |
 
 There are therefore **5 independent update units**, not 6: a vcpkg baseline
 bump implies a Qt bump (and bumps of GDAL, PROJ, GEOS, … as well — those are
@@ -24,8 +24,8 @@ Major version bumps are **deliberately not automated**. The `track` field in
 the track is a manual, reviewed decision. As of the 2026-06 upgrade the tracks
 are **node 24**, **pnpm 11**, **emsdk 5**, **vcpkg** (rolling baseline); the next
 majors (pnpm 12, Emscripten 6, Node 26, …) stay manual. `qgis` has **no track**
-— it follows the latest `final-X_Y_Z` release tag, guarded by a
-required-ancestor check (see [insights](#insights-from-the-2026-06-upgrade)).
+— it follows the latest `final-X_Y_Z` release tag (see
+[insights](#qgis-release-tags-never-a-downgrade)).
 
 ## Insights from the 2026-06 upgrade
 
@@ -120,7 +120,7 @@ build/update/apply.mjs         performs the multi-file edits for one engine,
 .github/workflows/build.yml            full compile (reused for update PRs)
 ```
 
-Everything is plain Node 22 with built-ins only, so the scripts can also be run
+Everything is plain Node 24 with built-ins only, so the scripts can also be run
 locally:
 
 ```sh
@@ -200,11 +200,12 @@ locally.
   the PR branch (a checklist item in the PR body reminds about this — can be
   automated later as a follow-up commit step in `build.yml`).
 - **QGIS REF vs. tag**: the port pins an exact commit (the peeled commit of
-  the `final-X_Y_Z` tag). `check.mjs` verifies every commit in
-  `engines.json`'s `qgis.requiredAncestors` (currently PR #64469) is reachable
-  from the candidate tag before proposing it, so a release line missing a
-  required wasm fix fails the check step instead of silently shipping a
-  broken build — no manual review needed for that specific risk.
+  the `final-X_Y_Z` tag). PR #64469 (the wasm build fixes) was manually
+  verified to be an ancestor of the tag line qgis-js now tracks — see
+  [insights](#qgis-release-tags-never-a-downgrade). There's no automated
+  guard against a _new_ master-only wasm fix landing after the latest tag was
+  cut; that only surfaces as a full-compile link failure, same as before this
+  tracked release tags.
 - **Future: auto-merge** — once trusted, add
   `gh pr merge --auto --squash` after PR creation and let branch protection
   (required `build-qgis-js` check) gate the merge.

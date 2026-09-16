@@ -44,11 +44,28 @@ jobs:
         # --config.minimumReleaseAge=0: pnpm 11's 24h supply-chain delay is
         # verify-only and would reject a same-day --latest resolution; the
         # contributor/CI install still enforces the policy for real.
+        # pnpm itself is a coordinated engine (engines.pnpm + packageManager +
+        # devDependencies.pnpm move together under build/update/apply.mjs's
+        # own track-gated pnpm case, see engines.json) -- restore
+        # devDependencies.pnpm below in case --latest bumped it, so this
+        # workflow can't drift it out of sync with the engine track (engines
+        # and packageManager aren't ordinary dependency-map entries, so
+        # `pnpm update` doesn't touch those two regardless).
         env:
           COREPACK_INTEGRITY_KEYS: "0"
         run: |
           corepack enable
+          PNPM_PIN=$(node -p "require('./package.json').engines.pnpm")
           pnpm update --recursive --latest --lockfile-only --config.minimumReleaseAge=0
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf-8'));
+            if (pkg.devDependencies?.pnpm && pkg.devDependencies.pnpm !== '$PNPM_PIN') {
+              pkg.devDependencies.pnpm = '$PNPM_PIN';
+              fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+              console.log('restored devDependencies.pnpm to the engine-tracked $PNPM_PIN');
+            }
+          "
 
       - name: Check for changes
         id: diff

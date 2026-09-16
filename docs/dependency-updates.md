@@ -58,7 +58,7 @@ update step resolves `--latest` regardless of a package's age (with
 [engine-updates.md](engine-updates.md)), but a plain `pnpm install` afterward
 re-enforces the policy and rejects any resolved entry published within the
 last 24h. Because `pnpm update -r --latest` walks the full transitive graph
-of a 10-package workspace nightly, *some* freshly-published entry is likely
+of a 10-package workspace nightly, _some_ freshly-published entry is likely
 on any given night — this isn't a one-off like the pnpm engine bump, it's the
 common case. Left unhandled, `build.yml`'s `pnpm install` step would fail
 almost every night on `ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`, not because
@@ -100,7 +100,7 @@ to compile.
     overlay once that's confirmed with a real compile.
   - `libspatialindex` is held below vcpkg's registry version (2.1+) because
     QGIS's own `CMakeLists.txt` hard-rejects it (`Cannot build QGIS using
-    libspatialindex >= 2.1`, see
+libspatialindex >= 2.1`, see
     [libspatialindex#276](https://github.com/libspatialindex/libspatialindex/issues/276))
     — confirmed by an actual compile failure at `CMakeLists.txt:455`, not a
     wasm-specific concern. **Do not remove this overlay** without confirming
