@@ -22,14 +22,14 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@types/emscripten": "1.41.5",
-    "p-limit": "7.3.0"
+    "@types/emscripten": "1.41.6",
+    "p-limit": "7.3.2"
   },
   "devDependencies": {
     "@types/node": "^24.13.3",
     "typescript": "5.9.3",
-    "vite": "8.0.16",
-    "vite-plugin-dts": "5.0.2"
+    "vite": "8.2.2",
+    "vite-plugin-dts": "5.1.0"
   },
   "keywords": [
     "qgis",

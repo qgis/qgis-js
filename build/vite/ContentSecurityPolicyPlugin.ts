@@ -1,6 +1,6 @@
 import type { Plugin } from "vite";
 
-import ResponseHeadersPlugin from "./ResponseHeadersPlugin";
+import ResponseHeadersPlugin from "./ResponseHeadersPlugin.ts";
 
 /**
  * A strict Content Security Policy which does NOT allow "unsafe-eval".

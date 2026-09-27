@@ -8,3 +8,4 @@ packages/*/etc
 bin/act
 docs/api
 .DS_Store
+CLAUDE.md

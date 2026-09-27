@@ -8,14 +8,14 @@
   "bugs": {
     "url": "https://github.com/qgis/qgis-js/issues"
   },
-  "packageManager": "pnpm@11.5.3",
+  "packageManager": "pnpm@11.25.0",
   "engines": {
-    "node": "24.16.0",
-    "pnpm": "11.5.3",
+    "node": "24.20.0",
+    "pnpm": "11.25.0",
     "emsdk": "5.0.7",
-    "vcpkg": "2026.06.01",
+    "vcpkg": "2026.07.29",
     "qt": "6.11.1",
-    "qgis": "4.2.0"
+    "qgis": "4.2.2"
   },
   "type": "module",
   "scripts": {
@@ -39,16 +39,16 @@
     "lint:clang-format": "clang-format -i \"--glob=src/**/*.{cpp,hpp}\""
   },
   "devDependencies": {
-    "@microsoft/api-documenter": "7.30.6",
-    "@microsoft/api-extractor": "7.58.8",
-    "@rushstack/ts-command-line": "5.3.9",
+    "@microsoft/api-documenter": "7.30.13",
+    "@microsoft/api-extractor": "7.59.0",
+    "@rushstack/ts-command-line": "5.3.13",
     "@types/node": "^24.13.3",
     "clang-format": "1.8.0",
-    "pnpm": "11.5.3",
-    "prettier": "3.8.4",
+    "pnpm": "11.25.0",
+    "prettier": "3.9.6",
     "pretty-quick": "4.2.2",
     "ts-markdown": "1.3.0",
-    "vite": "8.0.16",
+    "vite": "8.2.2",
     "vite-node": "6.0.0",
     "zx": "8.8.5"
   }

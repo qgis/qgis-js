@@ -1,7 +1,12 @@
 This document describes changes between tagged qgis-js versions
 
-## 4.2.1 (In development)
+## 4.2.2 (In development)
 
+- Dependency updates:
+  - Updated to QGIS 4.2.2
+  - Updated vcpkg to 2026.07.29
+  - Updated Node to 24.20.0
+  - Updated pnpm to 11.25.0
 - Support strict Content Security Policy without unsafe-eval (#65)
 
 ## 4.2.0 (6. July 2026)

@@ -5,3 +5,11 @@ packages:
 linkWorkspacePackages: true
 allowBuilds:
   esbuild: true
+# Approved by the 2026-09-03 npm dependency update (see docs/dependency-updates.md):
+# these were resolved same-day by `pnpm update --latest` and briefly failed
+# minimumReleaseAge's 24h verification. Safe to prune once they're no longer
+# in the lockfile at these exact versions.
+minimumReleaseAgeExclude:
+  - confbox@0.3.1
+  - pkg-types@2.3.2
+  - postcss@8.5.28

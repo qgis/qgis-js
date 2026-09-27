@@ -1,0 +1,110 @@
+name: Update Dependencies
+
+# Nightly check for newer npm/JS dependencies across the pnpm workspace (10
+# packages: root, packages/*, sites/*, docs/examples/*). One PR bundles the
+# whole workspace -- pnpm update spans the shared lockfile in one shot, so
+# there's no clean per-package isolation the way update-engines.yml isolates
+# per-engine. Includes major version bumps (--latest); merging stays manual,
+# same as engine updates (see docs/dependency-updates.md).
+
+on:
+  # Nightly cron disabled until UPDATE_BOT_TOKEN is set up (pending an org
+  # admin conversation -- see docs/dependency-updates.md). Without it, PRs
+  # would be created as github-actions[bot] and wouldn't trigger CI.
+  # Re-enable by uncommenting once the token exists.
+  # schedule:
+  #   - cron: "37 3 * * *" # nightly, offset from Update Engines (17 3 * * *)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write # to dispatch the Build workflow on the update branch
+
+concurrency:
+  group: update-deps
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup node from package.json
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: "package.json"
+
+      - name: Update workspace dependencies
+        # --lockfile-only: resolve and write package.json/pnpm-lock.yaml only,
+        # skip materializing node_modules -- no need to run the emsdk/vcpkg
+        # postinstall bootstrap here, the dispatched Build run below installs
+        # for real and is what actually validates this.
+        # --config.minimumReleaseAge=0: pnpm 11's 24h supply-chain delay is
+        # verify-only and would reject a same-day --latest resolution; the
+        # contributor/CI install still enforces the policy for real.
+        # pnpm itself is a coordinated engine (engines.pnpm + packageManager +
+        # devDependencies.pnpm move together under build/update/apply.mjs's
+        # own track-gated pnpm case, see engines.json) -- restore
+        # devDependencies.pnpm below in case --latest bumped it, so this
+        # workflow can't drift it out of sync with the engine track (engines
+        # and packageManager aren't ordinary dependency-map entries, so
+        # `pnpm update` doesn't touch those two regardless).
+        env:
+          COREPACK_INTEGRITY_KEYS: "0"
+        run: |
+          corepack enable
+          PNPM_PIN=$(node -p "require('./package.json').engines.pnpm")
+          pnpm update --recursive --latest --lockfile-only --config.minimumReleaseAge=0
+          node -e "
+            const fs = require('fs');
+            const pkg = JSON.parse(fs.readFileSync('package.json', 'utf-8'));
+            if (pkg.devDependencies?.pnpm && pkg.devDependencies.pnpm !== '$PNPM_PIN') {
+              pkg.devDependencies.pnpm = '$PNPM_PIN';
+              fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+              console.log('restored devDependencies.pnpm to the engine-tracked $PNPM_PIN');
+            }
+          "
+
+      - name: Check for changes
+        id: diff
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create / update pull request
+        if: steps.diff.outputs.changed == 'true'
+        id: pr
+        uses: peter-evans/create-pull-request@v7
+        with:
+          # IMPORTANT: use a PAT / GitHub App token so the Build workflow can
+          # run on the PR. PRs created with the default GITHUB_TOKEN do not
+          # trigger other workflows. Falls back to GITHUB_TOKEN if unset.
+          token: ${{ secrets.UPDATE_BOT_TOKEN || secrets.GITHUB_TOKEN }}
+          branch: update/npm-deps
+          delete-branch: true
+          commit-message: "chore(deps): update npm dependencies"
+          title: "chore(deps): update npm dependencies"
+          labels: |
+            dependencies
+          body: |
+            Automated npm/JS dependency update across the pnpm workspace
+            (`pnpm update --recursive --latest`), including major version
+            bumps.
+
+            - [ ] full Release compile + package builds passed (see dispatched Build run on this branch)
+            - [ ] dev site build passed
+            - [ ] skim the diff for majors that need code changes, not just a version bump
+
+            Merging is manual.
+
+      - name: Dispatch full build on the update branch
+        if: steps.diff.outputs.changed == 'true' && (steps.pr.outputs.pull-request-operation == 'created' || steps.pr.outputs.pull-request-operation == 'updated')
+        env:
+          GH_TOKEN: ${{ secrets.UPDATE_BOT_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run build.yml --ref update/npm-deps --repo ${{ github.repository }}

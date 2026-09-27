@@ -3,8 +3,8 @@ import { existsSync, readFileSync } from "fs";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 
-import { CrossOriginIsolationResponseHeaders } from "./CrossOriginIsolationPlugin";
-import { ContentSecurityPolicyResponseHeaders } from "./ContentSecurityPolicyPlugin";
+import { CrossOriginIsolationResponseHeaders } from "./CrossOriginIsolationPlugin.ts";
+import { ContentSecurityPolicyResponseHeaders } from "./ContentSecurityPolicyPlugin.ts";
 
 import type { Plugin, ResolvedConfig } from "vite";
 

@@ -1,4 +1,4 @@
-import { File, Folder } from "../../packages/qgis-js-utils";
+import type { File, Folder } from "../../packages/qgis-js-utils/src/index.ts";
 
 import type { Plugin, ResolvedConfig } from "vite";
 
