@@ -8,9 +8,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@qgis-js/ol": "workspace:*",
+    "@qgis-js/ol": "4.2.2",
     "ol": "^10.10.0",
-    "qgis-js": "workspace:*"
+    "qgis-js": "4.2.2"
   },
   "devDependencies": {
     "vite": "^8.2.2",

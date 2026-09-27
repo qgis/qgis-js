@@ -1,6 +1,6 @@
 This document describes changes between tagged qgis-js versions
 
-## 4.2.2 (In development)
+## 4.2.2 (27. September 2026)
 
 - Dependency updates:
   - Updated to QGIS 4.2.2
