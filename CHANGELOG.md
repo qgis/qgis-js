@@ -1,12 +1,14 @@
 This document describes changes between tagged qgis-js versions
 
-## 4.2.3 (in development)
+## 4.2.3 (1. October 2026)
 
 - Dependency updates:
   - Updated to QGIS 4.2.3
   - Updated Emscripten to 6.0.10
   - Updated Node to 24.21.0
   - Updated pnpm to 11.28.2
+  - Updated various npm deps (vite to 8.3.2, api-extractor to 7.59.3, ...)
+- Fix for GitHub Page in Safari (iOS/macOS)
 
 ## 4.2.2 (27. September 2026)
 
