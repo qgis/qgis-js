@@ -5,11 +5,30 @@ packages:
 linkWorkspacePackages: true
 allowBuilds:
   esbuild: true
-# Approved by the 2026-09-03 npm dependency update (see docs/dependency-updates.md):
-# these were resolved same-day by `pnpm update --latest` and briefly failed
-# minimumReleaseAge's 24h verification. Safe to prune once they're no longer
-# in the lockfile at these exact versions.
-minimumReleaseAgeExclude:
-  - confbox@0.3.1
-  - pkg-types@2.3.2
-  - postcss@8.5.28
+# Ceilings for `pnpm update --latest` (nightly and local): both have bitten
+# this repo twice via a routine --latest run, see docs/dependency-updates.md.
+# Relax only as a deliberate, reviewed decision -- same philosophy as the
+# `track` field in build/update/engines.json for the toolchain engines.
+overrides:
+  # Exact pin, not a range: TS7 breaks unplugin-dts (no JS Compiler API, see
+  # vite-plugin-dts@5.x's dependency on it), and TS 6.0.3 -- initially tried
+  # as "<7" -- breaks differently, inside @microsoft/api-extractor itself
+  # ("Symbol not found for identifier: FS"). 5.9.3 is the only version
+  # actually verified to build clean; a range lets `pnpm update` walk back up
+  # to an unverified version even without --latest (it resolves to the top of
+  # the override's range, ignoring the narrower range individual package.json
+  # files declare). Bump only after verifying a real `pnpm run build` passes.
+  typescript: "5.9.3"
+  # keep in sync with engines.node's major (currently 24) -- @types/node
+  # ahead of the pinned runtime lets type-checking pass code that uses
+  # APIs that don't exist at runtime. Bump together with engines.node.
+  "@types/node": "^24"
+# Default ("install"): `pnpm run <script>` auto-runs an implicit `pnpm
+# install` first if node_modules looks out of sync with the lockfile -- that
+# implicit install doesn't carry --config.minimumReleaseAge=0, so running
+# `pnpm run update` (package.json's "update" script, which deliberately
+# resolves same-day releases) failed before the script's own body ever ran.
+# "warn" lets the script start regardless; it still calls `pnpm
+# update`/`install` explicitly itself, so this doesn't remove verification,
+# just the redundant pre-check for this one case.
+verifyDepsBeforeRun: warn
