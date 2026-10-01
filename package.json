@@ -10,7 +10,7 @@
   },
   "packageManager": "pnpm@11.25.0",
   "engines": {
-    "node": "24.20.0",
+    "node": "24.21.0",
     "pnpm": "11.25.0",
     "emsdk": "5.0.7",
     "vcpkg": "2026.07.29",
