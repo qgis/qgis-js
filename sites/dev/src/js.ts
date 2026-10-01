@@ -14,14 +14,19 @@ export function jsDemo(
   // ensure pixel perfect rendering
   // see https://web.dev/articles/device-pixel-content-box
   const observer = new ResizeObserver((entries) => {
-    const entry = entries.find((entry) => entry.target === canvas);
-    if (entry) {
-      canvas.width = entry.devicePixelContentBoxSize[0].inlineSize;
-      canvas.height = entry.devicePixelContentBoxSize[0].blockSize;
+    const entry = entries.find((e) => e.target === canvas);
+    const size = entry?.devicePixelContentBoxSize?.[0];
+    if (size) {
+      canvas.width = size.inlineSize;
+      canvas.height = size.blockSize;
     }
     renderMap();
   });
-  observer.observe(canvas, { box: "device-pixel-content-box" });
+  try {
+    observer.observe(canvas, { box: "device-pixel-content-box" });
+  } catch {
+    observer.observe(canvas); // Safari: content-box only
+  }
 
   async function renderMap() {
     var devicePixelRatio = window.devicePixelRatio || 1;
