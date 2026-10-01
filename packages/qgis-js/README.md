@@ -2,7 +2,7 @@
 
 **QGIS core ported to WebAssembly to run it on the web platform**
 
-Version: `4.2.2` (based on QGIS 4.2.3)
+Version: `4.2.3` (based on QGIS 4.2.3)
 
 [qgis-js Repository](https://github.com/qgis/qgis-js) | [qgis-js Website](https://qgis.github.io/qgis-js) | ["`qgis-js`" package source](https://github.com/qgis/qgis-js/tree/main/packages/qgis-js)
 
@@ -56,16 +56,16 @@ console.log(center.x, center.y);
 
 <!--NOTE: this can be generated with "./qgis-js.ts size -o markdown"-->
 
-The size of the package is **`77.43 MB`** (uncompressed) or `18.78 MB` Brotli compressed (76% space saving) / `22.09 MB` Gzip compressed (71% space saving)
+The size of the package is **`77.64 MB`** (uncompressed) or `18.8 MB` Brotli compressed (76% space saving) / `22.12 MB` Gzip compressed (72% space saving)
 
 It consists of the following files:
 
-| File name                  | Size (uncompressed) | Size (Brotli compressed)      | Size (Gzip compressed)        |
-| -------------------------- | ------------------- | ----------------------------- | ----------------------------- |
-| `qgis.js`                  | `7.27 kB`           | `2.69 kB` (63% space saving)  | `2.79 kB` (62% space saving)  |
-| `assets/wasm/qgis-js.js`   | `294.26 kB`         | `63.15 kB` (79% space saving) | `67.34 kB` (77% space saving) |
-| `assets/wasm/qgis-js.data` | `13.98 MB`          | `2.04 MB` (85% space saving)  | `2.66 MB` (81% space saving)  |
-| `assets/wasm/qgis-js.wasm` | `63.16 MB`          | `16.68 MB` (74% space saving) | `19.37 MB` (69% space saving) |
+| File name                  | Size (uncompressed) | Size (Brotli compressed)      | Size (Gzip compressed)       |
+| -------------------------- | ------------------- | ----------------------------- | ---------------------------- |
+| `qgis.js`                  | `7.4 kB`            | `2.72 kB` (63% space saving)  | `2.83 kB` (62% space saving) |
+| `assets/wasm/qgis-js.js`   | `297.26 kB`         | `63.96 kB` (78% space saving) | `68.1 kB` (77% space saving) |
+| `assets/wasm/qgis-js.data` | `13.98 MB`          | `2.04 MB` (85% space saving)  | `2.66 MB` (81% space saving) |
+| `assets/wasm/qgis-js.wasm` | `63.36 MB`          | `16.7 MB` (74% space saving)  | `19.4 MB` (69% space saving) |
 
 ### Libraries
 
