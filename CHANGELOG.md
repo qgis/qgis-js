@@ -3,6 +3,7 @@ This document describes changes between tagged qgis-js versions
 ## 4.2.3 (in development)
 
 - Dependency updates:
+  - Updated to QGIS 4.2.3
   - Updated Emscripten to 6.0.10
   - Updated Node to 24.21.0
   - Updated pnpm to 11.28.2
