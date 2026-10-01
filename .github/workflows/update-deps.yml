@@ -51,12 +51,20 @@ jobs:
         # workflow can't drift it out of sync with the engine track (engines
         # and packageManager aren't ordinary dependency-map entries, so
         # `pnpm update` doesn't touch those two regardless).
+        # restore-example-pins.mjs: docs/examples/* intentionally pin
+        # qgis-js/@qgis-js/ol to a real npm version (not workspace:*) so they
+        # install standalone on StackBlitz; `pnpm update -r` "helpfully"
+        # rewrites that back to workspace:* on every run, see
+        # docs/dependency-updates.md. The final plain `pnpm install` (NOT
+        # update) reconciles the lockfile against both restores -- install
+        # doesn't re-trigger either rewrite the way update does.
         env:
           COREPACK_INTEGRITY_KEYS: "0"
         run: |
           corepack enable
           PNPM_PIN=$(node -p "require('./package.json').engines.pnpm")
           pnpm update --recursive --latest --lockfile-only --config.minimumReleaseAge=0
+          node build/update/restore-example-pins.mjs
           node -e "
             const fs = require('fs');
             const pkg = JSON.parse(fs.readFileSync('package.json', 'utf-8'));
@@ -66,6 +74,7 @@ jobs:
               console.log('restored devDependencies.pnpm to the engine-tracked $PNPM_PIN');
             }
           "
+          pnpm install --lockfile-only --config.minimumReleaseAge=0
 
       - name: Check for changes
         id: diff

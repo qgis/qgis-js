@@ -7,9 +7,12 @@ qgis) need bespoke coordinated edits across non-npm files (submodule pins,
 tarball hashes, an overlay port) that Dependabot/Renovate can't do -- that's
 what `build/update/check.mjs`/`apply.mjs` exist for. Ordinary npm
 dependencies don't have that problem: pnpm already understands the whole
-10-package workspace (root, `packages/*`, `sites/*`, `docs/examples/*)`
+10-package workspace (root, `packages/*`, `sites/*`, `docs/examples/*`)
 natively, so this workflow is just `pnpm update --recursive --latest` plus
-the same PR/build-dispatch shape the engine updates use.
+the same PR/build-dispatch shape the engine updates use -- with one
+follow-up fixup for the examples, see
+[linkWorkspacePackages vs. the examples](#linkworkspacepackages-vs-the-examples)
+below.
 
 ## Flow
 
@@ -50,6 +53,36 @@ Everything lands in a single PR because `pnpm update -r` writes one shared
 clean way to split that into isolated per-package PRs the way
 `update/<engine>` isolates each engine.
 
+## `linkWorkspacePackages` vs. the examples
+
+`docs/examples/*` intentionally depend on `qgis-js`/`@qgis-js/ol` via a real
+npm version (e.g. `"4.2.2"`), not the `workspace:` protocol -- they're meant
+to install standalone (StackBlitz, `npm install` outside this repo), where
+`workspace:*` resolves to nothing. `linkWorkspacePackages: true` in
+`pnpm-workspace.yaml` still links them to the local `packages/*` copy during
+normal monorepo development, as long as the declared version is satisfied by
+the local package's own `version` -- that's the whole point of using a real
+version instead of the workspace protocol here.
+
+The catch: once pnpm recognizes a declared range as satisfied by a workspace
+sibling, `pnpm update -r` rewrites it back to `workspace:*` on _any_ run --
+even a plain `pnpm update -r` with no `--latest`, confirmed by reproducing it
+in isolation. There's no flag to keep `linkWorkspacePackages`'s local-linking
+behavior while opting out of this rewrite.
+
+Excluding `docs/examples/*` from `pnpm update`'s scope entirely was the first
+fix tried here, but that also stops their own `devDependencies` (vite,
+playwright, …) from ever getting the automated bump -- too broad a tradeoff
+for what's really a narrow problem. Instead, `build/update/restore-example-pins.mjs`
+runs after `pnpm update --latest` (full 10-package scope) and rewrites
+`workspace:*` back to the real version for just `qgis-js`/`@qgis-js/ol` in
+the examples, reading the correct version straight from `packages/qgis-js`'s
+/ `packages/qgis-js-ol`'s own `package.json` rather than needing to snapshot
+anything beforehand. A final plain `pnpm install` (**not** `update`)
+reconciles `pnpm-lock.yaml` against the restored text -- confirmed by testing
+directly that `install` does **not** re-trigger the workspace: rewrite the
+way `update` does, so this round-trip is stable.
+
 ## `minimumReleaseAge` and the dispatched build
 
 pnpm 11's `minimumReleaseAge` (24h supply-chain delay) is **verify-only**: the
@@ -58,7 +91,7 @@ update step resolves `--latest` regardless of a package's age (with
 [engine-updates.md](engine-updates.md)), but a plain `pnpm install` afterward
 re-enforces the policy and rejects any resolved entry published within the
 last 24h. Because `pnpm update -r --latest` walks the full transitive graph
-of a 10-package workspace nightly, _some_ freshly-published entry is likely
+of the workspace nightly, _some_ freshly-published entry is likely
 on any given night — this isn't a one-off like the pnpm engine bump, it's the
 common case. Left unhandled, `build.yml`'s `pnpm install` step would fail
 almost every night on `ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`, not because
