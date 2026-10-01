@@ -14,7 +14,7 @@
     "$comment": "A newer emsdk ships a newer Clang that can fail third-party vcpkg ports built with -Werror (the 5.0.7 bump broke json-c on -Wunused-but-set-global). Such breaks surface only in the full compile and are fixed with an overlay port in build/vcpkg-ports/, not here.",
     "strategy": "github-semver-tag",
     "repo": "emscripten-core/emsdk",
-    "track": "5",
+    "track": "6",
     "submodule": "build/emsdk"
   },
   "vcpkg": {
