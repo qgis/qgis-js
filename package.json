@@ -8,10 +8,10 @@
   "bugs": {
     "url": "https://github.com/qgis/qgis-js/issues"
   },
-  "packageManager": "pnpm@11.25.0",
+  "packageManager": "pnpm@11.28.2",
   "engines": {
     "node": "24.21.0",
-    "pnpm": "11.25.0",
+    "pnpm": "11.28.2",
     "emsdk": "5.0.7",
     "vcpkg": "2026.07.29",
     "qt": "6.11.1",
@@ -44,7 +44,7 @@
     "@rushstack/ts-command-line": "5.3.13",
     "@types/node": "^24.13.3",
     "clang-format": "1.8.0",
-    "pnpm": "11.25.0",
+    "pnpm": "11.28.2",
     "prettier": "3.9.6",
     "pretty-quick": "4.2.2",
     "ts-markdown": "1.3.0",
