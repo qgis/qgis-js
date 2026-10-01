@@ -4,6 +4,7 @@ This document describes changes between tagged qgis-js versions
 
 - Dependency updates:
   - Updated Node to 24.21.0
+  - Updated pnpm to 11.28.2
 
 ## 4.2.2 (27. September 2026)
 
