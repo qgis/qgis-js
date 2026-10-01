@@ -23,6 +23,12 @@ overrides:
   # ahead of the pinned runtime lets type-checking pass code that uses
   # APIs that don't exist at runtime. Bump together with engines.node.
   "@types/node": "^24"
+# Resolved same-day by `pnpm update --latest` and briefly failed
+# minimumReleaseAge's 24h verification; see docs/dependency-updates.md. Safe
+# to prune once no longer in the lockfile at this exact version (pnpm does
+# this automatically).
+minimumReleaseAgeExclude:
+  - vite@8.3.2 # 2026-10-01 npm dependency update
 # Default ("install"): `pnpm run <script>` auto-runs an implicit `pnpm
 # install` first if node_modules looks out of sync with the lockfile -- that
 # implicit install doesn't carry --config.minimumReleaseAge=0, so running
